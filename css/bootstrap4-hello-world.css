@@ -32,7 +32,7 @@
   --breakpoint-md: 768px;
   --breakpoint-lg: 992px;
   --breakpoint-xl: 1200px;
-  --font-family-sans-serif: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --font-family-sans-serif: "Quicksand", "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
 
 *,
@@ -453,6 +453,7 @@ pre {
   padding-right: 15px;
   padding-left: 15px;
   margin-right: auto;
+  font-family: 'Quicksand', sans-serif;
   margin-left: auto; }
   @media (min-width: 576px) {
     .container {
@@ -8697,7 +8698,7 @@ a.text-dark:hover, a.text-dark:focus {
 .display-2,
 .display-3,
 .display-4 {
-  font-family: "Fredoka One", cursive;
+  font-family: 'Quicksand', sans-serif;
   letter-spacing: .06em; }
 
 .lead,
