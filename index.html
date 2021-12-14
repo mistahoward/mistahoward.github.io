@@ -42,6 +42,7 @@
             let backgroundHTML = document.getElementById("background");
             let bg = new Image();
             let loaded = false;
+            const isMobile = ('ontouchstart' in document.documentElement && navigator.userAgent.match(/Mobi/));
 
             bg.onload = () => {
                 console.log("BACKGROUND LOADED");
@@ -58,10 +59,17 @@
             //document.getElementById("background").src=bg.src;
             bg.src = setBackground;
             var scene = document.getElementById('scene');
-            var parallaxInstance = new Parallax(scene, {
-                scalarX: 30,
-                calibrateY: false
-            });
+            if(isMobile == false) {
+                var parallaxInstance = new Parallax(scene, {
+                    scalarX: 30
+                });
+            } else {
+                var parallaxInstance = new Parallax(scene, {
+                    scalarX: 30,
+                    limitY: true
+                });
+            }
+            console.log(isMobile);
            
            // window.onload = (event) => {
                 //console.log("LOADED");
