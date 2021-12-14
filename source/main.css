@@ -15,8 +15,8 @@ body {
     background-image: url("../spaceImages/NebulaRed.png");
     background-repeat:no-repeat; 
     display: none;
-    margin-top: -20%;
-    margin-left: -20%;
+    margin-top: -5%;
+    margin-left: -10%;
     height: 4096px;
     width: 4096px;
 }
@@ -25,8 +25,8 @@ body {
     background-image: url("../spaceImages/stars1.png");
     background-repeat:no-repeat;  
     display: none;
-    margin-top: -20%;
-    margin-left: -20%;
+    margin-top: -5%;
+    margin-left: -10%;
     height: 4096px;
     width: 4096px;
 }
@@ -34,8 +34,8 @@ body {
     background-image: url("../spaceImages/stars2.png");
     background-repeat:no-repeat;  
     display: none;
-    margin-top: -20%;
-    margin-left: -20%;
+    margin-top: -5%;
+    margin-left: -10%;
     height: 4096px;
     width: 4096px;
 }
@@ -43,8 +43,8 @@ body {
     background-image: url("../spaceImages/stars3.png");
     background-repeat:no-repeat; 
     display: none; 
-    margin-top: -20%;
-    margin-left: -20%;
+    margin-top: -5%;
+    margin-left: -10%;
     height: 4096px;
     width: 4096px;
 }
@@ -52,8 +52,8 @@ body {
     background-image: url("../spaceImages/stars4.png");
     background-repeat:no-repeat;  
     display: none;
-    margin-top: -20%;
-    margin-left: -20%;
+    margin-top: -5%;
+    margin-left: -10%;
     height: 4096px;
     width: 4096px;
 }
