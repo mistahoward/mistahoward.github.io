@@ -59,14 +59,17 @@
             //document.getElementById("background").src=bg.src;
             bg.src = setBackground;
             var scene = document.getElementById('scene');
-            if(isMobile == false) {
-                var parallaxInstance = new Parallax(scene, {
-                    scalarX: 30
-                });
-            } else {
+            if(isMobile != false) {
+                console.log("Mobile Parallax Initialized")
                 var parallaxInstance = new Parallax(scene, {
                     scalarX: 30,
-                    limitY: true
+                    limitY: true,
+                    calibrateY: false
+                });
+                
+            } else {
+                var parallaxInstance = new Parallax(scene, {
+                    scalarX: 30
                 });
             }
             console.log(isMobile);
