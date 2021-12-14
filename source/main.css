@@ -1,10 +1,20 @@
 body {
   overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
+#scene {
+    display: hidden;
+}
+#loading {
+    display: block;
+}
 #background {
     background-image: url("../spaceImages/NebulaRed.png");
-    background-repeat:no-repeat;  
+    background-repeat:no-repeat; 
+    display: none;
     margin-top: -20%;
     margin-left: -20%;
     height: 4096px;
@@ -14,6 +24,7 @@ body {
 #stars1 {
     background-image: url("../spaceImages/stars1.png");
     background-repeat:no-repeat;  
+    display: none;
     margin-top: -20%;
     margin-left: -20%;
     height: 4096px;
@@ -22,6 +33,7 @@ body {
 #stars2 {
     background-image: url("../spaceImages/stars2.png");
     background-repeat:no-repeat;  
+    display: none;
     margin-top: -20%;
     margin-left: -20%;
     height: 4096px;
@@ -29,7 +41,8 @@ body {
 }
 #stars3 {
     background-image: url("../spaceImages/stars3.png");
-    background-repeat:no-repeat;  
+    background-repeat:no-repeat; 
+    display: none; 
     margin-top: -20%;
     margin-left: -20%;
     height: 4096px;
@@ -38,6 +51,7 @@ body {
 #stars4 {
     background-image: url("../spaceImages/stars4.png");
     background-repeat:no-repeat;  
+    display: none;
     margin-top: -20%;
     margin-left: -20%;
     height: 4096px;
