@@ -1,0 +1,45 @@
+body {
+  overflow: hidden;
+}
+
+#background {
+    background-image: url("../spaceImages/NebulaRed.png");
+    background-repeat:no-repeat;  
+    margin-top: -20%;
+    margin-left: -20%;
+    height: 4096px;
+    width: 4096px;
+}
+
+#stars1 {
+    background-image: url("../spaceImages/stars1.png");
+    background-repeat:no-repeat;  
+    margin-top: -20%;
+    margin-left: -20%;
+    height: 4096px;
+    width: 4096px;
+}
+#stars2 {
+    background-image: url("../spaceImages/stars2.png");
+    background-repeat:no-repeat;  
+    margin-top: -20%;
+    margin-left: -20%;
+    height: 4096px;
+    width: 4096px;
+}
+#stars3 {
+    background-image: url("../spaceImages/stars3.png");
+    background-repeat:no-repeat;  
+    margin-top: -20%;
+    margin-left: -20%;
+    height: 4096px;
+    width: 4096px;
+}
+#stars4 {
+    background-image: url("../spaceImages/stars4.png");
+    background-repeat:no-repeat;  
+    margin-top: -20%;
+    margin-left: -20%;
+    height: 4096px;
+    width: 4096px;
+}
