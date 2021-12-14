@@ -18,31 +18,55 @@
     </head>
     <body>
         <div id="body">
-            <div id="scene">
-                <div id="background" data-depth="0.05"></div>
-                <div id="stars4" data-depth="0.1"></div>
-                <div id="stars3" data-depth="0.2"></div>
-                <div id="stars2" data-depth="0.3"></div>
-                <div id="stars1" data-depth="0.4"></div>
+            <div id="loading">
+                <h1 class="display-1 align-center">LOADING</H1>
+            </div>
+                <div id="scene">
+                    <div data-depth="0.05"><img id="background" src=""/></div>
+                    <div data-depth="0.1"><img id="stars4" src="../spaceImages/stars4.png"/></div>
+                    <div data-depth="0.2"><img id="stars3" src="../spaceImages/stars3.png"/></div>
+                    <div data-depth="0.3"><img id="stars2" src="../spaceImages/stars2.png"/></div>
+                    <div data-depth="0.4"><img id="stars1" src="../spaceImages/stars1.png"/></div>
+                </div>
             </div>
         </div>
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
         <script>
-            //(max - min + 1) + min
             let randomNumber = Math.floor(Math.random() * (3 - 1 + 1) + 1);
             const backgroundImages = ["NebulaRed.png", "NebulaBlue.png", "NebulaAquaPink.png"];
             let chosenBackground = randomNumber - 1;
+            const stars = ["stars1", "stars2", "stars3", "stars4"];
             let setBackground = "../spaceImages/" + backgroundImages[chosenBackground];
-            document.getElementById("background").style.backgroundImage="url(" + setBackground + ")";
+            let backgroundHTML = document.getElementById("background");
+            let bg = new Image();
+            let loaded = false;
 
+            bg.onload = () => {
+                console.log("BACKGROUND LOADED");
+                backgroundHTML.src = setBackground;
+                loaded=true;
+                if(loaded == true) {
+                for(i = 0; i < stars.length; i++) {
+                    document.getElementById(stars[i]).style.display = "block";
+                }
+                document.getElementById("loading").style.display = "none";
+            }
+            };
+            
+            //document.getElementById("background").src=bg.src;
+            bg.src = setBackground;
             var scene = document.getElementById('scene');
             var parallaxInstance = new Parallax(scene, {
                 scalarX: 30,
                 calibrateY: false
             });
-            
+           
+           // window.onload = (event) => {
+                //console.log("LOADED");
+                
+            //};
         </script>
     </body>
 </html>
