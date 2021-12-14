@@ -13,7 +13,8 @@ body {
 }
 #background {
     background-image: url("../spaceImages/NebulaRed.png");
-    background-repeat:no-repeat; 
+    background-repeat:no-repeat;
+    overflow: hidden;
     position: fixed;
     display: none;
     margin-top: -20%;
@@ -26,6 +27,7 @@ body {
     background-image: url("../spaceImages/stars1.png");
     background-repeat:no-repeat;  
     position: fixed;
+    overflow: hidden;
     display: none;
     margin-top: -20%;
     margin-left: -20%;
@@ -36,6 +38,7 @@ body {
     background-image: url("../spaceImages/stars2.png");
     background-repeat:no-repeat;  
     position: fixed;
+    overflow: hidden;
     display: none;
     margin-top: -20%;
     margin-left: -20%;
@@ -46,6 +49,7 @@ body {
     background-image: url("../spaceImages/stars3.png");
     background-repeat:no-repeat; 
     position: fixed;
+    overflow: hidden;
     display: none; 
     margin-top: -20%;
     margin-left: -20%;
@@ -56,6 +60,7 @@ body {
     background-image: url("../spaceImages/stars4.png");
     background-repeat:no-repeat;  
     position: fixed;
+    overflow: hidden;
     display: none;
     margin-top: -20%;
     margin-left: -20%;
