@@ -1,8 +1,34 @@
+* {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+#scene {
+    position:relative;
+}
 body {
-    overflow: hidden;
-    position:fixed;
+    position: relative;
+    overflow:hidden;
     width: 100%;
     height: 100%;
+}
+.title {
+    padding-left: 3vh;
+    padding-top: 1vh;
+}
+.name {
+    display: inline-block;
+}
+#container {
+    visibility: hidden;
+    border-radius: 10px;
+    background-color: white;
+    margin-top: 15%;
+    width: 33%;
+    height: 10%;
+    margin-left: 33%;
+    z-index: 98;
+    position: absolute;
 }
 
 #loading {
@@ -19,8 +45,8 @@ body {
 #background {
     margin-top: -20%;
     margin-left: -20%;
-    height: 300%;
-    width: 300%;
+    height: 200%;
+    width: 200%;
 }
 
 #stars1 {
@@ -28,30 +54,30 @@ body {
     background-repeat:no-repeat;  
     margin-top: -20%;
     margin-left: -20%;
-    height: 4096px;
-    width: 4096px;
+    height: 200%;
+    width: 200%;
 }
 #stars2 {
     display:hidden;
     background-repeat:no-repeat;  
     margin-top: -20%;
     margin-left: -20%;
-    height: 4096px;
-    width: 4096px;
+    height: 200%;
+    width: 200%;
 }
 #stars3 {
     display:hidden;
     background-repeat:no-repeat; 
     margin-top: -20%;
     margin-left: -20%;
-    height: 4096px;
-    width: 4096px;
+    height: 200%;
+    width: 200%;
 }
 #stars4 {
     display:hidden;
     background-repeat:no-repeat;  
     margin-top: -20%;
     margin-left: -20%;
-    height: 4096px;
-    width: 4096px;
+    height: 200%;
+    width: 200%;
 }
