@@ -20,20 +20,24 @@
         <!--Parallax.JS-->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/parallax/3.1.0/parallax.min.js"></script> 
     </head>
-    <body>
+    <body class = "d-flex h-100 text-center text-black">
             <div id="loading">
                 <h1 class="display-1 align-center">LOADING</H1>
             </div>
-            <div id="container" class="row">
-                <h1 class="display-1 title">Hi, I'm <span class="name animate__animated animate__rubberBand">Alex Howard!</span></h1>
-            </div>
+                  
+                    <div class="container-fluid position-absolute">
+                        <div class="row justify-content-center">
+                            <div id="modal" class="col-md-auto m-5">
+                                <h1 class="display-4 title">Hey, I'm <span class="name animate__animated animate__rubberBand">Alex Howard!</span></h1>
+                            </div>
+                        </div>
+                    </div>
                 <div id="scene" class="scene">
                     <div data-depth="0.05"><img id="background" src=""/></div>
                     <div data-depth="0.1"><img id="stars4" src="../spaceImages/stars4.png"/></div>
                     <div data-depth="0.2"><img id="stars3" src="../spaceImages/stars3.png"/></div>
                     <div data-depth="0.3"><img id="stars2" src="../spaceImages/stars2.png"/></div>
                     <div data-depth="0.4"><img id="stars1" src="../spaceImages/stars1.png"/></div>
-                    
                 </div>
 
         <!--[if lt IE 7]>
@@ -50,8 +54,9 @@
             let loaded = false;
             const isMobile = ('ontouchstart' in document.documentElement && navigator.userAgent.match(/Mobi/));
 
+
+
             bg.onload = () => {
-                console.log("BACKGROUND LOADED");
                 backgroundHTML.src = setBackground;
                 loaded=true;
                 if(loaded == true) {
@@ -59,7 +64,7 @@
                     document.getElementById(stars[i]).style.display = "block";
                 }
                 document.getElementById("loading").style.display = "none";
-                document.getElementById("container").style.visibility = "visible";
+                document.getElementById("modal").style.visibility = "visible";
             }
             };
             
