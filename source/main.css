@@ -4,8 +4,9 @@
     user-select: none;
 }
 #scene {
-    position:relative;
+    position:absolute;
 }
+
 body {
     position: relative;
     overflow:hidden;
@@ -15,11 +16,8 @@ body {
 #modal {
     visibility: hidden;
     border-radius: 10px;
-    background-color: white;
-    height:fit-content;
     z-index: 98;
 }
-
 #loading {
     position: fixed;
     width: 100%;
