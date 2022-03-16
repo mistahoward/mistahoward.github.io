@@ -13,13 +13,10 @@
         <!--Bootstrap-->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
         <link rel="stylesheet" href="source/main.css">
-        <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
-        />
+        <!-- line awesome import -->
+        <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
         <!--Parallax.JS-->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/parallax/3.1.0/parallax.min.js"></script> 
-        <!---quicksand font-->
     </head>
     <body class = "text-center text-black">
             <div id="loading">
@@ -28,7 +25,7 @@
                 <ul id="scene" class="scene">
                     <li data-depth="0.05"><div id="background">&nbsp;</div></li>
                     <li data-depth="0.1"><img id="stars4" src="../spaceImages/stars4.png"/></li>
-                    <li data-depth="0.2"><img id="stars3" src="../spaceImages/stars3.png"/></>
+                    <li data-depth="0.2"><img id="stars3" src="../spaceImages/stars3.png"/></li>
                     <li data-depth="0.3"><img id="stars2" src="../spaceImages/stars2.png"/></li>
                     <li data-depth="0.4"><img id="stars1" src="../spaceImages/stars1.png"/></li>
                 </ul>
@@ -39,12 +36,23 @@
                                 <h1 class="display-1 title text-white">Hi! I'm Alex.</h1>
                             </div>
                             <div class="col-4 col-lg-6">
-                                <svg viewBox="0 0 36 36" fill="none" role="img" xmlns="http://www.w3.org/2000/svg" width="128" height="128"><title>Mary Baker</title><mask id="mask__beam" maskUnits="userSpaceOnUse" x="0" y="0" width="36" height="36"><rect width="36" height="36" rx="72" fill="#FFFFFF"></rect></mask><g mask="url(#mask__beam)"><rect width="36" height="36" fill="#0c8f8f"></rect><rect x="0" y="0" width="36" height="36" transform="translate(4 4) rotate(340 18 18) scale(1.1)" fill="#ffad08" rx="36"></rect><g transform="translate(-4 -1) rotate(0 18 18)"><path d="M15 20c2 1 4 1 6 0" stroke="#000000" fill="none" stroke-linecap="round"></path><rect x="14" y="14" width="1.5" height="2" rx="1" stroke="none" fill="#000000"></rect><rect x="20" y="14" width="1.5" height="2" rx="1" stroke="none" fill="#000000"></rect></g></g></svg>
-                        </div>
+                                <img class="profile" alt="A headshot of Alex Howard" src="../images/headshot.png" />
+                                <!-- Hey I want to be a software dev, not a graphical artist. >:(-->
+                            </div>
                         <div class="row justify-content-start">
                             <div class="col-8 col-lg-6">
                                 <h6 class="display-6 text-white">Future Software Developer.</h6>
                             </div>
+                            <div class="col-3 col-lg-6">
+                                <h6 class="display-6 text-white">I plan to update with future projects, but in the meantime:</h6>
+                                <div class="socials">
+                                    <!-- github -->
+                                    <a href="https://github.com/mistahoward" target="_blank"><i class="lab la-github text-white la-4x"></i></a>
+                                    <!-- linkedin -->
+                                    <a href="https://www.linkedin.com/in/jalexhoward/" target="_blank"><i class="lab la-linkedin-in text-white la-4x"></i></a>
+                                    <!-- twitter probably-->
+                                    <a href="https://twitter.com/mista_howard" target="_blank"><i class="lab la-twitter text-white la-4x"></i></a>
+                                </div>
                         </div>
                     </div>
                 </div>
@@ -69,7 +77,6 @@
             bg.onload = () => {
                 document.getElementById("background").style.backgroundImage = cssMarkUp;
                 document.getElementById("background").style.position = "absolute";
-                //backgroundHTML.src = setBackground;
                 console.log("setting image to " + cssMarkUp + "!");
                 loaded=true;
                 if(loaded == true) {
@@ -82,8 +89,6 @@
                 console.log("I LOADED!");
             }
             };
-            
-            //document.getElementById("background").src=bg.src;
             bg.src = setBackground;
             var scene = document.getElementById('scene');
             if(isMobile != false) {
@@ -100,11 +105,6 @@
                 });
             }
             console.log(isMobile);
-           
-           // window.onload = (event) => {
-                //console.log("LOADED");
-                
-            //};
         </script>
     </body>
 </html>
