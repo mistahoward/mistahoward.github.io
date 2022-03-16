@@ -31,28 +31,31 @@
                 </ul>
                 <div id="modal" class="container-fluid vh-100 position-relative">
                     <div class="row h-75">
+                        <div class="d-block d-sm-none text-white">Parallax JS doesn't work great with mobile or smaller devices. I recommend you check this page out on desktop!</div>
                         <div class="row justify-content-start align-items-end">
                             <div class="col-8 col-lg-6">
                                 <h1 class="display-1 title text-white">Hi! I'm Alex.</h1>
                             </div>
                             <div class="col-4 col-lg-6">
-                                <img class="profile" alt="A headshot of Alex Howard" src="../images/headshot.png" />
+                                <img class="profile img-fluid" alt="A headshot of Alex Howard" src="../images/headshot.png" />
                                 <!-- Hey I want to be a software dev, not a graphical artist. >:(-->
                             </div>
                         <div class="row justify-content-start">
                             <div class="col-8 col-lg-6">
                                 <h6 class="display-6 text-white">Future Software Developer.</h6>
                             </div>
-                            <div class="col-3 col-lg-6">
-                                <h6 class="display-6 text-white">I plan to update with future projects, but in the meantime:</h6>
-                                <div class="socials">
-                                    <!-- github -->
-                                    <a href="https://github.com/mistahoward" target="_blank"><i class="lab la-github text-white la-4x"></i></a>
-                                    <!-- linkedin -->
-                                    <a href="https://www.linkedin.com/in/jalexhoward/" target="_blank"><i class="lab la-linkedin-in text-white la-4x"></i></a>
-                                    <!-- twitter probably-->
-                                    <a href="https://twitter.com/mista_howard" target="_blank"><i class="lab la-twitter text-white la-4x"></i></a>
-                                </div>
+                            <div class="col-4 col-lg-6">
+                                <h6 class="display-6 text-white d-none d-lg-block">I plan to update with future projects, but in the meantime:</h6>
+                                <div class="col-12">
+                                    <div class="socials text-nowrap">
+                                        <!-- github -->
+                                        <a href="https://github.com/mistahoward" target="_blank"><i class="lab la-github text-white la-4x"></i></a>
+                                        <!-- linkedin -->
+                                        <a href="https://www.linkedin.com/in/jalexhoward/" target="_blank"><i class="lab la-linkedin-in text-white la-4x"></i></a>
+                                        <!-- twitter probably-->
+                                        <span class="d-none d-md-inline"><a href="https://twitter.com/mista_howard" target="_blank"><i class="lab la-twitter text-white la-4x"></i></a></span>
+                                    </div>
+                                    </div>
                         </div>
                     </div>
                 </div>
@@ -91,20 +94,10 @@
             };
             bg.src = setBackground;
             var scene = document.getElementById('scene');
-            if(isMobile != false) {
-                console.log("Mobile Parallax Initialized")
-                var parallaxInstance = new Parallax(scene, {
-                    limitY: true
-                });
-                
-            } else {
-                console.log("Parralax Initialized")
                 var parallaxInstance = new Parallax(scene, {
                     scalarX: 30,
                     relativeInput: true
                 });
-            }
-            console.log(isMobile);
         </script>
     </body>
 </html>
