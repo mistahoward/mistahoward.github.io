@@ -21,8 +21,8 @@ module.exports = {
     '@typescript-eslint'
   ],
   rules: {
-    space-before-function-paren: "off",
-    no-tabs: "off",
+    spaceBeforeFunctionParen: "off",
+    noTabs: "off",
     indent: ["error", "tab"]
   }
 }
