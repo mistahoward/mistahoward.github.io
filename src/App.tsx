@@ -1,8 +1,14 @@
-function App (): JSX.Element {
+import Header from './ui/Header';
+import Body from './ui/Body';
+import Footer from './ui/Footer';
+
+function App(): JSX.Element {
 	return (
-		<div className="App">
-			<header className="App-header">React code go here</header>
-		</div>
+		<>
+			<Header />
+			<Body />
+			<Footer />
+		</>
 	);
 }
 

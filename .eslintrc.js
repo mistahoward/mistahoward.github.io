@@ -9,7 +9,7 @@ module.exports = {
 	parserOptions: {
 		ecmaVersion: "latest",
 		sourceType: "module",
-		project: "./tsconfig.json",
+		project: "./tsconfig.json"
 	},
 	plugins: ["react", "@typescript-eslint"],
 	rules: {
@@ -35,6 +35,6 @@ module.exports = {
 		context: true,
 		expect: true,
 		jsdom: true,
-		JSX: true,
+		JSX: true
 	},
 };
