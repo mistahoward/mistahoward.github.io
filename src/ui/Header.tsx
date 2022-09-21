@@ -2,12 +2,6 @@ import { Row, Col } from 'react-bootstrap';
 import '../assets/css/header.css';
 
 function Header(): JSX.Element {
-	const router = createBrowserRouter([
-		{
-			path: 'Home',
-			element: <Home />,
-		},
-	]);
 	return (
 		<Col id="main-nav">
 			<Row>
