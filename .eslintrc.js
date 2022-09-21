@@ -3,7 +3,10 @@ module.exports = {
 		browser: true,
 		es2021: true
 	},
-	extends: ["plugin:react/recommended", "standard-with-typescript", "airbnb"],
+	plugins: ["react", "@typescript-eslint"],
+	extends: ["plugin:react/recommended", "airbnb",
+	"eslint:recommended",
+    "plugin:@typescript-eslint/recommended"],
 	parser: "@typescript-eslint/parser",
 	overrides: [],
 	parserOptions: {
@@ -11,30 +14,29 @@ module.exports = {
 		sourceType: "module",
 		project: "./tsconfig.json"
 	},
-	plugins: ["react", "@typescript-eslint"],
 	rules: {
 		"space-before-function-paren": "off",
 		"no-tabs": "off",
-		indent: ["error", "tab"],
+		"indent": ["error", "tab"],
 		"@typescript-eslint/semi": "off",
 		"@typescript-eslint/indent": ["error", "tab"],
-		"react/jsx-filename-extension": [1, { extensions: [".tsx", ".jsx"] }],
-		"react/jsx-indent": [1, "tab"],
+		"react/jsx-filename-extension": [1, { "extensions": [".tsx", ".jsx"] }],
+		"react/jsx-indent": ["error", "tab"],
 		"react/react-in-jsx-scope": "off",
 		"import/extensions": "off",
 		"import/no-unresolved": "off",
-		"comma-dangle", "off"
+		"comma-dangle": "off"
 	},
 	globals: {
-		React: true,
-		google: true,
-		mount: true,
-		mountWithRouter: true,
-		shallow: true,
-		shallowWithRouter: true,
-		context: true,
-		expect: true,
-		jsdom: true,
-		JSX: true
+		"React": true,
+		"google": true,
+		"mount": true,
+		"mountWithRouter": true,
+		"shallow": true,
+		"shallowWithRouter": true,
+		"context": true,
+		"expect": true,
+		"jsdom": true,
+		"JSX": true
 	}
 };

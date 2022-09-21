@@ -1,7 +1,12 @@
-function Body (): JSX.Element {
-    return (
-      <div>Body</div>
-    )
-  }
-  
-  export default Body;
+import '../assets/css/body.css';
+
+function Body(): JSX.Element {
+	return (
+		<>
+			<div>Body</div>
+			<div>two</div>
+		</>
+	);
+}
+
+export default Body;
