@@ -1,7 +1,7 @@
 module.exports = {
 	env: {
 		browser: true,
-		es2021: true,
+		es2021: true
 	},
 	extends: ["plugin:react/recommended", "standard-with-typescript", "airbnb"],
 	parser: "@typescript-eslint/parser",
@@ -36,5 +36,5 @@ module.exports = {
 		expect: true,
 		jsdom: true,
 		JSX: true
-	},
+	}
 };
