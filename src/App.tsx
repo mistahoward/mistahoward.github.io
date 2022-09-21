@@ -1,21 +1,33 @@
 import { Container, Row } from 'react-bootstrap';
+import { ThemeProvider, DefaultTheme } from 'styled-components';
+import { useState } from 'react';
+import { lightTheme, darkTheme } from './ui/Theme';
 import Header from './ui/Header';
 import Body from './ui/Body';
 import Footer from './ui/Footer';
+import GlobalStyles from './ui/globalStyles';
 
 function App(): JSX.Element {
+	const [theme, setSelectedTheme] = useState<DefaultTheme>(lightTheme);
+	const themeToggler = () => {
+		theme === lightTheme ? setSelectedTheme(darkTheme) : setSelectedTheme(lightTheme);
+	};
+
 	return (
-		<Container>
-			<Row>
-				<Header />
-			</Row>
-			<Row>
-				<Body />
-			</Row>
-			<Row>
-				<Footer />
-			</Row>
-		</Container>
+		<ThemeProvider theme={theme === lightTheme ? lightTheme : darkTheme}>
+			<GlobalStyles />
+			<Container>
+				<Row>
+					<Header themeToggle={themeToggler} theme={theme} />
+				</Row>
+				<Row>
+					<Body />
+				</Row>
+				<Row>
+					<Footer />
+				</Row>
+			</Container>
+		</ThemeProvider>
 	);
 }
 

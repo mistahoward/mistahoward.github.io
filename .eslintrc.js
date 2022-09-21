@@ -25,7 +25,10 @@ module.exports = {
 		"react/react-in-jsx-scope": "off",
 		"import/extensions": "off",
 		"import/no-unresolved": "off",
-		"comma-dangle": "off"
+		"comma-dangle": "off",
+		"linebreak-style": "off",
+		"react/jsx-indent-props": ["error", 'tab'],
+		"no-unused-expressions": "off"
 	},
 	globals: {
 		"React": true,
