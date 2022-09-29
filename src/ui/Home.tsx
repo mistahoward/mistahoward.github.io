@@ -1,7 +1,9 @@
 import { useTitle } from 'hookrouter';
 import { Row, Col } from 'react-bootstrap';
 import Lottie from 'lottie-react';
-import { FiGithub, FiLinkedin, FiTwitter } from 'react-icons/fi';
+import {
+	FiGithub, FiLinkedin, FiTwitter, FiMail
+} from 'react-icons/fi';
 import Headshot from '../assets/img/headshot.png';
 import wave from '../assets/animations/wave.json';
 import '../assets/css/home.css';
@@ -71,6 +73,9 @@ function Home(): JSX.Element {
 							</Col>
 							<Col>
 								<a target="_blank" aria-label="Alex Howard's Twitter" rel="noreferrer" href="https://twitter.com/mista_howard"><FiTwitter className="link" /></a>
+							</Col>
+							<Col>
+								<a target="_blank" aria-label="Alex Howard's Email" rel="noreferrer" href="mailto:me@alexhoward.dev"><FiMail className="link" /></a>
 							</Col>
 						</Row>
 					</Col>
