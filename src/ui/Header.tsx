@@ -16,21 +16,22 @@ function Header({ themeToggle, theme }: HeaderProps): JSX.Element {
 	return (
 		<Col id="main-nav">
 			<Row>
-				<Col onClick={() => navigate('/')}>
+				<Col className="text-center" onClick={() => navigate('/')}>
 					<span className={`header-link ${currentPath === '/' && 'selected'}`}>Home</span>
 				</Col>
-				<Col onClick={() => navigate('/about')}>
+				<Col className="text-center" onClick={() => navigate('/about')}>
 					<span className={`header-link ${currentPath === '/about' && 'selected'}`}>About Me</span>
 				</Col>
-				<Col onClick={() => navigate('/')}>
+				<Col className="text-center" onClick={() => navigate('/')}>
 					<h1 className="display-6">
 						<span className="header-link">AH</span>
 					</h1>
 				</Col>
-				<Col onClick={() => navigate('/portfolio')}>
+				<Col className="text-center" onClick={() => navigate('/portfolio')}>
 					<span className={`header-link ${currentPath === '/portfolio' && 'selected'}`}>Portfolio</span>
 				</Col>
 				<Col
+					className="text-center"
 					onClick={() => {
 						themeToggle();
 					}}

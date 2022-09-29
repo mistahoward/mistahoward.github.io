@@ -17,7 +17,7 @@ module.exports = {
 	rules: {
 		"space-before-function-paren": "off",
 		"no-tabs": "off",
-		"indent": ["error", "tab"],
+		"indent": ["error", "tab", { "SwitchCase": 1}],
 		"@typescript-eslint/semi": "off",
 		"@typescript-eslint/indent": ["error", "tab"],
 		"react/jsx-filename-extension": [1, { "extensions": [".tsx", ".jsx"] }],

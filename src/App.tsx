@@ -11,9 +11,28 @@ import Footer from './ui/Footer';
 import GlobalStyles from './ui/globalStyles';
 
 function App(): JSX.Element {
-	const [theme, setSelectedTheme] = useState<DefaultTheme>(lightTheme);
+	const initialThemeString = localStorage.getItem('theme') ?? 'light';
+	const stringToTheme = (initThemeString: string) => {
+		switch (initThemeString) {
+			case 'light':
+				return lightTheme;
+			case 'dark':
+				return darkTheme;
+			default:
+				return lightTheme;
+		}
+	};
+
+	const [theme, setSelectedTheme] = useState<DefaultTheme>(stringToTheme(initialThemeString));
 	const themeToggler = () => {
 		theme === lightTheme ? setSelectedTheme(darkTheme) : setSelectedTheme(lightTheme);
+		let stringTheme: string;
+		if (theme === lightTheme) {
+			stringTheme = 'dark';
+		} else {
+			stringTheme = 'light';
+		}
+		localStorage.setItem('theme', stringTheme);
 	};
 
 	const routes = {
