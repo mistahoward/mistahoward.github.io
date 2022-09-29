@@ -9,4 +9,8 @@
 .header-link.selected {
 	text-decoration: underline;
     text-underline-offset: 0.4em;
+	text-decoration-color: #E86100;
+}
+.header-link:hover {
+	color: #D05700;	
 }

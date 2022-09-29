@@ -7,5 +7,6 @@ declare module 'styled-components' {
     body: string;
     text: string;
     background: string;
+    muted: string;
   }
 }
