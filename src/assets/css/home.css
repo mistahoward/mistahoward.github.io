@@ -1,5 +1,5 @@
 #home {
-	margin-top: 20%;
+	margin-top: 10%;
 }
 
 #wave {
@@ -13,9 +13,19 @@
 	margin-top: 15px;
 	border-radius: 50%;
 	width: 200px;
-	height: auto;
+	position: absolute;
 }
 
+.portrait-container {
+	position: relative;
+	height: 232px;
+}
+
+@media screen and (max-width: 768px) {
+	.portrait-container {
+		margin-left: 25%;
+	}
+}
 #hand-wave {
 	animation-name: wave-animation;
 	animation-duration: 2.5s;
