@@ -1,12 +1,13 @@
-import '../assets/css/body.css';
+import { HookRouter, useRoutes } from 'hookrouter';
+import Error from './Error';
 
-function Body(): JSX.Element {
-	return (
-		<>
-			<div>Body</div>
-			<div>two</div>
-		</>
-	);
+type BodyProps = {
+	routes: HookRouter.RouteObject;
+}
+
+function Body({ routes }: BodyProps): JSX.Element {
+	const routeResult = useRoutes(routes);
+	return routeResult || <Error />;
 }
 
 export default Body;

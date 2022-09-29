@@ -1,3 +1,12 @@
 #main-nav {
-    margin-top: 2em;
+	margin-top: 2em;
+}
+
+.header-link {
+	cursor: pointer;
+}
+
+.header-link.selected {
+	text-decoration: underline;
+    text-underline-offset: 0.4em;
 }
