@@ -14,33 +14,36 @@ function Header({ themeToggle, theme }: HeaderProps): JSX.Element {
 	const currentPath = usePath();
 
 	return (
-		<Col id="main-nav">
-			<Row>
-				<Col className="text-center" onClick={() => navigate('/')}>
-					<span className={`header-link ${currentPath === '/' && 'selected'}`}>Home</span>
-				</Col>
-				<Col className="text-center" onClick={() => navigate('/about')}>
-					<span className={`header-link ${currentPath === '/about' && 'selected'}`}>About Me</span>
-				</Col>
-				<Col className="text-center" onClick={() => navigate('/')}>
-					<h1 className="display-6">
-						<span className="header-link">AH</span>
-					</h1>
-				</Col>
-				<Col className="text-center" onClick={() => navigate('/portfolio')}>
-					<span className={`header-link ${currentPath === '/portfolio' && 'selected'}`}>Portfolio</span>
-				</Col>
-				<Col
-					className="text-center"
-					onClick={() => {
-						themeToggle();
-					}}
-				>
-					<span className="header-link">
-						{theme === lightTheme ? <BsFillSunFill /> : <BsFillMoonFill />}
-					</span>
-				</Col>
-			</Row>
+		<Col>
+			<div id="main-nav">
+				<Row>
+					<Col xs={2} className="text-center" onClick={() => navigate('/')}>
+						<span className={`header-link ${currentPath === '/' && 'selected'}`}>Home</span>
+					</Col>
+					<Col xs={2} className="text-center" onClick={() => navigate('/about')}>
+						<span className={`header-link ${currentPath === '/about' && 'selected'}`}>About</span>
+					</Col>
+					<Col xs={3} className="text-center" onClick={() => navigate('/')}>
+						<h1 className="display-6">
+							<span className="header-link">AH</span>
+						</h1>
+					</Col>
+					<Col xs={3} className="text-center" onClick={() => navigate('/portfolio')}>
+						<span className={`header-link ${currentPath === '/portfolio' && 'selected'}`}>Portfolio</span>
+					</Col>
+					<Col
+						xs={1}
+						className="text-center"
+						onClick={() => {
+							themeToggle();
+						}}
+					>
+						<span className="header-link">
+							{theme === lightTheme ? <BsFillSunFill /> : <BsFillMoonFill />}
+						</span>
+					</Col>
+				</Row>
+			</div>
 		</Col>
 	);
 }

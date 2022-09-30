@@ -21,9 +21,19 @@
 	height: 232px;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 768px) and (min-width: 520px){
 	.portrait-container {
 		margin-left: 25%;
+	}
+}
+@media screen and (max-width: 519px) and (min-width: 433px){
+	.portrait-container {
+		margin-left: 20%;
+	}
+}
+@media screen and (max-width: 433px){
+	.portrait-container {
+		margin-left: 10%;
 	}
 }
 #hand-wave {

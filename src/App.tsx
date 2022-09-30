@@ -9,6 +9,7 @@ import Home from './ui/Home';
 import Portfolio from './ui/Portfolio';
 import Footer from './ui/Footer';
 import GlobalStyles from './ui/globalStyles';
+import './assets/css/app.css';
 
 function App(): JSX.Element {
 	const initialThemeString = localStorage.getItem('theme') ?? 'light';
@@ -44,7 +45,7 @@ function App(): JSX.Element {
 	return (
 		<ThemeProvider theme={theme === lightTheme ? lightTheme : darkTheme}>
 			<GlobalStyles />
-			<Container>
+			<Container id="main">
 				<Row>
 					<Header themeToggle={themeToggler} theme={theme} />
 				</Row>

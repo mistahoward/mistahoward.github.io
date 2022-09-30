@@ -14,7 +14,7 @@ function Home(): JSX.Element {
 		<Row id="home">
 			<Col>
 				<Row className="g-0">
-					<Col lg={2} xl={2} />
+					<Col lg={1} xl={2} />
 					<Col sm={12} md={6} lg={4} xl={3} className="mb-3 portrait-container">
 						<Lottie id="wave" animationData={wave} loop />
 						<img id="portrait" src={Headshot} alt="Portrait of Alex Howard" />
@@ -70,7 +70,7 @@ function Home(): JSX.Element {
 										💼
 									</Col>
 									<Col xs={10} className="text-nowrap">
-										Developer at
+										Dev at
 										{' '}
 										<a target="_blank" aria-label="PowerShades Home Page" rel="noreferrer" href="http://powershades.com/">PowerShades</a>
 									</Col>
