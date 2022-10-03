@@ -17,6 +17,7 @@
     "eslint-config-airbnb": "^19.0.4",
     "hookrouter": "^1.2.5",
     "lottie-react": "^2.3.1",
+    "patch-package": "^6.4.7",
     "react": "^18.2.0",
     "react-bootstrap": "^2.5.0",
     "react-dom": "^18.2.0",
@@ -33,9 +34,7 @@
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "cleanup-hookrouter-types": "git rm -f node_modules/hookrouter/dist/index.d.ts* # See https://github.com/Paratron/hookrouter/issues/147",
-    "postinstall": "npm run cleanup-hookrouter-types"
-    
+    "postinstall": "npx patch-package"
   },
   "eslintConfig": {
     "extends": [

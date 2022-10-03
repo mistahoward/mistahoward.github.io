@@ -1,0 +1,51 @@
+diff --git a/node_modules/hookrouter/dist/index.d.ts b/node_modules/hookrouter/dist/index.d.ts
+deleted file mode 100644
+index f36479a..0000000
+--- a/node_modules/hookrouter/dist/index.d.ts
++++ /dev/null
+@@ -1 +0,0 @@
+-//# sourceMappingURL=index.d.ts.map
+\ No newline at end of file
+diff --git a/node_modules/hookrouter/dist/routes.d.ts b/node_modules/hookrouter/dist/routes.d.ts
+deleted file mode 100644
+index e794fcc..0000000
+--- a/node_modules/hookrouter/dist/routes.d.ts
++++ /dev/null
+@@ -1,18 +0,0 @@
+-import React from "react";
+-import { Subscription } from "use-subscription";
+-export interface SubscribableRouter extends Subscription<string> {
+-    navigate: (nextUrl: string) => void;
+-}
+-export declare function createBrowserRouter(basePath?: ""): SubscribableRouter;
+-export declare function createMemoryRouter(initialPath?: string): SubscribableRouter;
+-interface RouterProviderProps {
+-    children: React.ReactNode;
+-    router: SubscribableRouter;
+-}
+-export declare const RouterProvider: ({ children, router }: RouterProviderProps) => React.FunctionComponentElement<React.ProviderProps<SubscribableRouter>>;
+-export interface RoutesObject {
+-    [key: string]: (props?: any) => any;
+-}
+-export declare const useRoutes: (routes: RoutesObject) => any;
+-export {};
+-//# sourceMappingURL=routes.d.ts.map
+\ No newline at end of file
+diff --git a/node_modules/hookrouter/dist/routes.test.d.ts b/node_modules/hookrouter/dist/routes.test.d.ts
+deleted file mode 100644
+index acb35df..0000000
+--- a/node_modules/hookrouter/dist/routes.test.d.ts
++++ /dev/null
+@@ -1,2 +0,0 @@
+-export {};
+-//# sourceMappingURL=routes.test.d.ts.map
+\ No newline at end of file
+diff --git a/node_modules/hookrouter/dist/test.d.ts b/node_modules/hookrouter/dist/test.d.ts
+deleted file mode 100644
+index cace0d5..0000000
+--- a/node_modules/hookrouter/dist/test.d.ts
++++ /dev/null
+@@ -1,2 +0,0 @@
+-export declare const useTimer: () => number;
+-//# sourceMappingURL=test.d.ts.map
+\ No newline at end of file
