@@ -32,7 +32,10 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "cleanup-hookrouter-types": "git rm -f node_modules/hookrouter/dist/index.d.ts* # See https://github.com/Paratron/hookrouter/issues/147",
+    "postinstall": "npm run cleanup-hookrouter-types"
+    
   },
   "eslintConfig": {
     "extends": [
