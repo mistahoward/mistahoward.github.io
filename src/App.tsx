@@ -12,18 +12,19 @@ import Footer from './ui/Footer';
 import GlobalStyles from './ui/globalStyles';
 import './assets/css/app.css';
 
+export const stringToTheme = (initThemeString: string) => {
+	switch (initThemeString) {
+		case 'light':
+			return lightTheme;
+		case 'dark':
+			return darkTheme;
+		default:
+			return lightTheme;
+	}
+};
+
 function App(): JSX.Element {
 	const initialThemeString = localStorage.getItem('theme') ?? 'light';
-	const stringToTheme = (initThemeString: string) => {
-		switch (initThemeString) {
-			case 'light':
-				return lightTheme;
-			case 'dark':
-				return darkTheme;
-			default:
-				return lightTheme;
-		}
-	};
 
 	const [theme, setSelectedTheme] = useState<DefaultTheme>(stringToTheme(initialThemeString));
 	const themeToggler = () => {
@@ -36,7 +37,6 @@ function App(): JSX.Element {
 		}
 		localStorage.setItem('theme', stringTheme);
 	};
-
 	const routes = {
 		'/': useCallback(() => <Home />, []),
 		'/about': useCallback(() => <About />, []),

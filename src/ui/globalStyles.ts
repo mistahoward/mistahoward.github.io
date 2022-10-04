@@ -12,7 +12,7 @@ const GlobalStyles = createGlobalStyle`
     color: #E86100;
   }
   .text-muted {
-    color: ${({ theme }) => theme.muted}!important;;
+    color: ${({ theme }) => theme.muted}!important;
   }
   a {
     color: #E86100;

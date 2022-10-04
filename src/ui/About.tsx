@@ -2,10 +2,11 @@ import { useTitle } from 'hookrouter';
 import { Row, Col } from 'react-bootstrap';
 import Lottie from 'lottie-react';
 import { Parallax, ParallaxLayer } from '@react-spring/parallax';
-import { useCallback } from 'react';
+import { useCallback, useContext } from 'react';
 import Particles from 'react-tsparticles';
 import type { Container, Engine } from 'tsparticles-engine';
 import { loadFull } from 'tsparticles';
+import { ThemeContext } from 'styled-components';
 
 import planet1 from '../assets/animations/planet1.json';
 import planet2 from '../assets/animations/planet2.json';
@@ -19,16 +20,10 @@ import '../assets/css/about.css';
 
 function About(): JSX.Element {
 	useTitle('About | Alex Howard');
-	const particlesInit = useCallback(async (engine: Engine) => {
-		console.log(engine);
-		// you can initialize the tsParticles instance (engine) here, adding custom shapes or presets
-		// this loads the tsparticles package bundle, it's the easiest method for getting everything
-		// ready starting from v2 you can add only the features you need reducing the bundle size
-		await loadFull(engine);
-	}, []);
+	const theme = useContext(ThemeContext);
 
-	const particlesLoaded = useCallback(async (container: Container | undefined) => {
-		await console.log(container);
+	const particlesInit = useCallback(async (engine: Engine) => {
+		await loadFull(engine);
 	}, []);
 
 	return (
@@ -39,11 +34,16 @@ function About(): JSX.Element {
 					options={{
 						fullScreen: false,
 						preset: 'stars',
+						detectRetina: true,
+						particles: {
+							color: {
+								value: theme.text,
+							},
+						},
 					}}
 					id="tsparticles"
 					height="350vh"
 					init={particlesInit}
-					loaded={particlesLoaded}
 				/>
 			</ParallaxLayer>
 			<ParallaxLayer offset={0} speed={3}>
