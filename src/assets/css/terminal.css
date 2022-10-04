@@ -1,4 +1,4 @@
-.fakeButtons {
+.buttons {
 	height: 15px;
 	width: 15px;
 	border-radius: 50%;
@@ -9,21 +9,21 @@
 	background-color: #ff3b47;
 	border-color: #9d252b;
 	display: inline-block;
-  }
-  
-  .fakeMinimize {
+}
+
+.minimize {
 	left: 11px;
 	background-color: #ffc100;
 	border-color: #9d802c;
-  }
-  
-  .fakeZoom {
+}
+
+.maximize {
 	left: 16px;
 	background-color: #00d742;
 	border-color: #049931;
-  }
-  
-  .fakeMenu {
+}
+
+.bar {
 	width: 85%;
 	box-sizing: border-box;
 	height: 25px;
@@ -31,9 +31,9 @@
 	margin: 0 auto;
 	border-top-right-radius: 5px;
 	border-top-left-radius: 5px;
-  }
-  
-  .fakeScreen {
+}
+
+.window {
 	background-color: #151515;
 	box-sizing: border-box;
 	width: 85%;
@@ -41,76 +41,27 @@
 	padding: 20px;
 	border-bottom-left-radius: 5px;
 	border-bottom-right-radius: 5px;
-  }
-  
-  .fakeScreen p {
+}
+
+.window p {
 	text-align: left;
 	font-family: monospace;
 	white-space: normal;
 	overflow: hidden;
-  }
-  
-  .fakeScreen span {
+}
+
+.line1 {
+	color: #9cd9f0;
+}
+
+.line2 {
+	color: #cdee69;
+}
+
+.line3 {
+	color: #e09690;
+}
+
+.line4 {
 	color: #fff;
-	font-weight: bold;
-  }
-  
-  .line1 {
-	color: #9CD9F0;
-	animation: type .5s 1s steps(20, end) forwards;
-  }
-  
-  .cursor1 {
-	animation: blink 1s 2s 2 forwards;
-  }
-  
-  .line2 {
-	color: #CDEE69;
-	animation: type .5s 2s steps(20, end) forwards;
-  }
-  
-  .cursor2 {
-	animation: blink 1s 2.5s 2 forwards;
-  }
-  
-  .line3 {
-	color: #E09690;
-	animation: type .5s 4.5s steps(20, end) forwards;
-  }
-  
-  .cursor3 {
-	animation: blink 1s 5s 2 forwards;
-  }
-  
-  .line4 {
-	color: #fff;
-	animation: type .5s 7s steps(20, end) forwards;
-  }
-  
-  .cursor4 {
-	animation: blink 1s 7.5s infinite;
-  }
-  
-  @keyframes blink {
-	0% {
-	  opacity: 0;
-	}
-	40% {
-	  opacity: 0;
-	}
-	50% {
-	  opacity: 1;
-	}
-	90% {
-	  opacity: 1;
-	}
-	100% {
-	  opacity: 0;
-	}
-  }
-  
-  @keyframes type {
-	to {
-	  width: 17em;
-	}
-  }
+}

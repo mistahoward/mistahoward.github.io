@@ -6,7 +6,7 @@
 
 #main {
 	position: relative;
-	min-height: 100vh;
+	min-height: 98vh;
 	max-height: 100vh;
 }
 body {
@@ -14,4 +14,6 @@ body {
 }
 #root {
   overflow-x: hidden;
+  min-height: 100vh;
+  max-height: 100vh;
 }

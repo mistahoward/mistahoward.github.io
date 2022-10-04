@@ -18,32 +18,28 @@ export default function Terminal({
 }: TerminalProps): JSX.Element {
 	return (
 		<div className={className}>
-			<div className="fakeMenu">
-				<div className="fakeButtons fakeClose" />
-				<div className="fakeButtons fakeMinimize" />
-				<div className="fakeButtons fakeZoom" />
+			<div className="bar">
+				<div className="buttons close" />
+				<div className="buttons minimize" />
+				<div className="buttons maximize" />
 			</div>
-			<div className="fakeScreen">
+			<div className="window">
 				<p className="line1">
 					{line1}
-					<span className="cursor1">_</span>
 				</p>
 				{line2 && (
 					<p className="line2">
 						{line2}
-						<span className="cursor2">_</span>
 					</p>
 				)}
 				{line3 && (
 					<p className="line3">
 						{line3}
-						<span className="cursor3">_</span>
 					</p>
 				)}
 				{line4 && (
 					<p className="line4">
 						{line4}
-						<span className="cursor4">_</span>
 					</p>
 				)}
 			</div>
