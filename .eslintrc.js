@@ -28,7 +28,8 @@ module.exports = {
 		"comma-dangle": "off",
 		"linebreak-style": "off",
 		"react/jsx-indent-props": ["error", 'tab'],
-		"no-unused-expressions": "off"
+		"no-unused-expressions": "off",
+		"react/require-default-props": "off",
 	},
 	globals: {
 		"React": true,

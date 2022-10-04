@@ -4,7 +4,7 @@ import Lottie from 'lottie-react';
 import { Parallax, ParallaxLayer } from '@react-spring/parallax';
 import { useCallback, useContext } from 'react';
 import Particles from 'react-tsparticles';
-import type { Container, Engine } from 'tsparticles-engine';
+import type { Engine } from 'tsparticles-engine';
 import { loadFull } from 'tsparticles';
 import { ThemeContext } from 'styled-components';
 
@@ -15,6 +15,8 @@ import planet4 from '../assets/animations/planet4.json';
 import planet5 from '../assets/animations/planet5.json';
 import satelite from '../assets/animations/satelite.json';
 import ship1 from '../assets/animations/ship1.json';
+
+import Terminal from './Terminal';
 
 import '../assets/css/about.css';
 
@@ -50,6 +52,13 @@ function About(): JSX.Element {
 				<Row id="planet1">
 					<Col xs={{ span: 12, offset: 5 }}>
 						<Lottie animationData={planet4} />
+					</Col>
+				</Row>
+			</ParallaxLayer>
+			<ParallaxLayer offset={0} speed={3}>
+				<Row className="justify-content-center">
+					<Col xs={12}>
+						<Terminal line1="test" />
 					</Col>
 				</Row>
 			</ParallaxLayer>

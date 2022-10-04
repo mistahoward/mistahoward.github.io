@@ -17,6 +17,12 @@
 #planet4 {
   margin-bottom: -50%;
 }
+
 .stars {
   position: absolute;
+}
+
+.terminal {
+  z-index: 20;
+  margin-top: 25%;
 }
