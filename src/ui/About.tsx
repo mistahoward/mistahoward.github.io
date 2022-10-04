@@ -67,7 +67,7 @@ function About(): JSX.Element {
 					<Col xs={12}>
 						<Terminal
 							line1="Hi! I'm Alex... You may have known that already, though!"
-							line2="I'm a front end developer currently located in Joplin, Missouri."
+							line2="I'm a front end developer located in Joplin, Missouri."
 							line3="I've been extremely passionate about technology ever since I was young."
 							line4="Thankfully, that passion extended into software development!"
 						/>
