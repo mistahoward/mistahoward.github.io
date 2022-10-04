@@ -1,7 +1,22 @@
-.circle {
-    height: 25px;
-    width: 25px;
-    background-color: #bbb;
-    border-radius: 50%;
-    display: inline-block;
-  }
+#about {
+  padding-bottom: 2.5rem;
+}
+
+#ship1 {
+  margin-top: 40%;
+}
+
+#planet2 {
+  margin-left: -45%;
+}
+
+#satelite {
+  margin-top: -25%;
+}
+
+#planet4 {
+  margin-bottom: -50%;
+}
+.stars {
+  position: absolute;
+}

@@ -22,10 +22,10 @@
   },
   "include": [
     "src",
-    "styled.d.ts"
+    "styled.d.ts",
   ],
   "types": [
     "styled-components",
-    "hookrouter"
+    "hookrouter",
   ]
 }

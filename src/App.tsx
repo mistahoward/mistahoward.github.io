@@ -1,6 +1,7 @@
-import { Container, Row } from 'react-bootstrap';
+import { Row } from 'react-bootstrap';
 import { ThemeProvider, DefaultTheme } from 'styled-components';
 import { useState, useCallback } from 'react';
+
 import { lightTheme, darkTheme } from './ui/Theme';
 import Header from './ui/Header';
 import Body from './ui/Body';
@@ -45,17 +46,15 @@ function App(): JSX.Element {
 	return (
 		<ThemeProvider theme={theme === lightTheme ? lightTheme : darkTheme}>
 			<GlobalStyles />
-			<Container id="main">
+			<div id="main">
 				<Row>
 					<Header themeToggle={themeToggler} theme={theme} />
 				</Row>
 				<Row>
 					<Body routes={routes} />
 				</Row>
-				<Row>
-					<Footer />
-				</Row>
-			</Container>
+				<Footer />
+			</div>
 		</ThemeProvider>
 	);
 }
