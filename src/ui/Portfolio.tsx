@@ -20,7 +20,7 @@ function Portfolio(): JSX.Element {
 	return (
 		<Row>
 			<Col xs={12} lg={7} className="p-1">
-				<Card className="h-100 ms-4" body>
+				<Card className="h-100 ms-4" id="first-card" body>
 					<Row>
 						<h1 className="display-6">PowerShades Dealer Portal</h1>
 					</Row>

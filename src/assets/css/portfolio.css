@@ -15,6 +15,13 @@
 	min-height: 22vh;
 }
 
+@media (max-width: 991px) {
+	#first-card {
+		min-height: 30vh;
+	}
+}
+
+
 .icons svg {
 	margin-left: 0.25em;
 	margin-right: 0.25em;
