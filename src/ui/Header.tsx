@@ -32,7 +32,7 @@ function Header({ themeToggle, theme }: HeaderProps): JSX.Element {
 						<span className={`header-link ${currentPath === '/portfolio' && 'selected'}`}>Portfolio</span>
 					</Col>
 					<Col
-						xs={1}
+						xs={2}
 						className="text-center"
 						onClick={() => {
 							themeToggle();

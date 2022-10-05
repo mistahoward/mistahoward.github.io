@@ -4,23 +4,13 @@
 
 .technologies {
 	color: #6c757d;
-	position: absolute;
 	letter-spacing: 4px;
-	bottom: 0;
-	margin-bottom: 0.5em;
 }
 
 .card-body {
 	height: fit-content;
 	min-height: 22vh;
 }
-
-@media (max-width: 991px) {
-	#first-card {
-		min-height: 30vh;
-	}
-}
-
 
 .icons svg {
 	margin-left: 0.25em;
@@ -29,4 +19,8 @@
 
 .small-header {
 	font-size: 1.8em!important;
+}
+
+#root {
+	overflow-y:auto!important;
 }
