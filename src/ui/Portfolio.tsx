@@ -13,6 +13,7 @@ import {
 import '@egjs/react-flicking/dist/flicking.css';
 
 import '../assets/css/portfolio.css';
+import resume from '../assets/alexhoward-resume-2022.pdf';
 
 function Portfolio(): JSX.Element {
 	useTitle('Portfolio | Alex Howard');
@@ -67,7 +68,7 @@ function Portfolio(): JSX.Element {
 								{' '}
 								My resume can be downloaded
 								{' '}
-								<a href="github.com/">here.</a>
+								<a download href={resume}>here.</a>
 							</Col>
 						</Row>
 						<Row className="technologies">

@@ -23,6 +23,7 @@
   "include": [
     "src",
     "styled.d.ts",
+    "extratypes.d.ts"
   ],
   "types": [
     "styled-components",
