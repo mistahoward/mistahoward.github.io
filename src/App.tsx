@@ -1,6 +1,7 @@
 import { Row } from 'react-bootstrap';
 import { ThemeProvider, DefaultTheme } from 'styled-components';
 import { useState, useCallback } from 'react';
+import Div100vh from 'react-div-100vh';
 
 import { lightTheme, darkTheme } from './ui/Theme';
 import Header from './ui/Header';
@@ -40,22 +41,24 @@ function App(): JSX.Element {
 	const routes = {
 		'/': useCallback(() => <Home />, []),
 		'/about': useCallback(() => <About />, []),
-		'/portfolio': useCallback(() => <Portfolio />, [])
+		'/portfolio': useCallback(() => <Portfolio />, []),
 	};
 
 	return (
-		<ThemeProvider theme={theme === lightTheme ? lightTheme : darkTheme}>
-			<GlobalStyles />
-			<div id="main">
-				<Row>
-					<Header themeToggle={themeToggler} theme={theme} />
-				</Row>
-				<Row>
-					<Body routes={routes} />
-				</Row>
-				<Footer />
-			</div>
-		</ThemeProvider>
+		<Div100vh>
+			<ThemeProvider theme={theme === lightTheme ? lightTheme : darkTheme}>
+				<GlobalStyles />
+				<div id="main">
+					<Row>
+						<Header themeToggle={themeToggler} theme={theme} />
+					</Row>
+					<Row>
+						<Body routes={routes} />
+					</Row>
+					<Footer />
+				</div>
+			</ThemeProvider>
+		</Div100vh>
 	);
 }
 

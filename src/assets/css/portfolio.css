@@ -1,0 +1,25 @@
+.card {
+	color: black;
+}
+
+.technologies {
+	color: #6c757d;
+	position: absolute;
+	letter-spacing: 4px;
+	bottom: 0;
+	margin-bottom: 0.5em;
+}
+
+.card-body {
+	height: fit-content;
+	min-height: 20vh;
+}
+
+.icons svg {
+	margin-left: 0.25em;
+	margin-right: 0.25em;
+}
+
+.small-header {
+	font-size: 1.8em!important;
+}

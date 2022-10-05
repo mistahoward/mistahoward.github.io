@@ -94,7 +94,8 @@ function About(): JSX.Element {
 						<Terminal
 							line1="I use my passion to create things that live on the internet!"
 							line2="I love pushing the limits of web development as I truly believe it's the future."
-							line3="This means I love to create beautiful, responsive, and fast web projects!"
+							line3="This means I love to create beautiful, responsive, and fast web projects! [Like this one ;)]"
+							line4="Because of the excitement and passion I have for development, I'm never afraid to jump in and adopt new technologies."
 						/>
 					</Col>
 				</Row>
@@ -124,10 +125,10 @@ function About(): JSX.Element {
 				<Row className="justify-content-center">
 					<Col xs={12}>
 						<Terminal
-							line1="Because of the excitement and passion I have for development, I'm never afraid to jump in."
-							line2="That's how I got to where I am today!"
-							line3="I'm always excited to adapt new technologies and I'm always looking forward to my next project."
-							line4="If you want to reach out, you can find my resume here, or email me here."
+							line1="... and that's how I got to where I am today!"
+							line2="Besides development, I'm a simple person... I like gaming, computer science, and cats."
+							line3="Like... Really like cats. Seriously. My girlfriend and I have 8."
+							line4="If you're interested in reaching out to me (for development or to show me your cats!), you can reach me at me@alexhoward.dev!"
 						/>
 					</Col>
 				</Row>

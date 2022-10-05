@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@egjs/react-flicking": "^4.10.1",
     "@react-spring/parallax": "^9.5.5",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -21,6 +22,7 @@
     "patch-package": "^6.4.7",
     "react": "^18.2.0",
     "react-bootstrap": "^2.5.0",
+    "react-div-100vh": "^0.7.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.4.0",
     "react-scripts": "5.0.1",
