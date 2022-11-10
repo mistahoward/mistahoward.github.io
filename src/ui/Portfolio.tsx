@@ -8,7 +8,9 @@ import {
 	SiPhp,
 	SiBootstrap,
 	SiJavascript,
+	SiJest
 } from 'react-icons/si';
+import { FaTheaterMasks } from 'react-icons/fa';
 
 import '@egjs/react-flicking/dist/flicking.css';
 
@@ -30,7 +32,9 @@ function Portfolio(): JSX.Element {
 							over 1800 dealers. One of the first projects I worked on was integrating
 							Bootstrap in order to allow for mobile usage and faster development.
 							Shortly after that I began focusing on improving development best
-							practices by integrating ESlint and changelogs. While I can&lsquo;t share source
+							practices by integrating ESlint and changelogs. To improve the developer experience
+							and ensure smoothest continual improvement, I also began integrating Playwright and
+							Jest for end-to-end testing. While I can&lsquo;t share source
 							code here, I am happy to talk about any of my experience with the development.
 						</Col>
 					</Row>
@@ -47,6 +51,8 @@ function Portfolio(): JSX.Element {
 								<SiBootstrap />
 								<SiDotnet />
 								<SiPhp />
+								<SiJest />
+								<FaTheaterMasks />
 							</Col>
 						</Row>
 					</Row>
