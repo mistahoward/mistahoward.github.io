@@ -5,9 +5,9 @@ type BodyProps = {
 	routes: HookRouter.RouteObject;
 }
 
-function Body({ routes }: BodyProps): JSX.Element {
+const Body = ({ routes }: BodyProps): JSX.Element => {
 	const routeResult = useRoutes(routes);
 	return routeResult || <Error />;
-}
+};
 
 export default Body;

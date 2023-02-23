@@ -15,9 +15,9 @@ import { FaTheaterMasks } from 'react-icons/fa';
 import '@egjs/react-flicking/dist/flicking.css';
 
 import '../assets/css/portfolio.css';
-import resume from '../assets/alexhoward-resume-2022.pdf';
+import resume from '../assets/alex-howard-resume-2023.pdf';
 
-function Portfolio(): JSX.Element {
+const Portfolio = (): JSX.Element => {
 	useTitle('Portfolio | Alex Howard');
 	return (
 		<Row>
@@ -34,8 +34,11 @@ function Portfolio(): JSX.Element {
 							Shortly after that I began focusing on improving development best
 							practices by integrating ESlint and changelogs. To improve the developer experience
 							and ensure smoothest continual improvement, I also began integrating Playwright and
-							Jest for end-to-end testing. While I can&lsquo;t share source
-							code here, I am happy to talk about any of my experience with the development.
+							Jest for end-to-end testing. My next &quot;task&quot; was migrating our front end
+							from  JavaScript to Typescript. After I have really got my feet wet with the codebase
+							, I began helping my peers migrating back end code from PHP to .NET.
+							While I can&lsquo;t share source code here, I am happy to talk about any of
+							my experience with the development.
 						</Col>
 					</Row>
 					<Row className="technologies">
@@ -103,6 +106,8 @@ function Portfolio(): JSX.Element {
 								can find more of my projects on my
 								{' '}
 								<a href="https://github.com/mistahoward">github!</a>
+								I have chose not to list my school projects here, but you can find
+								them on my github as well.
 							</Col>
 						</Row>
 					</Card>
@@ -110,6 +115,6 @@ function Portfolio(): JSX.Element {
 			</Col>
 		</Row>
 	);
-}
+};
 
 export default Portfolio;

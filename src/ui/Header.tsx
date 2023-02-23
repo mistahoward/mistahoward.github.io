@@ -10,7 +10,7 @@ type HeaderProps = {
 	theme: DefaultTheme;
 };
 
-function Header({ themeToggle, theme }: HeaderProps): JSX.Element {
+const Header = ({ themeToggle, theme }: HeaderProps): JSX.Element => {
 	const currentPath = usePath();
 
 	return (
@@ -46,6 +46,6 @@ function Header({ themeToggle, theme }: HeaderProps): JSX.Element {
 			</div>
 		</Col>
 	);
-}
+};
 
 export default Header;

@@ -30,6 +30,7 @@ module.exports = {
 		"react/jsx-indent-props": ["error", 'tab'],
 		"no-unused-expressions": "off",
 		"react/require-default-props": "off",
+		"react/function-component-definition": "off",
 	},
 	globals: {
 		"React": true,

@@ -20,7 +20,7 @@ import Terminal from './Terminal';
 
 import '../assets/css/about.css';
 
-function About(): JSX.Element {
+const About = (): JSX.Element => {
 	useTitle('About | Alex Howard');
 	const theme = useContext(ThemeContext);
 
@@ -67,7 +67,7 @@ function About(): JSX.Element {
 					<Col xs={12}>
 						<Terminal
 							line1="Hi! I'm Alex... You may have known that already, though!"
-							line2="I'm a front end developer located in Joplin, Missouri."
+							line2="I'm a developer located in Joplin, Missouri."
 							line3="I've been extremely passionate about technology ever since I was young."
 							line4="Thankfully, that passion extended into software development!"
 						/>
@@ -93,7 +93,7 @@ function About(): JSX.Element {
 					<Col xs={12}>
 						<Terminal
 							line1="I use my passion to create things that live on the internet!"
-							line2="I love pushing the limits of web development as I truly believe it's the future."
+							line2="I love pushing the limits of development as I truly believe it's the future."
 							line3="This means I love to create beautiful, responsive, and fast web projects! [Like this one ;)]"
 							line4="Because of the excitement and passion I have for development, I'm never afraid to jump in and adopt new technologies."
 						/>
@@ -135,6 +135,6 @@ function About(): JSX.Element {
 			</ParallaxLayer>
 		</Parallax>
 	);
-}
+};
 
 export default About;

@@ -8,7 +8,7 @@ import Headshot from '../assets/img/headshot.png';
 import wave from '../assets/animations/wave.json';
 import '../assets/css/home.css';
 
-function Home(): JSX.Element {
+const Home = (): JSX.Element => {
 	useTitle('Home | Alex Howard');
 	return (
 		<Row id="home">
@@ -46,7 +46,7 @@ function Home(): JSX.Element {
 										🥤
 									</Col>
 									<Col xs={10} className="text-nowrap">
-										Fueled By Dr. Pepper
+										Fueled By Bubly Bounce
 									</Col>
 								</Row>
 							</Col>
@@ -100,6 +100,6 @@ function Home(): JSX.Element {
 			</Col>
 		</Row>
 	);
-}
+};
 
 export default Home;

@@ -24,7 +24,7 @@ export const stringToTheme = (initThemeString: string) => {
 	}
 };
 
-function App(): JSX.Element {
+const App = (): JSX.Element => {
 	const initialThemeString = localStorage.getItem('theme') ?? 'light';
 
 	const [theme, setSelectedTheme] = useState<DefaultTheme>(stringToTheme(initialThemeString));
@@ -60,6 +60,6 @@ function App(): JSX.Element {
 			</ThemeProvider>
 		</Div100vh>
 	);
-}
+};
 
 export default App;
