@@ -1,23 +1,26 @@
 module.exports = {
+	root: true,
 	env: {
 		browser: true,
 		es2021: true
 	},
-	plugins: ["react", "@typescript-eslint"],
-	extends: ["plugin:react/recommended", "airbnb",
-	"eslint:recommended",
-    "plugin:@typescript-eslint/recommended"],
+	ignorePatterns: ['dist', '.eslintrc.cjs'],
+	plugins: ["react", "@typescript-eslint", 'react-refresh'],
+	extends: ["plugin:react/recommended", 
+		"airbnb",
+		"eslint:recommended",
+    	"plugin:@typescript-eslint/recommended"],
 	parser: "@typescript-eslint/parser",
 	overrides: [],
 	parserOptions: {
 		ecmaVersion: "latest",
 		sourceType: "module",
-		project: "./tsconfig.json"
+		project: "./tsconfig.app.json"
 	},
 	rules: {
 		"space-before-function-paren": "off",
 		"no-tabs": "off",
-		"indent": ["error", "tab", { "SwitchCase": 1}],
+		"indent": ["error", "tab", { "SwitchCase": 1 }],
 		"@typescript-eslint/semi": "off",
 		"@typescript-eslint/indent": ["error", "tab"],
 		"react/jsx-filename-extension": [1, { "extensions": [".tsx", ".jsx"] }],
@@ -31,6 +34,10 @@ module.exports = {
 		"no-unused-expressions": "off",
 		"react/require-default-props": "off",
 		"react/function-component-definition": "off",
+		'react-refresh/only-export-components': [
+			'warn',
+			{ allowConstantExport: true },
+		],
 	},
 	globals: {
 		"React": true,

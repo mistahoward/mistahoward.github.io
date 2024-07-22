@@ -1,8 +1,0 @@
-diff --git a/node_modules/hookrouter/dist/index.d.ts b/node_modules/hookrouter/dist/index.d.ts
-deleted file mode 100644
-index f36479a..0000000
---- a/node_modules/hookrouter/dist/index.d.ts
-+++ /dev/null
-@@ -1 +0,0 @@
--//# sourceMappingURL=index.d.ts.map
-\ No newline at end of file
