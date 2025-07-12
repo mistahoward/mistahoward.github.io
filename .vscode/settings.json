@@ -1,0 +1,19 @@
+{
+	"editor.defaultFormatter": "manuth.eslint-language-service",
+	"editor.formatOnPaste": false,
+	"editor.formatOnType": false,
+	"editor.formatOnSave": true,
+	"editor.formatOnSaveMode": "file",
+	"files.autoSave": "onFocusChange",
+	"[typescript]": {
+		"editor.defaultFormatter": "vscode.typescript-language-features"
+	},
+	"[css]": {
+		"editor.defaultFormatter": "stylelint.vscode-stylelint"
+	},
+	"cSpell.words": [
+		"Avenir",
+		"itty"
+	],
+  }
+  

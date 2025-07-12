@@ -1,4 +1,4 @@
 export interface AdminPanelProps {
-  isVisible: boolean;
-  onClose: () => void;
+	isVisible: boolean;
+	onClose: () => void;
 } 

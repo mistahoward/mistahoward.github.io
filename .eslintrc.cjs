@@ -1,6 +1,7 @@
 module.exports = {
 	env: {
 		es2021: true,
+		node: true
 	},
 	extends: [
 		"eslint:recommended",
@@ -22,7 +23,7 @@ module.exports = {
 		"comma-dangle": "off",
 		"linebreak-style": "off",
 		"quotes": ["error", "double"],
-		"max-len": ["error", { code: 80 }],
+		"max-len": ["error", { code: 140 }],
 	},
 	overrides: [
 		{
@@ -53,7 +54,9 @@ module.exports = {
 				"import/no-unresolved": "off",
 				"import/prefer-default-export": "off",
 				"no-console": "off",
-				"no-undef": "off", // Cloudflare Workers types are global
+				"no-undef": "off",
+				"indent": ["error", "tab", { SwitchCase: 1 }],
+				"no-tabs": "off",
 			}
 		}
 	]

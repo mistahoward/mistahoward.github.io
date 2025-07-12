@@ -1,22 +1,18 @@
 import { useState } from "preact/hooks"
 import { AdminPanel } from "./components/AdminPanel"
+import { useKonamiCode } from "./utils/konami"
 import "./app.css"
 
 export const App = () => {
 	const [showAdmin, setShowAdmin] = useState(false)
+
+	useKonamiCode(() => setShowAdmin(true))
 
 	return (
 		<>
 			<div className="app-container">
 				<header className="app-header">
 					<h1>Your Portfolio</h1>
-					<button 
-						onClick={() => setShowAdmin(true)} 
-						className="admin-toggle"
-						title="Open Admin Panel"
-					>
-						⚙️ Admin
-					</button>
 				</header>
 				
 				<main className="app-main">
@@ -71,22 +67,6 @@ export const App = () => {
 					margin: 0;
 					font-size: 2rem;
 					font-weight: 300;
-				}
-
-				.admin-toggle {
-					background: rgba(255, 255, 255, 0.2);
-					border: 1px solid rgba(255, 255, 255, 0.3);
-					color: white;
-					padding: 10px 20px;
-					border-radius: 25px;
-					cursor: pointer;
-					font-size: 16px;
-					transition: all 0.3s ease;
-				}
-
-				.admin-toggle:hover {
-					background: rgba(255, 255, 255, 0.3);
-					transform: translateY(-2px);
 				}
 
 				.app-main {
