@@ -241,18 +241,90 @@ html *:not(.nav-link, .btn, .form-control, .form-select, .dropdown-menu, .modal,
 }
 
 .hero-portrait {
-	width: 160px;
-	height: 160px;
+	width: 240px;
+	height: 240px;
 	border-radius: 50%;
-	border: 4px solid var(--bs-primary);
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	background: var(--bs-body-bg);
-	margin-bottom: 1rem;
-	overflow: hidden;
+	overflow: visible;
 	box-shadow: 0 0 0 4px rgba(0,0,0,0.05);
-	transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+	position: relative;
+
+
+}
+
+.hero-portrait-ring {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	pointer-events: none;
+	border-radius: 50%;
+	border: 2px solid var(--bs-primary);
+	background: none;
+	transform: translate(-50%, -50%);
+	z-index: 0;
+}
+
+.hero-portrait-ring.ring1 {
+	width: 320px;
+	height: 260px;
+	opacity: 0.5;
+	border-style: solid;
+	border-width: 2.5px;
+	transform: translate(-50%, -50%) scaleX(1.18) scaleY(0.93) rotate(-8deg);
+	animation: ring-flow1 6s ease-in-out infinite alternate;
+}
+
+.hero-portrait-ring.ring3 {
+	width: 350px;
+	height: 295px;
+	opacity: 0.4;
+	border-style: solid;
+	border-width: 2px;
+	transform: translate(-50%, -50%) scaleX(1.03) scaleY(1.21) rotate(34deg);
+	animation: ring-flow3 8s ease-in-out infinite alternate;
+}
+
+.hero-portrait-ring.ring4 {
+	width: 380px;
+	height: 240px;
+	opacity: 0.3;
+	border-style: solid;
+	border-width: 2.5px;
+	transform: translate(-50%, -50%) scaleX(1.35) scaleY(0.78) rotate(-58deg);
+	animation: ring-flow4 10s ease-in-out infinite alternate;
+}
+
+@keyframes ring-rotate {
+	0% { transform: translate(-50%, -50%) rotate(0deg); }
+	100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes ring-rotate-rev {
+	0% { transform: translate(-50%, -50%) rotate(0deg); }
+	100% { transform: translate(-50%, -50%) rotate(-360deg); }
+}
+
+@keyframes ring-flow1 {
+	0% { transform: translate(-50%, -50%) scaleX(1.08) scaleY(0.93) rotate(-8deg); }
+	30% { transform: translate(-50%, -50%) scaleX(1.13) scaleY(0.89) rotate(-12deg); }
+	60% { transform: translate(-50%, -50%) scaleX(1.05) scaleY(0.97) rotate(-4deg); }
+	100% { transform: translate(-50%, -50%) scaleX(1.08) scaleY(0.93) rotate(-8deg); }
+}
+
+@keyframes ring-flow3 {
+	0% { transform: translate(-50%, -50%) scaleX(1.03) scaleY(1.11) rotate(14deg); }
+	40% { transform: translate(-50%, -50%) scaleX(1.08) scaleY(1.05) rotate(10deg); }
+	70% { transform: translate(-50%, -50%) scaleX(0.98) scaleY(1.15) rotate(18deg); }
+	100% { transform: translate(-50%, -50%) scaleX(1.03) scaleY(1.11) rotate(14deg); }
+}
+
+@keyframes ring-flow4 {
+	0% { transform: translate(-50%, -50%) scaleX(1.15) scaleY(0.88) rotate(-18deg); }
+	50% { transform: translate(-50%, -50%) scaleX(1.20) scaleY(0.83) rotate(-22deg); }
+	100% { transform: translate(-50%, -50%) scaleX(1.15) scaleY(0.88) rotate(-18deg); }
 }
 
 .hero-portrait img {
@@ -260,11 +332,4 @@ html *:not(.nav-link, .btn, .form-control, .form-select, .dropdown-menu, .modal,
 	height: 100%;
 	object-fit: cover;
 	border-radius: 50%;
-}
-
-.hero-initials {
-	font-size: 3rem;
-	font-weight: bold;
-	color: var(--bs-primary);
-	transition: color 0.3s ease;
 }

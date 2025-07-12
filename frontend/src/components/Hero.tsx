@@ -1,7 +1,10 @@
 export const Hero = () => (
 	<section className="hero">
 		<div className="hero-portrait">
-			<img src="https://placehold.co/400x400/f97316/fff.webp?text=Portrait" alt="Portrait of Alex" loading="lazy" />
+			<div className="hero-portrait-ring ring1"></div>
+			<div className="hero-portrait-ring ring3"></div>
+			<div className="hero-portrait-ring ring4"></div>
+			<img src="/portrait.jpg" alt="Hand-drawn portrait of Alex" loading="lazy" />
 		</div>
 	</section>
 );
