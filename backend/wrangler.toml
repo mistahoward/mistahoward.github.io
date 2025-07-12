@@ -6,7 +6,7 @@ compatibility_flags = ["nodejs_compat"]
 # D1 Database binding
 [[d1_databases]]
 binding = "DB"
-database_name = "portfolio-db-preview"
+database_name = "portfolio-db"
 database_id = "572545b5-3c99-4af4-a765-f3006bfc9418"
 preview_database_id = "972aa56e-6867-4861-bc7d-ace1807327c0"
 
