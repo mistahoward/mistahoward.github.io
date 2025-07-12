@@ -16,12 +16,6 @@ binding = "PET_IMAGES"
 bucket_name = "pet-images"
 preview_bucket_name = "pet-images-preview"
 
-
-# Migrations configuration
-[[migrations]]
-tag = "v1"
-new_classes = ["DB"]
-
 # Development settings
 [dev]
 port = 8787 
