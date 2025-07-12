@@ -78,8 +78,7 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 	}, []);
 
 	useEffect(() => {
-		if (lastFocusTime > 0) 
-			fetchData();
+		if (lastFocusTime > 0) fetchData();
 	}, [lastFocusTime]);
 
 	const handleCreate = () => {
@@ -91,7 +90,7 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 	const handleEdit = (item: any) => {
 		setEditingItem(item);
 		setIsCreating(false);
-    
+
 		switch (activeTab) {
 			case "projects":
 				setProjectForm({
@@ -201,7 +200,7 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 		}
 
 		const endpoint = `/api/admin/${activeTab}`;
-    
+
 		if (editingItem) {
 			await updateItem(
 				endpoint,
@@ -232,24 +231,12 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 		if (!confirmDelete("this item")) return;
 
 		const endpoint = `/api/admin/${activeTab}`;
-		const success = await deleteItem(
+		await deleteItem(
 			endpoint,
 			id,
 			() => {
-				switch (activeTab) {
-					case "projects":
-						setProjects(prev => prev.filter(item => item.id !== id));
-						break;
-					case "skills":
-						setSkills(prev => prev.filter(item => item.id !== id));
-						break;
-					case "experience":
-						setExperience(prev => prev.filter(item => item.id !== id));
-						break;
-					case "testimonials":
-						setTestimonials(prev => prev.filter(item => item.id !== id));
-						break;
-				}
+				fetchData();
+				handleCancel();
 			},
 			undefined,
 			setError
@@ -265,11 +252,7 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 				approved: !testimonial.approved,
 			},
 			() => {
-				setTestimonials(prev => prev.map(item => 
-					item.id === testimonial.id 
-						? { ...item, approved: !item.approved }
-						: item
-				));
+				setTestimonials(prev => prev.map(item => (item.id === testimonial.id ? { ...item, approved: !item.approved } : item)));
 			},
 			undefined,
 			setError
@@ -291,26 +274,17 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 
 			<ul className="nav nav-tabs mb-3">
 				<li className="nav-item">
-					<button
-						className={`nav-link ${activeTab === "projects" ? "active" : ""}`}
-						onClick={() => setActiveTab("projects")}
-					>
+					<button className={`nav-link ${activeTab === "projects" ? "active" : ""}`} onClick={() => setActiveTab("projects")}>
 						Projects ({projects.length})
 					</button>
 				</li>
 				<li className="nav-item">
-					<button
-						className={`nav-link ${activeTab === "skills" ? "active" : ""}`}
-						onClick={() => setActiveTab("skills")}
-					>
+					<button className={`nav-link ${activeTab === "skills" ? "active" : ""}`} onClick={() => setActiveTab("skills")}>
 						Skills ({skills.length})
 					</button>
 				</li>
 				<li className="nav-item">
-					<button
-						className={`nav-link ${activeTab === "experience" ? "active" : ""}`}
-						onClick={() => setActiveTab("experience")}
-					>
+					<button className={`nav-link ${activeTab === "experience" ? "active" : ""}`} onClick={() => setActiveTab("experience")}>
 						Experience ({experience.length})
 					</button>
 				</li>
@@ -328,7 +302,7 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 				<div className="card mb-3">
 					<div className="card-body">
 						<h4 className="card-title">{editingItem ? "Edit Project" : "Add New Project"}</h4>
-            
+
 						<div className="row">
 							<div className="col-md-6 mb-3">
 								<label className="form-label">Name *</label>
@@ -336,7 +310,7 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 									type="text"
 									className="form-control"
 									value={projectForm.name}
-									onChange={(e) => setProjectForm({ ...projectForm, name: (e.target as HTMLInputElement).value })}
+									onChange={e => setProjectForm({ ...projectForm, name: (e.target as HTMLInputElement).value })}
 									placeholder="Project name"
 								/>
 							</div>
@@ -345,7 +319,7 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 								<select
 									className="form-select"
 									value={projectForm.projectType}
-									onChange={(e) => setProjectForm({ ...projectForm, projectType: (e.target as HTMLSelectElement).value })}
+									onChange={e => setProjectForm({ ...projectForm, projectType: (e.target as HTMLSelectElement).value })}
 								>
 									<option value="personal">Personal</option>
 									<option value="professional">Professional</option>
@@ -359,7 +333,7 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 							<textarea
 								className="form-control"
 								value={projectForm.description}
-								onChange={(e) => setProjectForm({ ...projectForm, description: (e.target as HTMLTextAreaElement).value })}
+								onChange={e => setProjectForm({ ...projectForm, description: (e.target as HTMLTextAreaElement).value })}
 								placeholder="Project description"
 								rows={3}
 							/>
@@ -372,7 +346,7 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 									type="url"
 									className="form-control"
 									value={projectForm.githubUrl}
-									onChange={(e) => setProjectForm({ ...projectForm, githubUrl: (e.target as HTMLInputElement).value })}
+									onChange={e => setProjectForm({ ...projectForm, githubUrl: (e.target as HTMLInputElement).value })}
 									placeholder="https://github.com/username/repo"
 								/>
 							</div>
@@ -382,7 +356,7 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 									type="url"
 									className="form-control"
 									value={projectForm.liveUrl}
-									onChange={(e) => setProjectForm({ ...projectForm, liveUrl: (e.target as HTMLInputElement).value })}
+									onChange={e => setProjectForm({ ...projectForm, liveUrl: (e.target as HTMLInputElement).value })}
 									placeholder="https://example.com"
 								/>
 							</div>
@@ -395,7 +369,7 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 									type="text"
 									className="form-control"
 									value={projectForm.technologies}
-									onChange={(e) => setProjectForm({ ...projectForm, technologies: (e.target as HTMLInputElement).value })}
+									onChange={e => setProjectForm({ ...projectForm, technologies: (e.target as HTMLInputElement).value })}
 									placeholder="React, Node.js, TypeScript (comma separated)"
 								/>
 							</div>
@@ -405,7 +379,7 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 									type="url"
 									className="form-control"
 									value={projectForm.imageUrl}
-									onChange={(e) => setProjectForm({ ...projectForm, imageUrl: (e.target as HTMLInputElement).value })}
+									onChange={e => setProjectForm({ ...projectForm, imageUrl: (e.target as HTMLInputElement).value })}
 									placeholder="https://example.com/image.jpg"
 								/>
 							</div>
@@ -427,7 +401,7 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 				<div className="card mb-3">
 					<div className="card-body">
 						<h4 className="card-title">{editingItem ? "Edit Skill" : "Add New Skill"}</h4>
-            
+
 						<div className="row">
 							<div className="col-md-6 mb-3">
 								<label className="form-label">Name *</label>
@@ -435,7 +409,7 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 									type="text"
 									className="form-control"
 									value={skillForm.name}
-									onChange={(e) => setSkillForm({ ...skillForm, name: (e.target as HTMLInputElement).value })}
+									onChange={e => setSkillForm({ ...skillForm, name: (e.target as HTMLInputElement).value })}
 									placeholder="Skill name"
 								/>
 							</div>
@@ -444,11 +418,12 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 								<select
 									className="form-select"
 									value={skillForm.category}
-									onChange={(e) => setSkillForm({ ...skillForm, category: (e.target as HTMLSelectElement).value })}
+									onChange={e => setSkillForm({ ...skillForm, category: (e.target as HTMLSelectElement).value })}
 								>
 									<option value="">Select category</option>
 									<option value="frontend">Frontend</option>
 									<option value="backend">Backend</option>
+									<option value="full-stack">Full-Stack</option>
 									<option value="devops">DevOps</option>
 									<option value="database">Database</option>
 									<option value="mobile">Mobile</option>
@@ -464,7 +439,9 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 									type="number"
 									className="form-control"
 									value={skillForm.proficiency}
-									onChange={(e) => setSkillForm({ ...skillForm, proficiency: parseInt((e.target as HTMLInputElement).value) })}
+									onChange={e =>
+										setSkillForm({ ...skillForm, proficiency: parseInt((e.target as HTMLInputElement).value) })
+									}
 									min="1"
 									max="5"
 								/>
@@ -475,7 +452,7 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 									type="text"
 									className="form-control"
 									value={skillForm.icon}
-									onChange={(e) => setSkillForm({ ...skillForm, icon: (e.target as HTMLInputElement).value })}
+									onChange={e => setSkillForm({ ...skillForm, icon: (e.target as HTMLInputElement).value })}
 									placeholder="Icon class or URL"
 								/>
 							</div>
@@ -497,7 +474,7 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 				<div className="card mb-3">
 					<div className="card-body">
 						<h4 className="card-title">{editingItem ? "Edit Experience" : "Add New Experience"}</h4>
-            
+
 						<div className="row">
 							<div className="col-md-6 mb-3">
 								<label className="form-label">Company *</label>
@@ -505,7 +482,7 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 									type="text"
 									className="form-control"
 									value={experienceForm.company}
-									onChange={(e) => setExperienceForm({ ...experienceForm, company: (e.target as HTMLInputElement).value })}
+									onChange={e => setExperienceForm({ ...experienceForm, company: (e.target as HTMLInputElement).value })}
 									placeholder="Company name"
 								/>
 							</div>
@@ -515,7 +492,7 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 									type="text"
 									className="form-control"
 									value={experienceForm.position}
-									onChange={(e) => setExperienceForm({ ...experienceForm, position: (e.target as HTMLInputElement).value })}
+									onChange={e => setExperienceForm({ ...experienceForm, position: (e.target as HTMLInputElement).value })}
 									placeholder="Job title"
 								/>
 							</div>
@@ -526,7 +503,9 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 							<textarea
 								className="form-control"
 								value={experienceForm.description}
-								onChange={(e) => setExperienceForm({ ...experienceForm, description: (e.target as HTMLTextAreaElement).value })}
+								onChange={e =>
+									setExperienceForm({ ...experienceForm, description: (e.target as HTMLTextAreaElement).value })
+								}
 								placeholder="Job description"
 								rows={3}
 							/>
@@ -539,7 +518,9 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 									type="date"
 									className="form-control"
 									value={experienceForm.startDate}
-									onChange={(e) => setExperienceForm({ ...experienceForm, startDate: (e.target as HTMLInputElement).value })}
+									onChange={e =>
+										setExperienceForm({ ...experienceForm, startDate: (e.target as HTMLInputElement).value })
+									}
 								/>
 							</div>
 							<div className="col-md-6 mb-3">
@@ -548,7 +529,7 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 									type="date"
 									className="form-control"
 									value={experienceForm.endDate}
-									onChange={(e) => setExperienceForm({ ...experienceForm, endDate: (e.target as HTMLInputElement).value })}
+									onChange={e => setExperienceForm({ ...experienceForm, endDate: (e.target as HTMLInputElement).value })}
 									disabled={experienceForm.current}
 								/>
 							</div>
@@ -561,7 +542,9 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 									type="text"
 									className="form-control"
 									value={experienceForm.technologies}
-									onChange={(e) => setExperienceForm({ ...experienceForm, technologies: (e.target as HTMLInputElement).value })}
+									onChange={e =>
+										setExperienceForm({ ...experienceForm, technologies: (e.target as HTMLInputElement).value })
+									}
 									placeholder="React, Node.js, TypeScript (comma separated)"
 								/>
 							</div>
@@ -571,7 +554,9 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 										type="checkbox"
 										className="form-check-input"
 										checked={experienceForm.current}
-										onChange={(e) => setExperienceForm({ ...experienceForm, current: (e.target as HTMLInputElement).checked })}
+										onChange={e =>
+											setExperienceForm({ ...experienceForm, current: (e.target as HTMLInputElement).checked })
+										}
 										id="current-check"
 									/>
 									<label className="form-check-label" htmlFor="current-check">
@@ -597,7 +582,7 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 				<div className="card mb-3">
 					<div className="card-body">
 						<h4 className="card-title">{editingItem ? "Edit Testimonial" : "Add New Testimonial"}</h4>
-            
+
 						<div className="row">
 							<div className="col-md-6 mb-3">
 								<label className="form-label">Client Name *</label>
@@ -605,7 +590,9 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 									type="text"
 									className="form-control"
 									value={testimonialForm.clientName}
-									onChange={(e) => setTestimonialForm({ ...testimonialForm, clientName: (e.target as HTMLInputElement).value })}
+									onChange={e =>
+										setTestimonialForm({ ...testimonialForm, clientName: (e.target as HTMLInputElement).value })
+									}
 									placeholder="Client name"
 								/>
 							</div>
@@ -615,7 +602,9 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 									type="text"
 									className="form-control"
 									value={testimonialForm.clientTitle}
-									onChange={(e) => setTestimonialForm({ ...testimonialForm, clientTitle: (e.target as HTMLInputElement).value })}
+									onChange={e =>
+										setTestimonialForm({ ...testimonialForm, clientTitle: (e.target as HTMLInputElement).value })
+									}
 									placeholder="Job title"
 								/>
 							</div>
@@ -627,7 +616,9 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 								type="text"
 								className="form-control"
 								value={testimonialForm.clientCompany}
-								onChange={(e) => setTestimonialForm({ ...testimonialForm, clientCompany: (e.target as HTMLInputElement).value })}
+								onChange={e =>
+									setTestimonialForm({ ...testimonialForm, clientCompany: (e.target as HTMLInputElement).value })
+								}
 								placeholder="Company name"
 							/>
 						</div>
@@ -637,7 +628,7 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 							<textarea
 								className="form-control"
 								value={testimonialForm.content}
-								onChange={(e) => setTestimonialForm({ ...testimonialForm, content: (e.target as HTMLTextAreaElement).value })}
+								onChange={e => setTestimonialForm({ ...testimonialForm, content: (e.target as HTMLTextAreaElement).value })}
 								placeholder="Testimonial content"
 								rows={4}
 							/>
@@ -650,7 +641,9 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 									type="number"
 									className="form-control"
 									value={testimonialForm.rating}
-									onChange={(e) => setTestimonialForm({ ...testimonialForm, rating: parseInt((e.target as HTMLInputElement).value) })}
+									onChange={e =>
+										setTestimonialForm({ ...testimonialForm, rating: parseInt((e.target as HTMLInputElement).value) })
+									}
 									min="1"
 									max="5"
 								/>
@@ -661,7 +654,9 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 									type="number"
 									className="form-control"
 									value={testimonialForm.projectId}
-									onChange={(e) => setTestimonialForm({ ...testimonialForm, projectId: (e.target as HTMLInputElement).value })}
+									onChange={e =>
+										setTestimonialForm({ ...testimonialForm, projectId: (e.target as HTMLInputElement).value })
+									}
 									placeholder="Related project ID"
 								/>
 							</div>
@@ -673,7 +668,9 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 									type="checkbox"
 									className="form-check-input"
 									checked={testimonialForm.approved}
-									onChange={(e) => setTestimonialForm({ ...testimonialForm, approved: (e.target as HTMLInputElement).checked })}
+									onChange={e =>
+										setTestimonialForm({ ...testimonialForm, approved: (e.target as HTMLInputElement).checked })
+									}
 									id="approved-check"
 								/>
 								<label className="form-check-label" htmlFor="approved-check">
@@ -699,29 +696,41 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 					<div>
 						<h4>Projects</h4>
 						<div className="d-flex flex-column gap-2">
-							{projects.map((project) => (
+							{projects.map(project => (
 								<div key={project.id} className="card">
 									<div className="card-body">
 										<div className="d-flex justify-content-between align-items-start">
 											<div className="flex-grow-1">
 												<h5 className="card-title mb-1">{project.name}</h5>
 												<p className="text-muted small mb-2">
-													Type: {project.projectType} | 
-													Created: {formatDate(project.createdAt)}
+													Type: {project.projectType} | Created: {formatDate(project.createdAt)}
 												</p>
 												{project.description && <p className="card-text small">{project.description}</p>}
 												<div className="small">
 													{project.githubUrl && (
-														<a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="me-3">GitHub</a>
+														<a
+															href={project.githubUrl}
+															target="_blank"
+															rel="noopener noreferrer"
+															className="me-3"
+														>
+															GitHub
+														</a>
 													)}
 													{project.liveUrl && (
-														<a href={project.liveUrl} target="_blank" rel="noopener noreferrer">Live Demo</a>
+														<a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+															Live Demo
+														</a>
 													)}
 												</div>
 											</div>
 											<div className="d-flex gap-2">
-												<button onClick={() => handleEdit(project)} className="btn btn-warning btn-sm">Edit</button>
-												<button onClick={() => handleDelete(project.id)} className="btn btn-danger btn-sm">Delete</button>
+												<button onClick={() => handleEdit(project)} className="btn btn-warning btn-sm">
+													Edit
+												</button>
+												<button onClick={() => handleDelete(project.id)} className="btn btn-danger btn-sm">
+													Delete
+												</button>
 											</div>
 										</div>
 									</div>
@@ -735,22 +744,25 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 					<div>
 						<h4>Skills</h4>
 						<div className="d-flex flex-column gap-2">
-							{skills.map((skill) => (
+							{skills.map(skill => (
 								<div key={skill.id} className="card">
 									<div className="card-body">
 										<div className="d-flex justify-content-between align-items-start">
 											<div className="flex-grow-1">
 												<h5 className="card-title mb-1">{skill.name}</h5>
 												<p className="text-muted small mb-2">
-													Category: {skill.category} | 
-													Proficiency: {skill.proficiency}/5 | 
-													Created: {formatDate(skill.createdAt)}
+													Category: {skill.category} | Proficiency: {skill.proficiency}/5 | Created:{" "}
+													{formatDate(skill.createdAt)}
 												</p>
 												{skill.icon && <p className="small mb-0">Icon: {skill.icon}</p>}
 											</div>
 											<div className="d-flex gap-2">
-												<button onClick={() => handleEdit(skill)} className="btn btn-warning btn-sm">Edit</button>
-												<button onClick={() => handleDelete(skill.id)} className="btn btn-danger btn-sm">Delete</button>
+												<button onClick={() => handleEdit(skill)} className="btn btn-warning btn-sm">
+													Edit
+												</button>
+												<button onClick={() => handleDelete(skill.id)} className="btn btn-danger btn-sm">
+													Delete
+												</button>
 											</div>
 										</div>
 									</div>
@@ -764,22 +776,28 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 					<div>
 						<h4>Work Experience</h4>
 						<div className="d-flex flex-column gap-2">
-							{experience.map((exp) => (
+							{experience.map(exp => (
 								<div key={exp.id} className="card">
 									<div className="card-body">
 										<div className="d-flex justify-content-between align-items-start">
 											<div className="flex-grow-1">
-												<h5 className="card-title mb-1">{exp.position} at {exp.company}</h5>
+												<h5 className="card-title mb-1">
+													{exp.position} at {exp.company}
+												</h5>
 												<p className="text-muted small mb-2">
-													{formatDate(exp.startDate)} - 
+													{formatDate(exp.startDate)} -
 													{exp.current ? "Present" : exp.endDate ? formatDate(exp.endDate) : "Unknown"}
 												</p>
 												{exp.description && <p className="card-text small">{exp.description}</p>}
 												{exp.technologies && <p className="small mb-0">Technologies: {exp.technologies}</p>}
 											</div>
 											<div className="d-flex gap-2">
-												<button onClick={() => handleEdit(exp)} className="btn btn-warning btn-sm">Edit</button>
-												<button onClick={() => handleDelete(exp.id)} className="btn btn-danger btn-sm">Delete</button>
+												<button onClick={() => handleEdit(exp)} className="btn btn-warning btn-sm">
+													Edit
+												</button>
+												<button onClick={() => handleDelete(exp.id)} className="btn btn-danger btn-sm">
+													Delete
+												</button>
 											</div>
 										</div>
 									</div>
@@ -793,7 +811,7 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 					<div>
 						<h4>Testimonials</h4>
 						<div className="d-flex flex-column gap-2">
-							{testimonials.map((testimonial) => (
+							{testimonials.map(testimonial => (
 								<div key={testimonial.id} className={`card ${!testimonial.approved ? "border-warning" : ""}`}>
 									<div className="card-body">
 										<div className="d-flex justify-content-between align-items-start">
@@ -801,22 +819,25 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 												<h5 className="card-title mb-1">{testimonial.clientName}</h5>
 												<p className="text-muted small mb-2">
 													{testimonial.clientTitle && `${testimonial.clientTitle}`}
-													{testimonial.clientCompany && ` at ${testimonial.clientCompany}`} | 
-													Rating: {testimonial.rating || "N/A"} | 
-													Status: {testimonial.approved ? "Approved" : "Pending"} |
-													Created: {formatDate(testimonial.createdAt)}
+													{testimonial.clientCompany && ` at ${testimonial.clientCompany}`} | Rating:{" "}
+													{testimonial.rating || "N/A"} | Status: {testimonial.approved ? "Approved" : "Pending"}{" "}
+													| Created: {formatDate(testimonial.createdAt)}
 												</p>
 												<p className="card-text small">{testimonial.content}</p>
 											</div>
 											<div className="d-flex gap-2">
-												<button onClick={() => handleEdit(testimonial)} className="btn btn-warning btn-sm">Edit</button>
-												<button 
-													onClick={() => handleToggleApproval(testimonial)} 
+												<button onClick={() => handleEdit(testimonial)} className="btn btn-warning btn-sm">
+													Edit
+												</button>
+												<button
+													onClick={() => handleToggleApproval(testimonial)}
 													className={`btn btn-sm ${testimonial.approved ? "btn-outline-warning" : "btn-success"}`}
 												>
 													{testimonial.approved ? "Unapprove" : "Approve"}
 												</button>
-												<button onClick={() => handleDelete(testimonial.id)} className="btn btn-danger btn-sm">Delete</button>
+												<button onClick={() => handleDelete(testimonial.id)} className="btn btn-danger btn-sm">
+													Delete
+												</button>
 											</div>
 										</div>
 									</div>
@@ -828,4 +849,4 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 			</div>
 		</div>
 	);
-} 
+};

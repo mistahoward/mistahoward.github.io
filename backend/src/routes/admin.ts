@@ -82,7 +82,10 @@ router.put('/api/admin/blog/:id', async (request: Request, env: Env, ctx: any) =
 	if (authCheck) return authCheck;
 
 	try {
-		const id = parseInt(ctx.params?.id, 10);
+		const url = new URL(request.url);
+		const pathParts = url.pathname.split('/');
+		const idFromPath = pathParts[pathParts.length - 1];
+		const id = parseInt(ctx.params?.id || idFromPath, 10);
 		const body = await request.json() as {
 			title: string;
 			slug: string;
@@ -222,7 +225,10 @@ router.put('/api/admin/pets/:id', async (request: Request, env: Env, ctx: any) =
 	if (authCheck) return authCheck;
 
 	try {
-		const id = parseInt(ctx.params?.id, 10);
+		const url = new URL(request.url);
+		const pathParts = url.pathname.split('/');
+		const idFromPath = pathParts[pathParts.length - 1];
+		const id = parseInt(ctx.params?.id || idFromPath, 10);
 		const body = await request.json() as {
 			name: string;
 			species: string;
@@ -450,7 +456,10 @@ router.put('/api/admin/projects/:id', async (request: Request, env: Env, ctx: an
 	if (authCheck) return authCheck;
 
 	try {
-		const id = parseInt(ctx.params?.id, 10);
+		const url = new URL(request.url);
+		const pathParts = url.pathname.split('/');
+		const idFromPath = pathParts[pathParts.length - 1];
+		const id = parseInt(ctx.params?.id || idFromPath, 10);
 		const body = await request.json() as {
 			name: string;
 			description?: string;
@@ -572,13 +581,18 @@ router.put('/api/admin/skills/:id', async (request: Request, env: Env, ctx: any)
 	if (authCheck) return authCheck;
 
 	try {
-		const id = parseInt(ctx.params?.id, 10);
+		const url = new URL(request.url);
+		const pathParts = url.pathname.split('/');
+		const idFromPath = pathParts[pathParts.length - 1];
+		const id = parseInt(ctx.params?.id || idFromPath, 10);
+		console.log('[ADMIN] PUT /api/admin/skills/:id called with id:', id);
 		const body = await request.json() as {
 			name: string;
 			category: string;
 			proficiency: number;
 			icon?: string;
 		};
+		console.log('[ADMIN] Request body:', body);
 		const db = drizzle(env.DB);
 
 		const updatedSkill = await db.update(skills)
@@ -591,12 +605,16 @@ router.put('/api/admin/skills/:id', async (request: Request, env: Env, ctx: any)
 			.where(eq(skills.id, id))
 			.returning();
 
+		console.log('[ADMIN] Update result:', updatedSkill);
+
 		if (!updatedSkill.length) {
+			console.warn('[ADMIN] Skill not found for update, id:', id);
 			return errorResponse('Skill not found', env, 404);
 		}
 
 		return successResponse(updatedSkill[0], env, 200);
 	} catch (error) {
+		console.error('[ADMIN] Failed to update skill:', error);
 		return errorResponse('Failed to update skill', env, 500);
 	}
 });
@@ -689,7 +707,10 @@ router.put('/api/admin/experience/:id', async (request: Request, env: Env, ctx: 
 	if (authCheck) return authCheck;
 
 	try {
-		const id = parseInt(ctx.params?.id, 10);
+		const url = new URL(request.url);
+		const pathParts = url.pathname.split('/');
+		const idFromPath = pathParts[pathParts.length - 1];
+		const id = parseInt(ctx.params?.id || idFromPath, 10);
 		const body = await request.json() as {
 			company: string;
 			position: string;
@@ -812,7 +833,10 @@ router.put('/api/admin/testimonials/:id', async (request: Request, env: Env, ctx
 	if (authCheck) return authCheck;
 
 	try {
-		const id = parseInt(ctx.params?.id, 10);
+		const url = new URL(request.url);
+		const pathParts = url.pathname.split('/');
+		const idFromPath = pathParts[pathParts.length - 1];
+		const id = parseInt(ctx.params?.id || idFromPath, 10);
 		const body = await request.json() as {
 			clientName: string;
 			clientTitle?: string;
