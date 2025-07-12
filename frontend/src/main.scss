@@ -181,12 +181,13 @@ html *:not(.nav-link, .btn, .form-control, .form-select, .dropdown-menu, .modal,
 
 .navbar-theme-toggle {
 	position: absolute;
+	top: 0;
+	bottom: 0;
 	right: 1rem;
-	bottom: 0.5;
+	margin: auto 0;
 	display: flex;
-	align-items: flex-end;
-	height: 100%;
-	align-self: flex-end;
+	align-items: center;
+	height: 2.2rem;
 }
 
 .custom-navbar .nav-link {
