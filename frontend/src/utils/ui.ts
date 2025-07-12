@@ -1,6 +1,7 @@
 import { h } from "preact";
+import { YakShaverSpinner } from "../components/YakShaverSpinner";
 
-export const LoadingSpinner = () => h("div", { className: "text-center p-4" }, "Loading...");
+export const LoadingSpinner = YakShaverSpinner;
 
 export const ErrorAlert = ({ error }: { error: string }) =>
 	h("div", { className: "alert alert-danger" }, error);

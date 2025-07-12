@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchItems } from "../utils/crud";
+import { YakShaverSpinner } from "./YakShaverSpinner";
 
 interface Skill {
 	id: number;
@@ -23,7 +24,7 @@ export const SkillsList = () => {
 		});
 	}, []);
 
-	if (loading) return <div>Loading skills...</div>;
+	if (loading) return <YakShaverSpinner />;
 	if (error) return <div className="text-danger">{error}</div>;
 	if (!skills.length) return <div>No skills found.</div>;
 
