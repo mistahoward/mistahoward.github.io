@@ -2,6 +2,7 @@ import { useState } from "preact/hooks";
 import { AdminPanel } from "./components/AdminPanel";
 import { useKonamiCode } from "./utils/konami";
 import { Navbar } from "./components/Navbar";
+import { Hero } from "./components/Hero";
 
 export const App = () => {
 	const [showAdmin, setShowAdmin] = useState(false);
@@ -12,15 +13,17 @@ export const App = () => {
 		<>
 			<Navbar />
 
-			<main className="pt-5">
+			<main className="pt-2">
 				<section id="home" className="min-vh-100 d-flex align-items-center justify-content-center bg-primary bg-opacity-10">
 					<div className="container text-center">
 						<div className="row justify-content-center">
 							<div className="col-lg-8">
-								<h1 className="display-3 fw-bold mb-3">Your Name</h1>
-								<p className="lead text-muted mb-4">Developer & Designer</p>
-								<h2 className="h3 mb-4">Welcome to My Portfolio</h2>
-								<p className="fs-5 text-muted">This is where your amazing portfolio content will live.</p>
+								<Hero />
+								<h1 className="display-2 fw-bold mb-3">Hey, I&apos;m Alex.</h1>
+								<p className="display-6 lead text-primary mb-4">Full Stack Software Engineer</p>
+								<p className="fs-3 text-muted">
+									I&apos;m the engineer who makes sure the back-end is powerful and the front-end proves it.
+								</p>
 							</div>
 						</div>
 					</div>
@@ -42,6 +45,17 @@ export const App = () => {
 						<div className="row justify-content-center">
 							<div className="col-lg-8 text-center">
 								<h2 className="display-4 fw-bold mb-4">Projects</h2>
+								<p className="fs-5 text-muted">Showcase your work here...</p>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<section id="pet-dex" className="min-vh-100 d-flex align-items-center justify-content-center">
+					<div className="container">
+						<div className="row justify-content-center">
+							<div className="col-lg-8 text-center">
+								<h2 className="display-4 fw-bold mb-4">Pet Dex</h2>
 								<p className="fs-5 text-muted">Showcase your work here...</p>
 							</div>
 						</div>
