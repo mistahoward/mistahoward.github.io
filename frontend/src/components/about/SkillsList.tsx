@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { fetchItems } from "../utils/crud";
-import { YakShaverSpinner } from "./YakShaverSpinner";
-
-interface Skill {
-	id: number;
-	name: string;
-	category: string;
-	proficiency: number;
-	icon?: string;
-}
+import { fetchItems } from "../../utils/crud";
+import { YakShaverSpinner } from "../shared/YakShaverSpinner";
+import { Skill } from "../../types/skills-list.types";
 
 export const SkillsList = () => {
 	const [skills, setSkills] = useState<Skill[]>([]);

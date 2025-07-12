@@ -1,4 +1,4 @@
-import "../assets/yak-shaver-spinner.scss";
+import "../../assets/yak-shaver-spinner.scss";
 
 export const YakShaverSpinner = () => {
 	return (

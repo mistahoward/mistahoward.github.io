@@ -2,7 +2,7 @@ import { Router } from 'itty-router';
 import { drizzle } from 'drizzle-orm/d1';
 import { eq, desc } from 'drizzle-orm';
 import {
-	projects, blogPosts, skills, experience,
+	projects, blogPosts, skills, experience, testimonials,
 } from '../schema';
 import { errorResponse, successResponse } from '../middleware/auth';
 
@@ -79,6 +79,19 @@ router.get('/api/experience', async (request: Request, env: Env) => {
 		return successResponse(allExperience, env, 200);
 	} catch (error) {
 		return errorResponse('Failed to fetch experience', env, 500);
+	}
+});
+
+// GET /testimonials - Get all approved testimonials
+router.get('/api/testimonials', async (request: Request, env: Env) => {
+	try {
+		const db = drizzle(env.DB);
+		const allTestimonials = await db.select().from(testimonials)
+			.where(eq(testimonials.approved, true))
+			.orderBy(desc(testimonials.createdAt));
+		return successResponse(allTestimonials, env, 200);
+	} catch (error) {
+		return errorResponse('Failed to fetch testimonials', env, 500);
 	}
 });
 

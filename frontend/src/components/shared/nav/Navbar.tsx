@@ -1,6 +1,6 @@
 import { useEffect, useState } from "preact/hooks";
 import { ThemeToggle } from "./ThemeToggle";
-import type { NavItem } from "../types/navbar.types";
+import type { NavItem } from "../../../types/navbar.types";
 
 const leftNavItems: NavItem[] = [
 	{ id: "about", label: "About" },

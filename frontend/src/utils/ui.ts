@@ -1,5 +1,5 @@
 import { h } from "preact";
-import { YakShaverSpinner } from "../components/YakShaverSpinner";
+import { YakShaverSpinner } from "../components/shared/YakShaverSpinner";
 
 export const LoadingSpinner = YakShaverSpinner;
 

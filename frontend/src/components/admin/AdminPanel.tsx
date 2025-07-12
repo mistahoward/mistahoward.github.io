@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "preact/hooks";
-import { BlogEditor } from "./admin/BlogEditor";
-import { PetManager } from "./admin/PetManager";
-import { DataManager } from "./admin/DataManager";
-import { AdminPanelProps } from "../types/admin-panel.types";
+import { BlogEditor } from "./BlogEditor";
+import { PetManager } from "./PetManager";
+import { DataManager } from "./DataManager";
+import { AdminPanelProps } from "../../types/admin-panel.types";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -61,11 +61,7 @@ export const AdminPanel = ({ isVisible, onClose }: AdminPanelProps) => {
 	if (!isVisible) return null;
 
 	return (
-		<div
-			className="modal fade show d-block"
-			style={{ backgroundColor: "rgba(0, 0, 0, 0.8)" }}
-			onClick={onClose}
-		>
+		<div className="modal fade show d-block" style={{ backgroundColor: "rgba(0, 0, 0, 0.8)" }} onClick={onClose}>
 			<div
 				className="modal-dialog modal-xl modal-dialog-centered"
 				ref={panelRef}
@@ -89,17 +85,13 @@ export const AdminPanel = ({ isVisible, onClose }: AdminPanelProps) => {
 										className="form-control mb-3"
 										placeholder="Enter admin password"
 										value={password}
-										onChange={e =>
-											setPassword((e.target as HTMLInputElement).value)
-										}
+										onChange={e => setPassword((e.target as HTMLInputElement).value)}
 										onKeyPress={e => e.key === "Enter" && handleLogin()}
 									/>
 									<button onClick={handleLogin} className="btn btn-primary">
 										Login
 									</button>
-									{error && (
-										<div className="alert alert-danger mt-3">{error}</div>
-									)}
+									{error && <div className="alert alert-danger mt-3">{error}</div>}
 								</div>
 							</div>
 						</div>
@@ -127,10 +119,7 @@ export const AdminPanel = ({ isVisible, onClose }: AdminPanelProps) => {
 											Other Data
 										</button>
 										<div className="mt-auto p-3">
-											<button
-												onClick={handleLogout}
-												className="btn btn-outline-danger w-100"
-											>
+											<button onClick={handleLogout} className="btn btn-outline-danger w-100">
 												Logout
 											</button>
 										</div>
@@ -138,15 +127,9 @@ export const AdminPanel = ({ isVisible, onClose }: AdminPanelProps) => {
 								</div>
 
 								<div className="col-md-9 p-3">
-									{activeSection === "blog" && (
-										<BlogEditor lastFocusTime={lastFocusTime} />
-									)}
-									{activeSection === "pets" && (
-										<PetManager lastFocusTime={lastFocusTime} />
-									)}
-									{activeSection === "data" && (
-										<DataManager lastFocusTime={lastFocusTime} />
-									)}
+									{activeSection === "blog" && <BlogEditor lastFocusTime={lastFocusTime} />}
+									{activeSection === "pets" && <PetManager lastFocusTime={lastFocusTime} />}
+									{activeSection === "data" && <DataManager lastFocusTime={lastFocusTime} />}
 								</div>
 							</div>
 						</div>

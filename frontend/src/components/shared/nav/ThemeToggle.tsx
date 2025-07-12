@@ -1,5 +1,5 @@
 import { useState, useEffect } from "preact/hooks";
-import { themeManager, type Theme } from "../utils/theme";
+import { themeManager, type Theme } from "../../../utils/theme";
 
 export const ThemeToggle = () => {
 	const [theme, setTheme] = useState<Theme>(themeManager.getTheme());
