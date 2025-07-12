@@ -1,21 +1,7 @@
 import { useState, useEffect } from "preact/hooks";
-
-interface BlogPost {
-  id: number;
-  title: string;
-  slug: string;
-  content: string;
-  excerpt?: string;
-  published: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+import { BlogPost, BlogEditorProps } from "../../types/blog-editor.types";
 
 const API_URL = import.meta.env.VITE_API_URL;
-
-interface BlogEditorProps {
-  lastFocusTime?: number;
-}
 
 export function BlogEditor({ lastFocusTime = 0 }: BlogEditorProps) {
   const [posts, setPosts] = useState<BlogPost[]>([]);

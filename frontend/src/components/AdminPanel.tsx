@@ -2,13 +2,9 @@ import { useState, useEffect, useRef } from "preact/hooks";
 import { BlogEditor } from "./admin/BlogEditor";
 import { PetManager } from "./admin/PetManager";
 import { DataManager } from "./admin/DataManager";
+import { AdminPanelProps } from "../types/admin-panel.types";
 
 const API_URL = import.meta.env.VITE_API_URL;
-
-interface AdminPanelProps {
-  isVisible: boolean;
-  onClose: () => void;
-}
 
 export function AdminPanel({ isVisible, onClose }: AdminPanelProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

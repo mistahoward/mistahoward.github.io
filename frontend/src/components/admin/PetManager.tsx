@@ -1,32 +1,7 @@
 import { useState, useEffect } from "preact/hooks";
+import { Pet, PetManagerProps } from "../../types/pet-manager.types";
 
 const API_URL = import.meta.env.VITE_API_URL;
-
-interface Pet {
-  id: number;
-  name: string;
-  species: string;
-  breed?: string;
-  age?: number;
-  weight?: number;
-  color?: string;
-  personality?: string;
-  specialAbilities?: string;
-  favoriteFood?: string;
-  favoriteToy?: string;
-  rescueStory?: string;
-  imageUrl?: string;
-  stats?: string;
-  nickname?: string;
-  adoptedDate?: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface PetManagerProps {
-  lastFocusTime?: number;
-}
 
 export function PetManager({ lastFocusTime = 0 }: PetManagerProps) {
   const [pets, setPets] = useState<Pet[]>([]);
