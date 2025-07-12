@@ -34,6 +34,9 @@
     "eslint-plugin-react": "^7.33.2",
     "prettier": "^3.0.0"
   },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.6.1"
+  },
   "keywords": [
     "monorepo",
     "preact",
