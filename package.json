@@ -1,0 +1,47 @@
+{
+  "name": "portfolio-monorepo",
+  "version": "1.0.0",
+  "description": "Portfolio monorepo with Preact frontend and C# WASI backend",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "build": "npm run build:backend && npm run build:frontend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "clean": "npm run clean:frontend && npm run clean:backend",
+    "clean:frontend": "cd frontend && rm -rf node_modules dist",
+    "clean:backend": "cd backend && rm -rf node_modules",
+    "lint": "eslint frontend/src backend/src",
+    "lint:fix": "eslint frontend/src backend/src --fix",
+    "format": "prettier --write frontend/src backend/src",
+    "format:check": "prettier --check frontend/src backend/src"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.57.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-react": "^7.33.2",
+    "prettier": "^3.0.0"
+  },
+  "keywords": [
+    "monorepo",
+    "preact",
+    "csharp",
+    "webassembly",
+    "cloudflare",
+    "portfolio"
+  ],
+  "author": "",
+  "license": "MIT"
+}

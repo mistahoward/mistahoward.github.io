@@ -1,0 +1,27 @@
+name = "my-portfolio-api"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# D1 Database binding
+[[d1_databases]]
+binding = "DB"
+database_name = "portfolio-db-preview"
+database_id = "572545b5-3c99-4af4-a765-f3006bfc9418"
+preview_database_id = "972aa56e-6867-4861-bc7d-ace1807327c0"
+
+# R2 Storage binding for pet images
+[[r2_buckets]]
+binding = "PET_IMAGES"
+bucket_name = "pet-images"
+preview_bucket_name = "pet-images-preview"
+
+
+# Migrations configuration
+[[migrations]]
+tag = "v1"
+new_classes = ["DB"]
+
+# Development settings
+[dev]
+port = 8787 

@@ -1,0 +1,39 @@
+{
+  "name": "portfolio-api-backend",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker backend for portfolio API",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev src/index.ts --local",
+    "deploy": "wrangler deploy src/index.ts",
+    "build": "tsc",
+    "db:generate": "drizzle-kit generate:sqlite",
+    "db:migrate": "wrangler d1 migrations apply portfolio-db-preview --local",
+    "db:push": "wrangler d1 execute portfolio-db-preview --local --file=./migrations/schema.sql",
+    "db:studio": "drizzle-kit studio",
+    "db:drop": "drizzle-kit drop",
+    "db:workflow": "npm run db:generate && npm run db:migrate",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cloudflare",
+    "worker",
+    "api",
+    "d1"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.0.0",
+    "@types/node": "^24.0.13",
+    "drizzle-kit": "^0.20.0",
+    "itty-router": "^4.0.0",
+    "typescript": "~5.3.3",
+    "wrangler": "^4.24.3"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.0",
+    "drizzle-orm": "^0.29.0"
+  }
+}
