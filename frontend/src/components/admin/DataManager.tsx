@@ -142,10 +142,6 @@ export function DataManager({ lastFocusTime = 0 }: DataManagerProps) {
   }, []);
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
     if (lastFocusTime > 0) {
       fetchData();
     }
@@ -351,407 +347,458 @@ export function DataManager({ lastFocusTime = 0 }: DataManagerProps) {
     }
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div className="text-center p-4">Loading...</div>;
 
   return (
-    <div className="data-manager">
-      <div className="data-header">
-        <h3>Data Management</h3>
-        <button onClick={handleCreate} className="create-btn">
+    <div className="h-100 d-flex flex-column">
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h3 className="mb-0">Data Management</h3>
+        <button onClick={handleCreate} className="btn btn-success">
           Add New {activeTab.slice(0, -1).charAt(0).toUpperCase() + activeTab.slice(0, -1).slice(1)}
         </button>
       </div>
 
-      {error && <div className="error">{error}</div>}
+      {error && <div className="alert alert-danger">{error}</div>}
 
-      <div className="data-tabs">
-        <button
-          className={activeTab === "projects" ? "active" : ""}
-          onClick={() => setActiveTab("projects")}
-        >
-          Projects ({projects.length})
-        </button>
-        <button
-          className={activeTab === "skills" ? "active" : ""}
-          onClick={() => setActiveTab("skills")}
-        >
-          Skills ({skills.length})
-        </button>
-        <button
-          className={activeTab === "experience" ? "active" : ""}
-          onClick={() => setActiveTab("experience")}
-        >
-          Experience ({experience.length})
-        </button>
-        <button
-          className={activeTab === "testimonials" ? "active" : ""}
-          onClick={() => setActiveTab("testimonials")}
-        >
-          Testimonials ({testimonials.length})
-        </button>
-      </div>
+      <ul className="nav nav-tabs mb-3">
+        <li className="nav-item">
+          <button
+            className={`nav-link ${activeTab === "projects" ? "active" : ""}`}
+            onClick={() => setActiveTab("projects")}
+          >
+            Projects ({projects.length})
+          </button>
+        </li>
+        <li className="nav-item">
+          <button
+            className={`nav-link ${activeTab === "skills" ? "active" : ""}`}
+            onClick={() => setActiveTab("skills")}
+          >
+            Skills ({skills.length})
+          </button>
+        </li>
+        <li className="nav-item">
+          <button
+            className={`nav-link ${activeTab === "experience" ? "active" : ""}`}
+            onClick={() => setActiveTab("experience")}
+          >
+            Experience ({experience.length})
+          </button>
+        </li>
+        <li className="nav-item">
+          <button
+            className={`nav-link ${activeTab === "testimonials" ? "active" : ""}`}
+            onClick={() => setActiveTab("testimonials")}
+          >
+            Testimonials ({testimonials.length})
+          </button>
+        </li>
+      </ul>
 
       {/* Project Form */}
       {activeTab === "projects" && (isCreating || editingItem) && (
-        <div className="data-form">
-          <h4>{editingItem ? "Edit Project" : "Add New Project"}</h4>
-          
-          <div className="form-row">
-            <div className="form-group">
-              <label>Name *</label>
-              <input
-                type="text"
-                value={projectForm.name}
-                onChange={(e) => setProjectForm({ ...projectForm, name: (e.target as HTMLInputElement).value })}
-                placeholder="Project name"
-              />
+        <div className="card mb-3">
+          <div className="card-body">
+            <h4 className="card-title">{editingItem ? "Edit Project" : "Add New Project"}</h4>
+            
+            <div className="row">
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Name *</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={projectForm.name}
+                  onChange={(e) => setProjectForm({ ...projectForm, name: (e.target as HTMLInputElement).value })}
+                  placeholder="Project name"
+                />
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Project Type *</label>
+                <select
+                  className="form-select"
+                  value={projectForm.projectType}
+                  onChange={(e) => setProjectForm({ ...projectForm, projectType: (e.target as HTMLSelectElement).value })}
+                >
+                  <option value="personal">Personal</option>
+                  <option value="professional">Professional</option>
+                  <option value="academic">Academic</option>
+                </select>
+              </div>
             </div>
-            <div className="form-group">
-              <label>Project Type *</label>
-              <select
-                value={projectForm.projectType}
-                onChange={(e) => setProjectForm({ ...projectForm, projectType: (e.target as HTMLSelectElement).value })}
-              >
-                <option value="personal">Personal</option>
-                <option value="professional">Professional</option>
-                <option value="academic">Academic</option>
-              </select>
-            </div>
-          </div>
 
-          <div className="form-group">
-            <label>Description</label>
-            <textarea
-              value={projectForm.description}
-              onChange={(e) => setProjectForm({ ...projectForm, description: (e.target as HTMLTextAreaElement).value })}
-              placeholder="Project description"
-              rows={3}
-            />
-          </div>
+            <div className="mb-3">
+              <label className="form-label">Description</label>
+              <textarea
+                className="form-control"
+                value={projectForm.description}
+                onChange={(e) => setProjectForm({ ...projectForm, description: (e.target as HTMLTextAreaElement).value })}
+                placeholder="Project description"
+                rows={3}
+              />
+            </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>GitHub URL</label>
-              <input
-                type="url"
-                value={projectForm.githubUrl}
-                onChange={(e) => setProjectForm({ ...projectForm, githubUrl: (e.target as HTMLInputElement).value })}
-                placeholder="https://github.com/username/repo"
-              />
+            <div className="row">
+              <div className="col-md-6 mb-3">
+                <label className="form-label">GitHub URL</label>
+                <input
+                  type="url"
+                  className="form-control"
+                  value={projectForm.githubUrl}
+                  onChange={(e) => setProjectForm({ ...projectForm, githubUrl: (e.target as HTMLInputElement).value })}
+                  placeholder="https://github.com/username/repo"
+                />
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Live URL</label>
+                <input
+                  type="url"
+                  className="form-control"
+                  value={projectForm.liveUrl}
+                  onChange={(e) => setProjectForm({ ...projectForm, liveUrl: (e.target as HTMLInputElement).value })}
+                  placeholder="https://example.com"
+                />
+              </div>
             </div>
-            <div className="form-group">
-              <label>Live URL</label>
-              <input
-                type="url"
-                value={projectForm.liveUrl}
-                onChange={(e) => setProjectForm({ ...projectForm, liveUrl: (e.target as HTMLInputElement).value })}
-                placeholder="https://example.com"
-              />
-            </div>
-          </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>Technologies</label>
-              <input
-                type="text"
-                value={projectForm.technologies}
-                onChange={(e) => setProjectForm({ ...projectForm, technologies: (e.target as HTMLInputElement).value })}
-                placeholder="React, Node.js, TypeScript (comma separated)"
-              />
+            <div className="row">
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Technologies</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={projectForm.technologies}
+                  onChange={(e) => setProjectForm({ ...projectForm, technologies: (e.target as HTMLInputElement).value })}
+                  placeholder="React, Node.js, TypeScript (comma separated)"
+                />
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Image URL</label>
+                <input
+                  type="url"
+                  className="form-control"
+                  value={projectForm.imageUrl}
+                  onChange={(e) => setProjectForm({ ...projectForm, imageUrl: (e.target as HTMLInputElement).value })}
+                  placeholder="https://example.com/image.jpg"
+                />
+              </div>
             </div>
-            <div className="form-group">
-              <label>Image URL</label>
-              <input
-                type="url"
-                value={projectForm.imageUrl}
-                onChange={(e) => setProjectForm({ ...projectForm, imageUrl: (e.target as HTMLInputElement).value })}
-                placeholder="https://example.com/image.jpg"
-              />
-            </div>
-          </div>
 
-          <div className="form-actions">
-            <button onClick={handleSubmit} className="save-btn">
-              {editingItem ? "Update" : "Create"}
-            </button>
-            <button onClick={handleCancel} className="cancel-btn">
-              Cancel
-            </button>
+            <div className="d-flex gap-2">
+              <button onClick={handleSubmit} className="btn btn-primary">
+                {editingItem ? "Update" : "Create"}
+              </button>
+              <button onClick={handleCancel} className="btn btn-secondary">
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {/* Skill Form */}
       {activeTab === "skills" && (isCreating || editingItem) && (
-        <div className="data-form">
-          <h4>{editingItem ? "Edit Skill" : "Add New Skill"}</h4>
-          
-          <div className="form-row">
-            <div className="form-group">
-              <label>Name *</label>
-              <input
-                type="text"
-                value={skillForm.name}
-                onChange={(e) => setSkillForm({ ...skillForm, name: (e.target as HTMLInputElement).value })}
-                placeholder="Skill name"
-              />
+        <div className="card mb-3">
+          <div className="card-body">
+            <h4 className="card-title">{editingItem ? "Edit Skill" : "Add New Skill"}</h4>
+            
+            <div className="row">
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Name *</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={skillForm.name}
+                  onChange={(e) => setSkillForm({ ...skillForm, name: (e.target as HTMLInputElement).value })}
+                  placeholder="Skill name"
+                />
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Category *</label>
+                <select
+                  className="form-select"
+                  value={skillForm.category}
+                  onChange={(e) => setSkillForm({ ...skillForm, category: (e.target as HTMLSelectElement).value })}
+                >
+                  <option value="">Select category</option>
+                  <option value="frontend">Frontend</option>
+                  <option value="backend">Backend</option>
+                  <option value="devops">DevOps</option>
+                  <option value="database">Database</option>
+                  <option value="mobile">Mobile</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
             </div>
-            <div className="form-group">
-              <label>Category *</label>
-              <select
-                value={skillForm.category}
-                onChange={(e) => setSkillForm({ ...skillForm, category: (e.target as HTMLSelectElement).value })}
-              >
-                <option value="">Select category</option>
-                <option value="frontend">Frontend</option>
-                <option value="backend">Backend</option>
-                <option value="devops">DevOps</option>
-                <option value="database">Database</option>
-                <option value="mobile">Mobile</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-          </div>
 
-          <div className="form-row">
-            <div className="form-group">
-              <label>Proficiency (1-5) *</label>
-              <input
-                type="number"
-                value={skillForm.proficiency}
-                onChange={(e) => setSkillForm({ ...skillForm, proficiency: parseInt((e.target as HTMLInputElement).value) })}
-                min="1"
-                max="5"
-              />
+            <div className="row">
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Proficiency (1-5) *</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  value={skillForm.proficiency}
+                  onChange={(e) => setSkillForm({ ...skillForm, proficiency: parseInt((e.target as HTMLInputElement).value) })}
+                  min="1"
+                  max="5"
+                />
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Icon</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={skillForm.icon}
+                  onChange={(e) => setSkillForm({ ...skillForm, icon: (e.target as HTMLInputElement).value })}
+                  placeholder="Icon class or URL"
+                />
+              </div>
             </div>
-            <div className="form-group">
-              <label>Icon</label>
-              <input
-                type="text"
-                value={skillForm.icon}
-                onChange={(e) => setSkillForm({ ...skillForm, icon: (e.target as HTMLInputElement).value })}
-                placeholder="Icon class or URL"
-              />
-            </div>
-          </div>
 
-          <div className="form-actions">
-            <button onClick={handleSubmit} className="save-btn">
-              {editingItem ? "Update" : "Create"}
-            </button>
-            <button onClick={handleCancel} className="cancel-btn">
-              Cancel
-            </button>
+            <div className="d-flex gap-2">
+              <button onClick={handleSubmit} className="btn btn-primary">
+                {editingItem ? "Update" : "Create"}
+              </button>
+              <button onClick={handleCancel} className="btn btn-secondary">
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {/* Experience Form */}
       {activeTab === "experience" && (isCreating || editingItem) && (
-        <div className="data-form">
-          <h4>{editingItem ? "Edit Experience" : "Add New Experience"}</h4>
-          
-          <div className="form-row">
-            <div className="form-group">
-              <label>Company *</label>
-              <input
-                type="text"
-                value={experienceForm.company}
-                onChange={(e) => setExperienceForm({ ...experienceForm, company: (e.target as HTMLInputElement).value })}
-                placeholder="Company name"
-              />
-            </div>
-            <div className="form-group">
-              <label>Position *</label>
-              <input
-                type="text"
-                value={experienceForm.position}
-                onChange={(e) => setExperienceForm({ ...experienceForm, position: (e.target as HTMLInputElement).value })}
-                placeholder="Job title"
-              />
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label>Description</label>
-            <textarea
-              value={experienceForm.description}
-              onChange={(e) => setExperienceForm({ ...experienceForm, description: (e.target as HTMLTextAreaElement).value })}
-              placeholder="Job description"
-              rows={3}
-            />
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label>Start Date *</label>
-              <input
-                type="date"
-                value={experienceForm.startDate}
-                onChange={(e) => setExperienceForm({ ...experienceForm, startDate: (e.target as HTMLInputElement).value })}
-              />
-            </div>
-            <div className="form-group">
-              <label>End Date</label>
-              <input
-                type="date"
-                value={experienceForm.endDate}
-                onChange={(e) => setExperienceForm({ ...experienceForm, endDate: (e.target as HTMLInputElement).value })}
-                disabled={experienceForm.current}
-              />
-            </div>
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label>Technologies</label>
-              <input
-                type="text"
-                value={experienceForm.technologies}
-                onChange={(e) => setExperienceForm({ ...experienceForm, technologies: (e.target as HTMLInputElement).value })}
-                placeholder="React, Node.js, TypeScript (comma separated)"
-              />
-            </div>
-            <div className="form-group checkbox-group">
-              <label>
+        <div className="card mb-3">
+          <div className="card-body">
+            <h4 className="card-title">{editingItem ? "Edit Experience" : "Add New Experience"}</h4>
+            
+            <div className="row">
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Company *</label>
                 <input
-                  type="checkbox"
-                  checked={experienceForm.current}
-                  onChange={(e) => setExperienceForm({ ...experienceForm, current: (e.target as HTMLInputElement).checked })}
+                  type="text"
+                  className="form-control"
+                  value={experienceForm.company}
+                  onChange={(e) => setExperienceForm({ ...experienceForm, company: (e.target as HTMLInputElement).value })}
+                  placeholder="Company name"
                 />
-                Current Position
-              </label>
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Position *</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={experienceForm.position}
+                  onChange={(e) => setExperienceForm({ ...experienceForm, position: (e.target as HTMLInputElement).value })}
+                  placeholder="Job title"
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="form-actions">
-            <button onClick={handleSubmit} className="save-btn">
-              {editingItem ? "Update" : "Create"}
-            </button>
-            <button onClick={handleCancel} className="cancel-btn">
-              Cancel
-            </button>
+            <div className="mb-3">
+              <label className="form-label">Description</label>
+              <textarea
+                className="form-control"
+                value={experienceForm.description}
+                onChange={(e) => setExperienceForm({ ...experienceForm, description: (e.target as HTMLTextAreaElement).value })}
+                placeholder="Job description"
+                rows={3}
+              />
+            </div>
+
+            <div className="row">
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Start Date *</label>
+                <input
+                  type="date"
+                  className="form-control"
+                  value={experienceForm.startDate}
+                  onChange={(e) => setExperienceForm({ ...experienceForm, startDate: (e.target as HTMLInputElement).value })}
+                />
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label">End Date</label>
+                <input
+                  type="date"
+                  className="form-control"
+                  value={experienceForm.endDate}
+                  onChange={(e) => setExperienceForm({ ...experienceForm, endDate: (e.target as HTMLInputElement).value })}
+                  disabled={experienceForm.current}
+                />
+              </div>
+            </div>
+
+            <div className="row">
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Technologies</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={experienceForm.technologies}
+                  onChange={(e) => setExperienceForm({ ...experienceForm, technologies: (e.target as HTMLInputElement).value })}
+                  placeholder="React, Node.js, TypeScript (comma separated)"
+                />
+              </div>
+              <div className="col-md-6 mb-3 d-flex align-items-end">
+                <div className="form-check">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    checked={experienceForm.current}
+                    onChange={(e) => setExperienceForm({ ...experienceForm, current: (e.target as HTMLInputElement).checked })}
+                    id="current-check"
+                  />
+                  <label className="form-check-label" htmlFor="current-check">
+                    Current Position
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div className="d-flex gap-2">
+              <button onClick={handleSubmit} className="btn btn-primary">
+                {editingItem ? "Update" : "Create"}
+              </button>
+              <button onClick={handleCancel} className="btn btn-secondary">
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
 
       {/* Testimonial Form */}
       {activeTab === "testimonials" && (isCreating || editingItem) && (
-        <div className="data-form">
-          <h4>{editingItem ? "Edit Testimonial" : "Add New Testimonial"}</h4>
-          
-          <div className="form-row">
-            <div className="form-group">
-              <label>Client Name *</label>
+        <div className="card mb-3">
+          <div className="card-body">
+            <h4 className="card-title">{editingItem ? "Edit Testimonial" : "Add New Testimonial"}</h4>
+            
+            <div className="row">
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Client Name *</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={testimonialForm.clientName}
+                  onChange={(e) => setTestimonialForm({ ...testimonialForm, clientName: (e.target as HTMLInputElement).value })}
+                  placeholder="Client name"
+                />
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Client Title</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={testimonialForm.clientTitle}
+                  onChange={(e) => setTestimonialForm({ ...testimonialForm, clientTitle: (e.target as HTMLInputElement).value })}
+                  placeholder="Job title"
+                />
+              </div>
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Client Company</label>
               <input
                 type="text"
-                value={testimonialForm.clientName}
-                onChange={(e) => setTestimonialForm({ ...testimonialForm, clientName: (e.target as HTMLInputElement).value })}
-                placeholder="Client name"
+                className="form-control"
+                value={testimonialForm.clientCompany}
+                onChange={(e) => setTestimonialForm({ ...testimonialForm, clientCompany: (e.target as HTMLInputElement).value })}
+                placeholder="Company name"
               />
             </div>
-            <div className="form-group">
-              <label>Client Title</label>
-              <input
-                type="text"
-                value={testimonialForm.clientTitle}
-                onChange={(e) => setTestimonialForm({ ...testimonialForm, clientTitle: (e.target as HTMLInputElement).value })}
-                placeholder="Job title"
+
+            <div className="mb-3">
+              <label className="form-label">Content *</label>
+              <textarea
+                className="form-control"
+                value={testimonialForm.content}
+                onChange={(e) => setTestimonialForm({ ...testimonialForm, content: (e.target as HTMLTextAreaElement).value })}
+                placeholder="Testimonial content"
+                rows={4}
               />
             </div>
-          </div>
 
-          <div className="form-group">
-            <label>Client Company</label>
-            <input
-              type="text"
-              value={testimonialForm.clientCompany}
-              onChange={(e) => setTestimonialForm({ ...testimonialForm, clientCompany: (e.target as HTMLInputElement).value })}
-              placeholder="Company name"
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Content *</label>
-            <textarea
-              value={testimonialForm.content}
-              onChange={(e) => setTestimonialForm({ ...testimonialForm, content: (e.target as HTMLTextAreaElement).value })}
-              placeholder="Testimonial content"
-              rows={4}
-            />
-          </div>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label>Rating (1-5)</label>
-              <input
-                type="number"
-                value={testimonialForm.rating}
-                onChange={(e) => setTestimonialForm({ ...testimonialForm, rating: parseInt((e.target as HTMLInputElement).value) })}
-                min="1"
-                max="5"
-              />
+            <div className="row">
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Rating (1-5)</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  value={testimonialForm.rating}
+                  onChange={(e) => setTestimonialForm({ ...testimonialForm, rating: parseInt((e.target as HTMLInputElement).value) })}
+                  min="1"
+                  max="5"
+                />
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="form-label">Project ID</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  value={testimonialForm.projectId}
+                  onChange={(e) => setTestimonialForm({ ...testimonialForm, projectId: (e.target as HTMLInputElement).value })}
+                  placeholder="Related project ID"
+                />
+              </div>
             </div>
-            <div className="form-group">
-              <label>Project ID</label>
-              <input
-                type="number"
-                value={testimonialForm.projectId}
-                onChange={(e) => setTestimonialForm({ ...testimonialForm, projectId: (e.target as HTMLInputElement).value })}
-                placeholder="Related project ID"
-              />
+
+            <div className="mb-3">
+              <div className="form-check">
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  checked={testimonialForm.approved}
+                  onChange={(e) => setTestimonialForm({ ...testimonialForm, approved: (e.target as HTMLInputElement).checked })}
+                  id="approved-check"
+                />
+                <label className="form-check-label" htmlFor="approved-check">
+                  Approved
+                </label>
+              </div>
             </div>
-          </div>
 
-          <div className="form-group checkbox-group">
-            <label>
-              <input
-                type="checkbox"
-                checked={testimonialForm.approved}
-                onChange={(e) => setTestimonialForm({ ...testimonialForm, approved: (e.target as HTMLInputElement).checked })}
-              />
-              Approved
-            </label>
-          </div>
-
-          <div className="form-actions">
-            <button onClick={handleSubmit} className="save-btn">
-              {editingItem ? "Update" : "Create"}
-            </button>
-            <button onClick={handleCancel} className="cancel-btn">
-              Cancel
-            </button>
+            <div className="d-flex gap-2">
+              <button onClick={handleSubmit} className="btn btn-primary">
+                {editingItem ? "Update" : "Create"}
+              </button>
+              <button onClick={handleCancel} className="btn btn-secondary">
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      <div className="data-content">
+      <div className="flex-grow-1 overflow-auto">
         {activeTab === "projects" && (
-          <div className="projects-section">
+          <div>
             <h4>Projects</h4>
-            <div className="data-list">
+            <div className="d-flex flex-column gap-2">
               {projects.map((project) => (
-                <div key={project.id} className="data-item">
-                  <div className="item-info">
-                    <h5>{project.name}</h5>
-                    <p className="item-meta">
-                      Type: {project.projectType} | 
-                      Created: {new Date(project.createdAt).toLocaleDateString()}
-                    </p>
-                    {project.description && <p className="item-description">{project.description}</p>}
-                    <p className="item-links">
-                      {project.githubUrl && (
-                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">GitHub</a>
-                      )}
-                      {project.liveUrl && (
-                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">Live Demo</a>
-                      )}
-                    </p>
-                  </div>
-                  <div className="item-actions">
-                    <button onClick={() => handleEdit(project)} className="edit-btn">Edit</button>
-                    <button onClick={() => handleDelete(project.id)} className="delete-btn">Delete</button>
+                <div key={project.id} className="card">
+                  <div className="card-body">
+                    <div className="d-flex justify-content-between align-items-start">
+                      <div className="flex-grow-1">
+                        <h5 className="card-title mb-1">{project.name}</h5>
+                        <p className="text-muted small mb-2">
+                          Type: {project.projectType} | 
+                          Created: {new Date(project.createdAt).toLocaleDateString()}
+                        </p>
+                        {project.description && <p className="card-text small">{project.description}</p>}
+                        <div className="small">
+                          {project.githubUrl && (
+                            <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="me-3">GitHub</a>
+                          )}
+                          {project.liveUrl && (
+                            <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">Live Demo</a>
+                          )}
+                        </div>
+                      </div>
+                      <div className="d-flex gap-2">
+                        <button onClick={() => handleEdit(project)} className="btn btn-warning btn-sm">Edit</button>
+                        <button onClick={() => handleDelete(project.id)} className="btn btn-danger btn-sm">Delete</button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -760,23 +807,27 @@ export function DataManager({ lastFocusTime = 0 }: DataManagerProps) {
         )}
 
         {activeTab === "skills" && (
-          <div className="skills-section">
+          <div>
             <h4>Skills</h4>
-            <div className="data-list">
+            <div className="d-flex flex-column gap-2">
               {skills.map((skill) => (
-                <div key={skill.id} className="data-item">
-                  <div className="item-info">
-                    <h5>{skill.name}</h5>
-                    <p className="item-meta">
-                      Category: {skill.category} | 
-                      Proficiency: {skill.proficiency}/5 | 
-                      Created: {new Date(skill.createdAt).toLocaleDateString()}
-                    </p>
-                    {skill.icon && <p className="item-icon">Icon: {skill.icon}</p>}
-                  </div>
-                  <div className="item-actions">
-                    <button onClick={() => handleEdit(skill)} className="edit-btn">Edit</button>
-                    <button onClick={() => handleDelete(skill.id)} className="delete-btn">Delete</button>
+                <div key={skill.id} className="card">
+                  <div className="card-body">
+                    <div className="d-flex justify-content-between align-items-start">
+                      <div className="flex-grow-1">
+                        <h5 className="card-title mb-1">{skill.name}</h5>
+                        <p className="text-muted small mb-2">
+                          Category: {skill.category} | 
+                          Proficiency: {skill.proficiency}/5 | 
+                          Created: {new Date(skill.createdAt).toLocaleDateString()}
+                        </p>
+                        {skill.icon && <p className="small mb-0">Icon: {skill.icon}</p>}
+                      </div>
+                      <div className="d-flex gap-2">
+                        <button onClick={() => handleEdit(skill)} className="btn btn-warning btn-sm">Edit</button>
+                        <button onClick={() => handleDelete(skill.id)} className="btn btn-danger btn-sm">Delete</button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -785,23 +836,27 @@ export function DataManager({ lastFocusTime = 0 }: DataManagerProps) {
         )}
 
         {activeTab === "experience" && (
-          <div className="experience-section">
+          <div>
             <h4>Work Experience</h4>
-            <div className="data-list">
+            <div className="d-flex flex-column gap-2">
               {experience.map((exp) => (
-                <div key={exp.id} className="data-item">
-                  <div className="item-info">
-                    <h5>{exp.position} at {exp.company}</h5>
-                    <p className="item-meta">
-                      {new Date(exp.startDate).toLocaleDateString()} - 
-                      {exp.current ? "Present" : exp.endDate ? new Date(exp.endDate).toLocaleDateString() : "Unknown"}
-                    </p>
-                    {exp.description && <p className="item-description">{exp.description}</p>}
-                    {exp.technologies && <p className="item-tech">Technologies: {exp.technologies}</p>}
-                  </div>
-                  <div className="item-actions">
-                    <button onClick={() => handleEdit(exp)} className="edit-btn">Edit</button>
-                    <button onClick={() => handleDelete(exp.id)} className="delete-btn">Delete</button>
+                <div key={exp.id} className="card">
+                  <div className="card-body">
+                    <div className="d-flex justify-content-between align-items-start">
+                      <div className="flex-grow-1">
+                        <h5 className="card-title mb-1">{exp.position} at {exp.company}</h5>
+                        <p className="text-muted small mb-2">
+                          {new Date(exp.startDate).toLocaleDateString()} - 
+                          {exp.current ? "Present" : exp.endDate ? new Date(exp.endDate).toLocaleDateString() : "Unknown"}
+                        </p>
+                        {exp.description && <p className="card-text small">{exp.description}</p>}
+                        {exp.technologies && <p className="small mb-0">Technologies: {exp.technologies}</p>}
+                      </div>
+                      <div className="d-flex gap-2">
+                        <button onClick={() => handleEdit(exp)} className="btn btn-warning btn-sm">Edit</button>
+                        <button onClick={() => handleDelete(exp.id)} className="btn btn-danger btn-sm">Delete</button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -810,31 +865,35 @@ export function DataManager({ lastFocusTime = 0 }: DataManagerProps) {
         )}
 
         {activeTab === "testimonials" && (
-          <div className="testimonials-section">
+          <div>
             <h4>Testimonials</h4>
-            <div className="data-list">
+            <div className="d-flex flex-column gap-2">
               {testimonials.map((testimonial) => (
-                <div key={testimonial.id} className={`data-item ${!testimonial.approved ? "pending" : ""}`}>
-                  <div className="item-info">
-                    <h5>{testimonial.clientName}</h5>
-                    <p className="item-meta">
-                      {testimonial.clientTitle && `${testimonial.clientTitle}`}
-                      {testimonial.clientCompany && ` at ${testimonial.clientCompany}`} | 
-                      Rating: {testimonial.rating || "N/A"} | 
-                      Status: {testimonial.approved ? "Approved" : "Pending"} |
-                      Created: {new Date(testimonial.createdAt).toLocaleDateString()}
-                    </p>
-                    <p className="item-content">{testimonial.content}</p>
-                  </div>
-                  <div className="item-actions">
-                    <button onClick={() => handleEdit(testimonial)} className="edit-btn">Edit</button>
-                    <button 
-                      onClick={() => handleToggleApproval(testimonial)} 
-                      className="approve-btn"
-                    >
-                      {testimonial.approved ? "Unapprove" : "Approve"}
-                    </button>
-                    <button onClick={() => handleDelete(testimonial.id)} className="delete-btn">Delete</button>
+                <div key={testimonial.id} className={`card ${!testimonial.approved ? "border-warning" : ""}`}>
+                  <div className="card-body">
+                    <div className="d-flex justify-content-between align-items-start">
+                      <div className="flex-grow-1">
+                        <h5 className="card-title mb-1">{testimonial.clientName}</h5>
+                        <p className="text-muted small mb-2">
+                          {testimonial.clientTitle && `${testimonial.clientTitle}`}
+                          {testimonial.clientCompany && ` at ${testimonial.clientCompany}`} | 
+                          Rating: {testimonial.rating || "N/A"} | 
+                          Status: {testimonial.approved ? "Approved" : "Pending"} |
+                          Created: {new Date(testimonial.createdAt).toLocaleDateString()}
+                        </p>
+                        <p className="card-text small">{testimonial.content}</p>
+                      </div>
+                      <div className="d-flex gap-2">
+                        <button onClick={() => handleEdit(testimonial)} className="btn btn-warning btn-sm">Edit</button>
+                        <button 
+                          onClick={() => handleToggleApproval(testimonial)} 
+                          className={`btn btn-sm ${testimonial.approved ? "btn-outline-warning" : "btn-success"}`}
+                        >
+                          {testimonial.approved ? "Unapprove" : "Approve"}
+                        </button>
+                        <button onClick={() => handleDelete(testimonial.id)} className="btn btn-danger btn-sm">Delete</button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -842,285 +901,6 @@ export function DataManager({ lastFocusTime = 0 }: DataManagerProps) {
           </div>
         )}
       </div>
-
-      <style jsx>{`
-        .data-manager {
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .data-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 20px;
-        }
-
-        .data-header h3 {
-          margin: 0;
-        }
-
-        .create-btn {
-          background: #28a745;
-          color: white;
-          border: none;
-          padding: 8px 16px;
-          border-radius: 4px;
-          cursor: pointer;
-        }
-
-        .create-btn:hover {
-          background: #218838;
-        }
-
-        .error {
-          color: #dc3545;
-          margin-bottom: 15px;
-          padding: 10px;
-          background: #f8d7da;
-          border-radius: 4px;
-        }
-
-        .data-form {
-          background: #f8f9fa;
-          padding: 20px;
-          border-radius: 8px;
-          margin-bottom: 20px;
-        }
-
-        .data-form h4 {
-          margin-top: 0;
-          margin-bottom: 20px;
-        }
-
-        .form-row {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-          gap: 15px;
-          margin-bottom: 15px;
-        }
-
-        .form-group {
-          margin-bottom: 15px;
-        }
-
-        .form-group label {
-          display: block;
-          margin-bottom: 5px;
-          font-weight: 500;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-          width: 100%;
-          padding: 8px;
-          border: 1px solid #ddd;
-          border-radius: 4px;
-          font-size: 14px;
-        }
-
-        .checkbox-group {
-          display: flex;
-          align-items: center;
-          margin-top: 25px;
-        }
-
-        .checkbox-group label {
-          display: flex;
-          align-items: center;
-          margin: 0;
-          cursor: pointer;
-        }
-
-        .checkbox-group input {
-          width: auto;
-          margin-right: 8px;
-        }
-
-        .form-actions {
-          display: flex;
-          gap: 10px;
-          margin-top: 20px;
-        }
-
-        .save-btn {
-          background: #007bff;
-          color: white;
-          border: none;
-          padding: 10px 20px;
-          border-radius: 4px;
-          cursor: pointer;
-        }
-
-        .save-btn:hover {
-          background: #0056b3;
-        }
-
-        .cancel-btn {
-          background: #6c757d;
-          color: white;
-          border: none;
-          padding: 10px 20px;
-          border-radius: 4px;
-          cursor: pointer;
-        }
-
-        .cancel-btn:hover {
-          background: #5a6268;
-        }
-
-        .data-tabs {
-          display: flex;
-          border-bottom: 1px solid #eee;
-          margin-bottom: 20px;
-        }
-
-        .data-tabs button {
-          background: none;
-          border: none;
-          padding: 12px 20px;
-          cursor: pointer;
-          font-size: 14px;
-          color: #666;
-          border-bottom: 2px solid transparent;
-          transition: all 0.2s;
-        }
-
-        .data-tabs button:hover {
-          color: #333;
-        }
-
-        .data-tabs button.active {
-          color: #007bff;
-          border-bottom-color: #007bff;
-        }
-
-        .data-content {
-          flex: 1;
-          overflow-y: auto;
-        }
-
-        .data-content h4 {
-          margin-top: 0;
-          margin-bottom: 15px;
-          color: #333;
-        }
-
-        .data-list {
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-        }
-
-        .data-item {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          padding: 15px;
-          border: 1px solid #eee;
-          border-radius: 4px;
-          background: white;
-        }
-
-        .data-item.pending {
-          border-left: 4px solid #ffc107;
-          background: #fffbf0;
-        }
-
-        .item-info {
-          flex: 1;
-        }
-
-        .item-info h5 {
-          margin: 0 0 5px 0;
-          color: #333;
-        }
-
-        .item-meta {
-          margin: 0 0 5px 0;
-          font-size: 12px;
-          color: #666;
-        }
-
-        .item-description,
-        .item-content {
-          margin: 5px 0;
-          font-size: 14px;
-          color: #555;
-          line-height: 1.4;
-        }
-
-        .item-links {
-          margin: 5px 0 0 0;
-        }
-
-        .item-links a {
-          color: #007bff;
-          text-decoration: none;
-          margin-right: 15px;
-          font-size: 13px;
-        }
-
-        .item-links a:hover {
-          text-decoration: underline;
-        }
-
-        .item-tech,
-        .item-icon {
-          margin: 5px 0;
-          font-size: 13px;
-          color: #666;
-        }
-
-        .item-actions {
-          display: flex;
-          gap: 8px;
-        }
-
-        .edit-btn {
-          background: #ffc107;
-          color: #212529;
-          border: none;
-          padding: 6px 12px;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 12px;
-        }
-
-        .edit-btn:hover {
-          background: #e0a800;
-        }
-
-        .approve-btn {
-          background: #28a745;
-          color: white;
-          border: none;
-          padding: 6px 12px;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 12px;
-        }
-
-        .approve-btn:hover {
-          background: #218838;
-        }
-
-        .delete-btn {
-          background: #dc3545;
-          color: white;
-          border: none;
-          padding: 6px 12px;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 12px;
-        }
-
-        .delete-btn:hover {
-          background: #c82333;
-        }
-      `}</style>
     </div>
   );
 } 

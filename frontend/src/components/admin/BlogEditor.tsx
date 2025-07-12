@@ -1,5 +1,4 @@
 import { useState, useEffect } from "preact/hooks";
-import "./BlogEditor.scss";
 
 interface BlogPost {
   id: number;
@@ -160,109 +159,123 @@ export function BlogEditor({ lastFocusTime = 0 }: BlogEditorProps) {
     setFormData({ ...formData, slug });
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div className="text-center p-4">Loading...</div>;
 
   return (
-    <div className="blog-editor">
-      <div className="blog-header">
-        <h3>Blog Posts</h3>
-        <button onClick={handleCreate} className="create-btn">
+    <div className="h-100 d-flex flex-column">
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h3 className="mb-0">Blog Posts</h3>
+        <button onClick={handleCreate} className="btn btn-success">
           New Post
         </button>
       </div>
 
-      {error && <div className="error">{error}</div>}
+      {error && <div className="alert alert-danger">{error}</div>}
 
       {(isCreating || editingPost) && (
-        <div className="blog-form">
-          <h4>{editingPost ? "Edit Post" : "Create New Post"}</h4>
-          
-          <div className="form-group">
-            <label>Title</label>
-            <input
-              type="text"
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: (e.target as HTMLInputElement).value })}
-              placeholder="Post title"
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Slug</label>
-            <div className="slug-input">
+        <div className="card mb-3">
+          <div className="card-body">
+            <h4 className="card-title">{editingPost ? "Edit Post" : "Create New Post"}</h4>
+            
+            <div className="mb-3">
+              <label className="form-label">Title</label>
               <input
                 type="text"
-                value={formData.slug}
-                onChange={(e) => setFormData({ ...formData, slug: (e.target as HTMLInputElement).value })}
-                placeholder="post-slug"
+                className="form-control"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: (e.target as HTMLInputElement).value })}
+                placeholder="Post title"
               />
-              <button onClick={generateSlug} className="generate-slug-btn">
-                Generate
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Slug</label>
+              <div className="input-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  value={formData.slug}
+                  onChange={(e) => setFormData({ ...formData, slug: (e.target as HTMLInputElement).value })}
+                  placeholder="post-slug"
+                />
+                <button onClick={generateSlug} className="btn btn-outline-secondary">
+                  Generate
+                </button>
+              </div>
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Excerpt</label>
+              <textarea
+                className="form-control"
+                value={formData.excerpt}
+                onChange={(e) => setFormData({ ...formData, excerpt: (e.target as HTMLTextAreaElement).value })}
+                placeholder="Brief description of the post"
+                rows={3}
+              />
+            </div>
+
+            <div className="mb-3">
+              <label className="form-label">Content</label>
+              <textarea
+                className="form-control"
+                value={formData.content}
+                onChange={(e) => setFormData({ ...formData, content: (e.target as HTMLTextAreaElement).value })}
+                placeholder="Post content (markdown supported)"
+                rows={15}
+              />
+            </div>
+
+            <div className="mb-3">
+              <div className="form-check">
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  checked={formData.published}
+                  onChange={(e) => setFormData({ ...formData, published: (e.target as HTMLInputElement).checked })}
+                  id="published-check"
+                />
+                <label className="form-check-label" htmlFor="published-check">
+                  Published
+                </label>
+              </div>
+            </div>
+
+            <div className="d-flex gap-2">
+              <button onClick={handleSubmit} className="btn btn-primary">
+                {editingPost ? "Update" : "Create"}
+              </button>
+              <button onClick={handleCancel} className="btn btn-secondary">
+                Cancel
               </button>
             </div>
-          </div>
-
-          <div className="form-group">
-            <label>Excerpt</label>
-            <textarea
-              value={formData.excerpt}
-              onChange={(e) => setFormData({ ...formData, excerpt: (e.target as HTMLTextAreaElement).value })}
-              placeholder="Brief description of the post"
-              rows={3}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Content</label>
-            <textarea
-              value={formData.content}
-              onChange={(e) => setFormData({ ...formData, content: (e.target as HTMLTextAreaElement).value })}
-              placeholder="Post content (markdown supported)"
-              rows={15}
-            />
-          </div>
-
-          <div className="form-group">
-            <label>
-              <input
-                type="checkbox"
-                checked={formData.published}
-                onChange={(e) => setFormData({ ...formData, published: (e.target as HTMLInputElement).checked })}
-              />
-              Published
-            </label>
-          </div>
-
-          <div className="form-actions">
-            <button onClick={handleSubmit} className="save-btn">
-              {editingPost ? "Update" : "Create"}
-            </button>
-            <button onClick={handleCancel} className="cancel-btn">
-              Cancel
-            </button>
           </div>
         </div>
       )}
 
-      <div className="posts-list">
+      <div className="flex-grow-1 overflow-auto">
         {posts.map((post) => (
-          <div key={post.id} className="post-item">
-            <div className="post-info">
-              <h4>{post.title}</h4>
-              <p className="post-meta">
-                Slug: {post.slug} | 
-                Status: {post.published ? "Published" : "Draft"} |
-                Created: {new Date(post.createdAt).toLocaleDateString()}
-              </p>
-              {post.excerpt && <p className="post-excerpt">{post.excerpt}</p>}
-            </div>
-            <div className="post-actions">
-              <button onClick={() => handleEdit(post)} className="edit-btn">
-                Edit
-              </button>
-              <button onClick={() => handleDelete(post.id)} className="delete-btn">
-                Delete
-              </button>
+          <div key={post.id} className="card mb-2">
+            <div className="card-body">
+              <div className="d-flex justify-content-between align-items-start">
+                <div className="flex-grow-1">
+                  <h5 className="card-title mb-1">{post.title}</h5>
+                  <p className="text-muted small mb-2">
+                    Slug: {post.slug} | 
+                    Status: {post.published ? "Published" : "Draft"} |
+                    Created: {new Date(post.createdAt).toLocaleDateString()}
+                  </p>
+                  {post.excerpt && <p className="card-text small">{post.excerpt}</p>}
+                </div>
+                <div className="d-flex gap-2">
+                  <button onClick={() => handleEdit(post)} className="btn btn-warning btn-sm">
+                    Edit
+                  </button>
+                  <button onClick={() => handleDelete(post.id)} className="btn btn-danger btn-sm">
+                    Delete
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         ))}
