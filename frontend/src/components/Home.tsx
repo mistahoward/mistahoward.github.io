@@ -8,7 +8,8 @@ export const Home = () => {
 					<div className="col-lg-8">
 						<Hero />
 						<h1 className="display-2 fw-bold mb-3">Hey, I&apos;m Alex.</h1>
-						<p className="display-6 lead text-primary mb-4">Full Stack Software Engineer</p>
+						<p className="display-5 lead text-primary mb-4">Full Stack Software Engineer II</p>
+						<h2 className="text-muted">Front End Subject Matter Expert</h2>
 						<p className="fs-3 text-muted">
 							I&apos;m the engineer who makes sure the back-end is powerful and the front-end proves it.
 						</p>

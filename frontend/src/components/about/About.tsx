@@ -2,7 +2,7 @@ import { AboutStatic } from "./AboutStatic";
 import { SkillsList } from "./SkillsList";
 import { ExperienceList } from "./ExperienceList";
 import { TestimonialsList } from "./TestimonialsList";
-import React, { useState } from "react";
+import { useState } from "react";
 
 export const About = () => {
 	const [activeTab, setActiveTab] = useState("skills");
@@ -56,7 +56,7 @@ export const About = () => {
 								</button>
 							</li>
 						</ul>
-						<div className="tab-content p-3 border rounded bg-white">
+						<div className="tab-content p-3 border rounded bg-body">
 							<div
 								className={`tab-pane fade${activeTab === "skills" ? " show active" : ""}`}
 								id="skills"
@@ -68,6 +68,7 @@ export const About = () => {
 							<div
 								className={`tab-pane fade${activeTab === "experience" ? " show active" : ""}`}
 								id="experience"
+								ike
 								role="tabpanel"
 								aria-labelledby="experience-tab"
 							>
