@@ -85,6 +85,29 @@
 	font-optical-sizing: auto;
 }
 
+html {
+	transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+html * {
+	transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+html *:not(.nav-link, .btn, .form-control, .form-select, .dropdown-menu, .modal, .tooltip, .popover) {
+	transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.nav-link,
+.btn,
+.form-control,
+.form-select,
+.dropdown-menu,
+.modal,
+.tooltip,
+.popover {
+	transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
 .nav-link {
 	font-size: clamp(1rem, 2vw, 1.5rem);
 	&.fw-bold {
@@ -127,6 +150,7 @@
 	position: sticky;
 	top: 0;
 	z-index: 1000;
+	transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
 .navbar-section {
@@ -226,6 +250,7 @@
 	margin-bottom: 1rem;
 	overflow: hidden;
 	box-shadow: 0 0 0 4px rgba(0,0,0,0.05);
+	transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .hero-portrait img {
@@ -239,4 +264,5 @@
 	font-size: 3rem;
 	font-weight: bold;
 	color: var(--bs-primary);
+	transition: color 0.3s ease;
 }
