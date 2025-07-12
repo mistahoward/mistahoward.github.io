@@ -268,33 +268,53 @@ html *:not(.nav-link, .btn, .form-control, .form-select, .dropdown-menu, .modal,
 }
 
 .hero-portrait-ring.ring1 {
-	width: 320px;
-	height: 260px;
+	width: 260px;
+	height: 250px;
 	opacity: 0.5;
 	border-style: solid;
 	border-width: 2.5px;
-	transform: translate(-50%, -50%) scaleX(1.18) scaleY(0.93) rotate(-8deg);
+	transform: translate(-50%, -50%) scaleX(1.08) scaleY(0.93) rotate(-8deg);
 	animation: ring-flow1 6s ease-in-out infinite alternate;
 }
 
 .hero-portrait-ring.ring3 {
-	width: 350px;
-	height: 295px;
+	width: 255px;
+	height: 265px;
 	opacity: 0.4;
 	border-style: solid;
 	border-width: 2px;
-	transform: translate(-50%, -50%) scaleX(1.03) scaleY(1.21) rotate(34deg);
+	transform: translate(-50%, -50%) scaleX(0.92) scaleY(1.08) rotate(47deg);
 	animation: ring-flow3 8s ease-in-out infinite alternate;
 }
 
 .hero-portrait-ring.ring4 {
-	width: 380px;
-	height: 240px;
+	width: 270px;
+	height: 235px;
 	opacity: 0.3;
 	border-style: solid;
 	border-width: 2.5px;
-	transform: translate(-50%, -50%) scaleX(1.35) scaleY(0.78) rotate(-58deg);
+	transform: translate(-50%, -50%) scaleX(1.15) scaleY(0.85) rotate(-33deg);
 	animation: ring-flow4 10s ease-in-out infinite alternate;
+}
+
+.hero-portrait-ring.ring5 {
+	width: 250px;
+	height: 275px;
+	opacity: 0.25;
+	border-style: solid;
+	border-width: 2px;
+	transform: translate(-50%, -50%) scaleX(0.88) scaleY(1.15) rotate(92deg);
+	animation: ring-flow5 12s ease-in-out infinite alternate;
+}
+
+.hero-portrait-ring.ring6 {
+	width: 275px;
+	height: 245px;
+	opacity: 0.18;
+	border-style: solid;
+	border-width: 2.5px;
+	transform: translate(-50%, -50%) scaleX(1.12) scaleY(0.90) rotate(-70deg);
+	animation: ring-flow6 16s ease-in-out infinite alternate;
 }
 
 @keyframes ring-rotate {
@@ -308,23 +328,36 @@ html *:not(.nav-link, .btn, .form-control, .form-select, .dropdown-menu, .modal,
 }
 
 @keyframes ring-flow1 {
-	0% { transform: translate(-50%, -50%) scaleX(1.08) scaleY(0.93) rotate(-8deg); }
-	30% { transform: translate(-50%, -50%) scaleX(1.13) scaleY(0.89) rotate(-12deg); }
-	60% { transform: translate(-50%, -50%) scaleX(1.05) scaleY(0.97) rotate(-4deg); }
-	100% { transform: translate(-50%, -50%) scaleX(1.08) scaleY(0.93) rotate(-8deg); }
+	0% { transform: translate(-50%, -50%) scaleX(1.18) scaleY(0.93) rotate(-8deg); }
+	30% { transform: translate(-50%, -50%) scaleX(1.28) scaleY(0.85) rotate(-18deg); }
+	60% { transform: translate(-50%, -50%) scaleX(1.10) scaleY(1.01) rotate(2deg); }
+	100% { transform: translate(-50%, -50%) scaleX(1.18) scaleY(0.93) rotate(-8deg); }
 }
 
 @keyframes ring-flow3 {
-	0% { transform: translate(-50%, -50%) scaleX(1.03) scaleY(1.11) rotate(14deg); }
-	40% { transform: translate(-50%, -50%) scaleX(1.08) scaleY(1.05) rotate(10deg); }
-	70% { transform: translate(-50%, -50%) scaleX(0.98) scaleY(1.15) rotate(18deg); }
-	100% { transform: translate(-50%, -50%) scaleX(1.03) scaleY(1.11) rotate(14deg); }
+	0% { transform: translate(-50%, -50%) scaleX(1.03) scaleY(1.21) rotate(34deg); }
+	40% { transform: translate(-50%, -50%) scaleX(1.18) scaleY(1.05) rotate(20deg); }
+	70% { transform: translate(-50%, -50%) scaleX(0.98) scaleY(1.25) rotate(38deg); }
+	100% { transform: translate(-50%, -50%) scaleX(1.03) scaleY(1.21) rotate(34deg); }
 }
 
 @keyframes ring-flow4 {
-	0% { transform: translate(-50%, -50%) scaleX(1.15) scaleY(0.88) rotate(-18deg); }
-	50% { transform: translate(-50%, -50%) scaleX(1.20) scaleY(0.83) rotate(-22deg); }
-	100% { transform: translate(-50%, -50%) scaleX(1.15) scaleY(0.88) rotate(-18deg); }
+	0% { transform: translate(-50%, -50%) scaleX(1.35) scaleY(0.78) rotate(-58deg); }
+	50% { transform: translate(-50%, -50%) scaleX(1.50) scaleY(0.70) rotate(-72deg); }
+	100% { transform: translate(-50%, -50%) scaleX(1.35) scaleY(0.78) rotate(-58deg); }
+}
+
+@keyframes ring-flow5 {
+	0% { transform: translate(-50%, -50%) scaleX(1.22) scaleY(1.15) rotate(75deg); }
+	35% { transform: translate(-50%, -50%) scaleX(1.32) scaleY(1.05) rotate(60deg); }
+	80% { transform: translate(-50%, -50%) scaleX(1.10) scaleY(1.25) rotate(90deg); }
+	100% { transform: translate(-50%, -50%) scaleX(1.22) scaleY(1.15) rotate(75deg); }
+}
+
+@keyframes ring-flow6 {
+	0% { transform: translate(-50%, -50%) scaleX(1.38) scaleY(0.85) rotate(-110deg); }
+	50% { transform: translate(-50%, -50%) scaleX(1.55) scaleY(0.70) rotate(-130deg); }
+	100% { transform: translate(-50%, -50%) scaleX(1.38) scaleY(0.85) rotate(-110deg); }
 }
 
 .hero-portrait img {
