@@ -537,15 +537,18 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 
 						<div className="row">
 							<div className="col-md-6 mb-3">
-								<label className="form-label">Technologies</label>
+								<label className="form-label">Technologies (icon name, comma separated)</label>
 								<input
 									type="text"
 									className="form-control"
 									value={experienceForm.technologies}
 									onChange={e =>
-										setExperienceForm({ ...experienceForm, technologies: (e.target as HTMLInputElement).value })
+										setExperienceForm({
+											...experienceForm,
+											technologies: (e.target as HTMLInputElement).value,
+										})
 									}
-									placeholder="React, Node.js, TypeScript (comma separated)"
+									placeholder="e.g. TbBrandCSharp"
 								/>
 							</div>
 							<div className="col-md-6 mb-3 d-flex align-items-end">
@@ -819,9 +822,10 @@ export const DataManager = ({ lastFocusTime = 0 }: DataManagerProps) => {
 												<h5 className="card-title mb-1">{testimonial.clientName}</h5>
 												<p className="text-muted small mb-2">
 													{testimonial.clientTitle && `${testimonial.clientTitle}`}
-													{testimonial.clientCompany && ` at ${testimonial.clientCompany}`} | Rating:{" "}
-													{testimonial.rating || "N/A"} | Status: {testimonial.approved ? "Approved" : "Pending"}{" "}
-													| Created: {formatDate(testimonial.createdAt)}
+													{testimonial.clientCompany && ` at ${testimonial.clientCompany}`} | Rating:&nbsp;
+													{testimonial.rating || "N/A"} | Status:&nbsp;
+													{testimonial.approved ? "Approved" : "Pending"} | Created:&nbsp;
+													{formatDate(testimonial.createdAt)}
 												</p>
 												<p className="card-text small">{testimonial.content}</p>
 											</div>

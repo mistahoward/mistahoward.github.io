@@ -2,24 +2,9 @@ import { useEffect, useState, useMemo } from "preact/hooks";
 import { fetchItems } from "../../utils/crud";
 import { YakShaverSpinner } from "../shared/YakShaverSpinner";
 import { Skill } from "../../types/skills-list.types";
-import { TbBrandCSharp } from "react-icons/tb";
-import { SiBlazor, SiTypescript, SiJavascript, SiReact, SiXml, SiGit, SiSqlite, SiConfluence } from "react-icons/si";
+import { renderIcon } from "../../utils/iconMap";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { FaSortAmountUp, FaSortAmountDownAlt } from "react-icons/fa";
-import { VscAzureDevops } from "react-icons/vsc";
-
-const iconMap: Record<string, any> = {
-	TbBrandCSharp,
-	SiBlazor,
-	SiTypescript,
-	SiJavascript,
-	VscAzureDevops,
-	SiReact,
-	SiXml,
-	SiGit,
-	SiSqlite,
-	SiConfluence,
-};
 
 const categories = ["All", "Frontend", "Backend", "Full-Stack", "DevOps", "Database", "Mobile", "Other"];
 
@@ -39,12 +24,6 @@ export const SkillsList = () => {
 			setError,
 		});
 	}, []);
-
-	const renderIcon = (iconName: string) => {
-		const IconComponent = iconMap[iconName];
-		if (IconComponent) return <IconComponent size={24} className="me-2" />;
-		return null;
-	};
 
 	const renderStars = (proficiency: number) => (
 		<span>
