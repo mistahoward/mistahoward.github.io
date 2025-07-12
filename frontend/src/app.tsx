@@ -13,7 +13,7 @@ export const App = () => {
 		<>
 			<Navbar />
 
-			<main className="pt-2">
+			<main>
 				<section id="home" className="min-vh-100 d-flex align-items-center justify-content-center bg-primary bg-opacity-10">
 					<div className="container text-center">
 						<div className="row justify-content-center">

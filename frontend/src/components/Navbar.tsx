@@ -1,3 +1,4 @@
+import { useEffect, useState } from "preact/hooks";
 import { ThemeToggle } from "./ThemeToggle";
 import type { NavItem } from "../types/navbar.types";
 
@@ -12,6 +13,24 @@ const rightNavItems: NavItem[] = [
 ];
 
 export const Navbar = () => {
+	const [activeSection, setActiveSection] = useState<string>("");
+
+	useEffect(() => {
+		const sectionIds = [...leftNavItems.map(item => item.id), ...rightNavItems.map(item => item.id)];
+		const handleScroll = () => {
+			const active = sectionIds.find(id => {
+				const section = document.getElementById(id);
+				if (!section) return false;
+				const rect = section.getBoundingClientRect();
+				return rect.top <= 80 && rect.bottom > 80;
+			});
+			setActiveSection(active || "");
+		};
+		document.addEventListener("scroll", handleScroll, { passive: true });
+		handleScroll();
+		return () => document.removeEventListener("scroll", handleScroll);
+	}, []);
+
 	const scrollToSection = (sectionId: string) => {
 		const element = document.getElementById(sectionId);
 		if (element) element.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -29,7 +48,11 @@ export const Navbar = () => {
 		<nav className="custom-navbar">
 			<div className="navbar-section left">
 				{leftNavItems.map(item => (
-					<button key={item.id} className="nav-link" onClick={() => handleNavClick(item)}>
+					<button
+						key={item.id}
+						className={`nav-link${activeSection === item.id ? " active" : ""}`}
+						onClick={() => handleNavClick(item)}
+					>
 						{item.label}
 					</button>
 				))}
@@ -41,7 +64,11 @@ export const Navbar = () => {
 			</div>
 			<div className="navbar-section right">
 				{rightNavItems.map(item => (
-					<button key={item.id} className="nav-link" onClick={() => handleNavClick(item)}>
+					<button
+						key={item.id}
+						className={`nav-link${activeSection === item.id ? " active" : ""}`}
+						onClick={() => handleNavClick(item)}
+					>
 						{item.label}
 					</button>
 				))}
