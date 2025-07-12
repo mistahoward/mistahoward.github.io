@@ -4,10 +4,10 @@ import { eq, desc } from 'drizzle-orm';
 import {
 	projects, blogPosts, skills, experience,
 } from '../schema';
-import { getCorsHeaders, errorResponse, successResponse } from '../middleware/auth';
+import { errorResponse, successResponse } from '../middleware/auth';
 
 interface Env {
-  DB: D1Database;
+	DB: D1Database;
 }
 
 const router = Router();
@@ -17,9 +17,9 @@ router.get('/api/projects', async (request: Request, env: Env) => {
 	try {
 		const db = drizzle(env.DB);
 		const allProjects = await db.select().from(projects).orderBy(desc(projects.createdAt));
-		return successResponse(allProjects, 200, env);
+		return successResponse(allProjects, env, 200);
 	} catch (error) {
-		return errorResponse('Failed to fetch projects', 500, env);
+		return errorResponse('Failed to fetch projects', env, 500);
 	}
 });
 
@@ -30,9 +30,9 @@ router.get('/api/blog', async (request: Request, env: Env) => {
 		const posts = await db.select().from(blogPosts)
 			.where(eq(blogPosts.published, true))
 			.orderBy(desc(blogPosts.publishedAt));
-		return successResponse(posts, 200, env);
+		return successResponse(posts, env, 200);
 	} catch (error) {
-		return errorResponse('Failed to fetch blog posts', 500, env);
+		return errorResponse('Failed to fetch blog posts', env, 500);
 	}
 });
 
@@ -41,7 +41,7 @@ router.get('/api/blog/:slug', async (request: Request, env: Env, ctx: any) => {
 	try {
 		const slug = ctx.params?.slug;
 		if (!slug) {
-			return errorResponse('Slug is required', 400, env);
+			return errorResponse('Slug is required', env, 400);
 		}
 
 		const db = drizzle(env.DB);
@@ -50,12 +50,12 @@ router.get('/api/blog/:slug', async (request: Request, env: Env, ctx: any) => {
 			.limit(1);
 
 		if (!post.length) {
-			return errorResponse('Post not found', 404, env);
+			return errorResponse('Post not found', env, 404);
 		}
 
-		return successResponse(post[0], 200, env);
+		return successResponse(post[0], env, 200);
 	} catch (error) {
-		return errorResponse('Failed to fetch blog post', 500, env);
+		return errorResponse('Failed to fetch blog post', env, 500);
 	}
 });
 
@@ -64,9 +64,9 @@ router.get('/api/skills', async (request: Request, env: Env) => {
 	try {
 		const db = drizzle(env.DB);
 		const allSkills = await db.select().from(skills).orderBy(skills.category, skills.proficiency);
-		return successResponse(allSkills, 200, env);
+		return successResponse(allSkills, env, 200);
 	} catch (error) {
-		return errorResponse('Failed to fetch skills', 500, env);
+		return errorResponse('Failed to fetch skills', env, 500);
 	}
 });
 
@@ -76,9 +76,9 @@ router.get('/api/experience', async (request: Request, env: Env) => {
 		const db = drizzle(env.DB);
 		const allExperience = await db.select().from(experience)
 			.orderBy(desc(experience.startDate));
-		return successResponse(allExperience, 200, env);
+		return successResponse(allExperience, env, 200);
 	} catch (error) {
-		return errorResponse('Failed to fetch experience', 500, env);
+		return errorResponse('Failed to fetch experience', env, 500);
 	}
 });
 
@@ -86,13 +86,13 @@ router.get('/api/experience', async (request: Request, env: Env) => {
 router.get('/api/health', (request: Request, env: Env) => successResponse({
 	status: 'ok',
 	timestamp: new Date().toISOString(),
-}, 200, env));
+}, env, 200));
 
 // Catch-all route to log any requests that reach the public router
 router.all('*', (request: Request, env: Env) => {
 	const url = new URL(request.url);
 	console.log(`[PUBLIC] Catch-all: ${request.method} ${url.pathname}`);
-	return errorResponse('Not Found', 404, env);
+	return errorResponse('Not Found', env, 404);
 });
 
 export default router;
