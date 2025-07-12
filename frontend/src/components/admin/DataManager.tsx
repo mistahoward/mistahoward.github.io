@@ -431,7 +431,7 @@ export function DataManager({ lastFocusTime = 0 }: DataManagerProps) {
 
           <div className="form-row">
             <div className="form-group">
-              <label>GitHub URL *</label>
+              <label>GitHub URL</label>
               <input
                 type="url"
                 value={projectForm.githubUrl}
@@ -741,7 +741,9 @@ export function DataManager({ lastFocusTime = 0 }: DataManagerProps) {
                     </p>
                     {project.description && <p className="item-description">{project.description}</p>}
                     <p className="item-links">
-                      <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">GitHub</a>
+                      {project.githubUrl && (
+                        <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">GitHub</a>
+                      )}
                       {project.liveUrl && (
                         <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">Live Demo</a>
                       )}
