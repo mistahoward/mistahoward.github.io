@@ -1,7 +1,9 @@
 import { useState, useEffect } from "preact/hooks";
 import { Pet, PetManagerProps } from "../../types/pet-manager.types";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { fetchItems, createItem, updateItem, deleteItem, confirmDelete } from "../../utils/crud";
+import { handleTextInputChange, handleTextAreaChange, handleSelectChange, handleCheckboxChange, handleNumberInputChange } from "../../utils/form";
+import { LoadingSpinner, ErrorAlert, formatDate } from "../../utils/ui";
+import { API_URL, apiRequestWithFormData } from "../../utils/api";
 
 export function PetManager({ lastFocusTime = 0 }: PetManagerProps) {
   const [pets, setPets] = useState<Pet[]>([]);
@@ -33,30 +35,13 @@ export function PetManager({ lastFocusTime = 0 }: PetManagerProps) {
   const [imagePreview, setImagePreview] = useState<string>("");
   const [uploadingImage, setUploadingImage] = useState(false);
 
-  const getAuthHeaders = () => {
-    const token = localStorage.getItem("adminToken");
-    return {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-  };
-
   const fetchPets = async () => {
-    try {
-      const response = await fetch(`${API_URL}/api/admin/pets`, {
-        headers: getAuthHeaders(),
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setPets(data);
-      } else {
-        setError("Failed to fetch pets");
-      }
-    } catch (err) {
-      setError("Network error");
-    } finally {
-      setLoading(false);
-    }
+    await fetchItems({
+      endpoint: "/api/admin/pets",
+      onSuccess: setPets,
+      setError,
+      setLoading,
+    });
   };
 
   useEffect(() => {
@@ -164,13 +149,7 @@ export function PetManager({ lastFocusTime = 0 }: PetManagerProps) {
       const formData = new FormData();
       formData.append('image', imageFile);
 
-      const response = await fetch(`${API_URL}/api/admin/pets/upload-image`, {
-        method: 'POST',
-        headers: {
-          Authorization: getAuthHeaders().Authorization,
-        },
-        body: formData,
-      });
+      const response = await apiRequestWithFormData('/api/admin/pets/upload-image', formData);
 
       if (response.ok) {
         const data = await response.json();
@@ -188,71 +167,66 @@ export function PetManager({ lastFocusTime = 0 }: PetManagerProps) {
   };
 
   const handleSubmit = async () => {
-    try {
-      // Upload image first if there's a new image
-      let imageUrl = formData.imageUrl;
-      if (imageFile) {
-        const uploadedUrl = await uploadImage();
-        if (uploadedUrl) {
-          imageUrl = uploadedUrl;
-        } else {
-          return; // Don't proceed if image upload failed
-        }
-      }
-
-      const url = editingPet 
-        ? `${API_URL}/api/admin/pets/${editingPet.id}`
-        : `${API_URL}/api/admin/pets`;
-      
-      const method = editingPet ? "PUT" : "POST";
-      
-      const submitData = {
-        ...formData,
-        imageUrl,
-        age: formData.age ? parseInt(formData.age) : undefined,
-        weight: formData.weight ? parseInt(formData.weight) : undefined,
-      };
-      
-      const response = await fetch(url, {
-        method,
-        headers: getAuthHeaders(),
-        body: JSON.stringify(submitData),
-      });
-
-      if (response.ok) {
-        await fetchPets();
-        handleCancel();
-        setError("");
+    // Upload image first if there's a new image
+    let imageUrl = formData.imageUrl;
+    if (imageFile) {
+      const uploadedUrl = await uploadImage();
+      if (uploadedUrl) {
+        imageUrl = uploadedUrl;
       } else {
-        setError("Failed to save pet");
+        return; // Don't proceed if image upload failed
       }
-    } catch (err) {
-      setError("Network error");
+    }
+
+    const submitData = {
+      ...formData,
+      imageUrl,
+      age: formData.age ? parseInt(formData.age) : undefined,
+      weight: formData.weight ? parseInt(formData.weight) : undefined,
+    };
+
+    if (editingPet) {
+      await updateItem(
+        "/api/admin/pets",
+        editingPet.id,
+        submitData,
+        () => {
+          fetchPets();
+          handleCancel();
+        },
+        undefined,
+        setError
+      );
+    } else {
+      await createItem(
+        "/api/admin/pets",
+        submitData,
+        () => {
+          fetchPets();
+          handleCancel();
+        },
+        undefined,
+        setError
+      );
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Are you sure you want to delete this pet?")) return;
+    if (!confirmDelete("this pet")) return;
 
-    try {
-      const response = await fetch(`${API_URL}/api/admin/pets/${id}`, {
-        method: "DELETE",
-        headers: getAuthHeaders(),
-      });
-
-      if (response.ok) {
+    const success = await deleteItem(
+      "/api/admin/pets",
+      id,
+      () => {
         // Remove the pet from local state immediately for responsive UI
         setPets(prevPets => prevPets.filter(pet => pet.id !== id));
-        setError("");
-      } else {
-        setError("Failed to delete pet");
-      }
-    } catch (err) {
-      setError("Network error");
-    }
+      },
+      undefined,
+      setError
+    );
   };
 
-  if (loading) return <div className="text-center p-4">Loading...</div>;
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className="h-100 d-flex flex-column">
@@ -263,7 +237,7 @@ export function PetManager({ lastFocusTime = 0 }: PetManagerProps) {
         </button>
       </div>
 
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && <ErrorAlert error={error} />}
 
       {(isCreating || editingPet) && (
         <div className="card mb-3">
@@ -277,7 +251,7 @@ export function PetManager({ lastFocusTime = 0 }: PetManagerProps) {
                   type="text"
                   className="form-control"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: (e.target as HTMLInputElement).value })}
+                  onChange={handleTextInputChange(formData, setFormData, "name")}
                   placeholder="Pet name"
                 />
               </div>
@@ -286,7 +260,7 @@ export function PetManager({ lastFocusTime = 0 }: PetManagerProps) {
                 <select
                   className="form-select"
                   value={formData.species}
-                  onChange={(e) => setFormData({ ...formData, species: (e.target as HTMLSelectElement).value })}
+                  onChange={handleSelectChange(formData, setFormData, "species")}
                 >
                   <option value="">Select species</option>
                   <option value="cat">Cat</option>

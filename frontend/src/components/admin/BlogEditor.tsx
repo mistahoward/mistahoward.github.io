@@ -1,7 +1,9 @@
 import { useState, useEffect } from "preact/hooks";
 import { BlogPost, BlogEditorProps } from "../../types/blog-editor.types";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { fetchItems, createItem, updateItem, deleteItem, confirmDelete } from "../../utils/crud";
+import { generateSlug, handleTextInputChange, handleTextAreaChange, handleCheckboxChange } from "../../utils/form";
+import { LoadingSpinner, ErrorAlert, formatDate } from "../../utils/ui";
+import { API_URL } from "../../utils/api";
 
 export function BlogEditor({ lastFocusTime = 0 }: BlogEditorProps) {
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -18,30 +20,13 @@ export function BlogEditor({ lastFocusTime = 0 }: BlogEditorProps) {
     published: false,
   });
 
-  const getAuthHeaders = () => {
-    const token = localStorage.getItem("adminToken");
-    return {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-  };
-
   const fetchPosts = async () => {
-    try {
-      const response = await fetch(`${API_URL}/api/admin/blog`, {
-        headers: getAuthHeaders(),
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setPosts(data);
-      } else {
-        setError("Failed to fetch posts");
-      }
-    } catch (err) {
-      setError("Network error");
-    } finally {
-      setLoading(false);
-    }
+    await fetchItems({
+      endpoint: "/api/admin/blog",
+      onSuccess: setPosts,
+      setError,
+      setLoading,
+    });
   };
 
   useEffect(() => {
@@ -91,61 +76,53 @@ export function BlogEditor({ lastFocusTime = 0 }: BlogEditorProps) {
   };
 
   const handleSubmit = async () => {
-    try {
-      const url = editingPost 
-        ? `${API_URL}/api/admin/blog/${editingPost.id}`
-        : `${API_URL}/api/admin/blog`;
-      
-      const method = editingPost ? "PUT" : "POST";
-      
-      const response = await fetch(url, {
-        method,
-        headers: getAuthHeaders(),
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        await fetchPosts();
-        handleCancel();
-        setError("");
-      } else {
-        setError("Failed to save post");
-      }
-    } catch (err) {
-      setError("Network error");
+    if (editingPost) {
+      await updateItem(
+        "/api/admin/blog",
+        editingPost.id,
+        formData,
+        () => {
+          fetchPosts();
+          handleCancel();
+        },
+        undefined,
+        setError
+      );
+    } else {
+      await createItem(
+        "/api/admin/blog",
+        formData,
+        () => {
+          fetchPosts();
+          handleCancel();
+        },
+        undefined,
+        setError
+      );
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Are you sure you want to delete this post?")) return;
+    if (!confirmDelete("this post")) return;
 
-    try {
-      const response = await fetch(`${API_URL}/api/admin/blog/${id}`, {
-        method: "DELETE",
-        headers: getAuthHeaders(),
-      });
-
-      if (response.ok) {
+    const success = await deleteItem(
+      "/api/admin/blog",
+      id,
+      () => {
         // Remove from local state immediately for responsive UI
         setPosts(prev => prev.filter(post => post.id !== id));
-        setError("");
-      } else {
-        setError("Failed to delete post");
-      }
-    } catch (err) {
-      setError("Network error");
-    }
+      },
+      undefined,
+      setError
+    );
   };
 
-  const generateSlug = () => {
-    const slug = formData.title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
+  const handleGenerateSlug = () => {
+    const slug = generateSlug(formData.title);
     setFormData({ ...formData, slug });
   };
 
-  if (loading) return <div className="text-center p-4">Loading...</div>;
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className="h-100 d-flex flex-column">
@@ -156,7 +133,7 @@ export function BlogEditor({ lastFocusTime = 0 }: BlogEditorProps) {
         </button>
       </div>
 
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && <ErrorAlert error={error} />}
 
       {(isCreating || editingPost) && (
         <div className="card mb-3">
@@ -169,7 +146,7 @@ export function BlogEditor({ lastFocusTime = 0 }: BlogEditorProps) {
                 type="text"
                 className="form-control"
                 value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: (e.target as HTMLInputElement).value })}
+                onChange={handleTextInputChange(formData, setFormData, "title")}
                 placeholder="Post title"
               />
             </div>
@@ -181,10 +158,10 @@ export function BlogEditor({ lastFocusTime = 0 }: BlogEditorProps) {
                   type="text"
                   className="form-control"
                   value={formData.slug}
-                  onChange={(e) => setFormData({ ...formData, slug: (e.target as HTMLInputElement).value })}
+                  onChange={handleTextInputChange(formData, setFormData, "slug")}
                   placeholder="post-slug"
                 />
-                <button onClick={generateSlug} className="btn btn-outline-secondary">
+                <button onClick={handleGenerateSlug} className="btn btn-outline-secondary">
                   Generate
                 </button>
               </div>
@@ -195,7 +172,7 @@ export function BlogEditor({ lastFocusTime = 0 }: BlogEditorProps) {
               <textarea
                 className="form-control"
                 value={formData.excerpt}
-                onChange={(e) => setFormData({ ...formData, excerpt: (e.target as HTMLTextAreaElement).value })}
+                onChange={handleTextAreaChange(formData, setFormData, "excerpt")}
                 placeholder="Brief description of the post"
                 rows={3}
               />
@@ -206,7 +183,7 @@ export function BlogEditor({ lastFocusTime = 0 }: BlogEditorProps) {
               <textarea
                 className="form-control"
                 value={formData.content}
-                onChange={(e) => setFormData({ ...formData, content: (e.target as HTMLTextAreaElement).value })}
+                onChange={handleTextAreaChange(formData, setFormData, "content")}
                 placeholder="Post content (markdown supported)"
                 rows={15}
               />
@@ -218,7 +195,7 @@ export function BlogEditor({ lastFocusTime = 0 }: BlogEditorProps) {
                   type="checkbox"
                   className="form-check-input"
                   checked={formData.published}
-                  onChange={(e) => setFormData({ ...formData, published: (e.target as HTMLInputElement).checked })}
+                  onChange={handleCheckboxChange(formData, setFormData, "published")}
                   id="published-check"
                 />
                 <label className="form-check-label" htmlFor="published-check">
@@ -249,7 +226,7 @@ export function BlogEditor({ lastFocusTime = 0 }: BlogEditorProps) {
                   <p className="text-muted small mb-2">
                     Slug: {post.slug} | 
                     Status: {post.published ? "Published" : "Draft"} |
-                    Created: {new Date(post.createdAt).toLocaleDateString()}
+                    Created: {formatDate(post.createdAt)}
                   </p>
                   {post.excerpt && <p className="card-text small">{post.excerpt}</p>}
                 </div>

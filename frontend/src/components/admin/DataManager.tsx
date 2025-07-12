@@ -1,7 +1,9 @@
 import { useState, useEffect } from "preact/hooks";
 import { Project, Skill, Experience, Testimonial, DataManagerProps } from "../../types/data-manager.types";
-
-const API_URL = import.meta.env.VITE_API_URL;
+import { fetchItems, createItem, updateItem, deleteItem, confirmDelete } from "../../utils/crud";
+import { handleTextInputChange, handleTextAreaChange, handleSelectChange, handleCheckboxChange, handleNumberInputChange } from "../../utils/form";
+import { LoadingSpinner, ErrorAlert, formatDate, getStatusBadge, getApprovalBadge } from "../../utils/ui";
+import { API_URL } from "../../utils/api";
 
 export function DataManager({ lastFocusTime = 0 }: DataManagerProps) {
   const [activeTab, setActiveTab] = useState<"projects" | "skills" | "experience" | "testimonials">("projects");
@@ -58,27 +60,19 @@ export function DataManager({ lastFocusTime = 0 }: DataManagerProps) {
     approved: false,
   });
 
-  const getAuthHeaders = () => {
-    const token = localStorage.getItem("adminToken");
-    return {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    };
-  };
-
   const fetchData = async () => {
     try {
-      const [projectsRes, skillsRes, experienceRes, testimonialsRes] = await Promise.all([
-        fetch(`${API_URL}/api/admin/projects`, { headers: getAuthHeaders() }),
-        fetch(`${API_URL}/api/admin/skills`, { headers: getAuthHeaders() }),
-        fetch(`${API_URL}/api/admin/experience`, { headers: getAuthHeaders() }),
-        fetch(`${API_URL}/api/admin/testimonials`, { headers: getAuthHeaders() }),
+      const [projectsData, skillsData, experienceData, testimonialsData] = await Promise.all([
+        fetchItems({ endpoint: "/api/admin/projects", setError }),
+        fetchItems({ endpoint: "/api/admin/skills", setError }),
+        fetchItems({ endpoint: "/api/admin/experience", setError }),
+        fetchItems({ endpoint: "/api/admin/testimonials", setError }),
       ]);
 
-      if (projectsRes.ok) setProjects(await projectsRes.json());
-      if (skillsRes.ok) setSkills(await skillsRes.json());
-      if (experienceRes.ok) setExperience(await experienceRes.json());
-      if (testimonialsRes.ok) setTestimonials(await testimonialsRes.json());
+      if (projectsData) setProjects(projectsData as Project[]);
+      if (skillsData) setSkills(skillsData as Skill[]);
+      if (experienceData) setExperience(experienceData as Experience[]);
+      if (testimonialsData) setTestimonials(testimonialsData as Testimonial[]);
     } catch (err) {
       setError("Failed to fetch data");
     } finally {
@@ -189,68 +183,57 @@ export function DataManager({ lastFocusTime = 0 }: DataManagerProps) {
   };
 
   const handleSubmit = async () => {
-    try {
-      let url = "";
-      let method = "POST";
-      let data: any = {};
+    let data: any = {};
 
-      if (activeTab === "projects") {
-        url = editingItem 
-          ? `${API_URL}/api/admin/projects/${editingItem.id}`
-          : `${API_URL}/api/admin/projects`;
-        method = editingItem ? "PUT" : "POST";
-        data = projectForm;
-      } else if (activeTab === "skills") {
-        url = editingItem 
-          ? `${API_URL}/api/admin/skills/${editingItem.id}`
-          : `${API_URL}/api/admin/skills`;
-        method = editingItem ? "PUT" : "POST";
-        data = skillForm;
-      } else if (activeTab === "experience") {
-        url = editingItem 
-          ? `${API_URL}/api/admin/experience/${editingItem.id}`
-          : `${API_URL}/api/admin/experience`;
-        method = editingItem ? "PUT" : "POST";
-        data = experienceForm;
-      } else if (activeTab === "testimonials") {
-        url = editingItem 
-          ? `${API_URL}/api/admin/testimonials/${editingItem.id}`
-          : `${API_URL}/api/admin/testimonials`;
-        method = editingItem ? "PUT" : "POST";
-        data = {
-          ...testimonialForm,
-          projectId: testimonialForm.projectId ? parseInt(testimonialForm.projectId) : undefined,
-        };
-      }
+    if (activeTab === "projects") {
+      data = projectForm;
+    } else if (activeTab === "skills") {
+      data = skillForm;
+    } else if (activeTab === "experience") {
+      data = experienceForm;
+    } else if (activeTab === "testimonials") {
+      data = {
+        ...testimonialForm,
+        projectId: testimonialForm.projectId ? parseInt(testimonialForm.projectId) : undefined,
+      };
+    }
 
-      const response = await fetch(url, {
-        method,
-        headers: getAuthHeaders(),
-        body: JSON.stringify(data),
-      });
-
-      if (response.ok) {
-        await fetchData();
-        handleCancel();
-        setError("");
-      } else {
-        setError(`Failed to save ${activeTab.slice(0, -1)}`);
-      }
-    } catch (err) {
-      setError("Network error");
+    const endpoint = `/api/admin/${activeTab}`;
+    
+    if (editingItem) {
+      await updateItem(
+        endpoint,
+        editingItem.id,
+        data,
+        () => {
+          fetchData();
+          handleCancel();
+        },
+        undefined,
+        setError
+      );
+    } else {
+      await createItem(
+        endpoint,
+        data,
+        () => {
+          fetchData();
+          handleCancel();
+        },
+        undefined,
+        setError
+      );
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Are you sure you want to delete this item?")) return;
+    if (!confirmDelete("this item")) return;
 
-    try {
-      const response = await fetch(`${API_URL}/api/admin/${activeTab}/${id}`, {
-        method: "DELETE",
-        headers: getAuthHeaders(),
-      });
-
-      if (response.ok) {
+    const endpoint = `/api/admin/${activeTab}`;
+    const success = await deleteItem(
+      endpoint,
+      id,
+      () => {
         // Remove from local state immediately for responsive UI
         if (activeTab === "projects") {
           setProjects(prev => prev.filter(item => item.id !== id));
@@ -261,42 +244,33 @@ export function DataManager({ lastFocusTime = 0 }: DataManagerProps) {
         } else if (activeTab === "testimonials") {
           setTestimonials(prev => prev.filter(item => item.id !== id));
         }
-        setError("");
-      } else {
-        setError(`Failed to delete ${activeTab.slice(0, -1)}`);
-      }
-    } catch (err) {
-      setError("Network error");
-    }
+      },
+      undefined,
+      setError
+    );
   };
 
   const handleToggleApproval = async (testimonial: Testimonial) => {
-    try {
-      const response = await fetch(`${API_URL}/api/admin/testimonials/${testimonial.id}`, {
-        method: "PUT",
-        headers: getAuthHeaders(),
-        body: JSON.stringify({
-          ...testimonial,
-          approved: !testimonial.approved,
-        }),
-      });
-
-      if (response.ok) {
+    await updateItem(
+      "/api/admin/testimonials",
+      testimonial.id,
+      {
+        ...testimonial,
+        approved: !testimonial.approved,
+      },
+      () => {
         setTestimonials(prev => prev.map(item => 
           item.id === testimonial.id 
             ? { ...item, approved: !item.approved }
             : item
         ));
-        setError("");
-      } else {
-        setError("Failed to update testimonial");
-      }
-    } catch (err) {
-      setError("Network error");
-    }
+      },
+      undefined,
+      setError
+    );
   };
 
-  if (loading) return <div className="text-center p-4">Loading...</div>;
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className="h-100 d-flex flex-column">
@@ -307,7 +281,7 @@ export function DataManager({ lastFocusTime = 0 }: DataManagerProps) {
         </button>
       </div>
 
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && <ErrorAlert error={error} />}
 
       <ul className="nav nav-tabs mb-3">
         <li className="nav-item">
@@ -731,7 +705,7 @@ export function DataManager({ lastFocusTime = 0 }: DataManagerProps) {
                         <h5 className="card-title mb-1">{project.name}</h5>
                         <p className="text-muted small mb-2">
                           Type: {project.projectType} | 
-                          Created: {new Date(project.createdAt).toLocaleDateString()}
+                          Created: {formatDate(project.createdAt)}
                         </p>
                         {project.description && <p className="card-text small">{project.description}</p>}
                         <div className="small">
@@ -768,7 +742,7 @@ export function DataManager({ lastFocusTime = 0 }: DataManagerProps) {
                         <p className="text-muted small mb-2">
                           Category: {skill.category} | 
                           Proficiency: {skill.proficiency}/5 | 
-                          Created: {new Date(skill.createdAt).toLocaleDateString()}
+                          Created: {formatDate(skill.createdAt)}
                         </p>
                         {skill.icon && <p className="small mb-0">Icon: {skill.icon}</p>}
                       </div>
@@ -795,8 +769,8 @@ export function DataManager({ lastFocusTime = 0 }: DataManagerProps) {
                       <div className="flex-grow-1">
                         <h5 className="card-title mb-1">{exp.position} at {exp.company}</h5>
                         <p className="text-muted small mb-2">
-                          {new Date(exp.startDate).toLocaleDateString()} - 
-                          {exp.current ? "Present" : exp.endDate ? new Date(exp.endDate).toLocaleDateString() : "Unknown"}
+                          {formatDate(exp.startDate)} - 
+                          {exp.current ? "Present" : exp.endDate ? formatDate(exp.endDate) : "Unknown"}
                         </p>
                         {exp.description && <p className="card-text small">{exp.description}</p>}
                         {exp.technologies && <p className="small mb-0">Technologies: {exp.technologies}</p>}
@@ -828,7 +802,7 @@ export function DataManager({ lastFocusTime = 0 }: DataManagerProps) {
                           {testimonial.clientCompany && ` at ${testimonial.clientCompany}`} | 
                           Rating: {testimonial.rating || "N/A"} | 
                           Status: {testimonial.approved ? "Approved" : "Pending"} |
-                          Created: {new Date(testimonial.createdAt).toLocaleDateString()}
+                          Created: {formatDate(testimonial.createdAt)}
                         </p>
                         <p className="card-text small">{testimonial.content}</p>
                       </div>
