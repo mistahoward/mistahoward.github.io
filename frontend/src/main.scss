@@ -137,7 +137,6 @@ html {
 	height: 80px;
 	background: rgb(17 24 39 / 90%);
 	backdrop-filter: blur(8px);
-	backdrop-filter: blur(8px);
 	box-shadow: 0 2px 4px rgb(0 0 0 / 2%);
 	position: sticky;
 	top: 0;
@@ -389,6 +388,18 @@ textarea:focus {
 	--bs-btn-focus-shadow-rgb: 249, 115, 22 !important;
 }
 
+.btn-outline-primary {
+	--bs-btn-color: var(--bs-primary) !important;
+	--bs-btn-border-color: var(--bs-primary) !important;
+	--bs-btn-hover-bg: var(--bs-primary) !important;
+	--bs-btn-hover-border-color: var(--bs-primary) !important;
+	--bs-btn-hover-color: #fff !important;
+	--bs-btn-active-bg: #ea580c !important;
+	--bs-btn-active-border-color: #ea580c !important;
+	--bs-btn-active-color: #fff !important;
+	--bs-btn-focus-shadow-rgb: 249, 115, 22 !important;
+}
+
 .modal.fade.show.d-block {
 	position: fixed;
 	inset: 0;
@@ -420,3 +431,15 @@ textarea:focus {
 	min-height: 0;
 	overflow-y: auto;
 }
+
+.footer-left-align {
+	text-align: left;
+	flex: 1;
+}
+
+
+.tab-scroll-area {
+	max-height: 500px;
+	overflow-y: auto;
+	padding-right: 8px;
+} 

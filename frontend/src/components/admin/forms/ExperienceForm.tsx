@@ -32,9 +32,12 @@ export const ExperienceForm = ({ formData, setFormData, onSubmit, onCancel, edit
 					className="form-control"
 					value={formData.description}
 					onChange={e => setFormData({ ...formData, description: (e.target as HTMLTextAreaElement).value })}
-					placeholder="Job description"
+					placeholder="e.g. Led UI overhaul|Implemented SASS|Integrated SignalR"
 					rows={3}
 				/>
+				<div className="form-text">
+					Separate each bullet point with a pipe (|), e.g. Led UI overhaul|Implemented SASS|Integrated SignalR
+				</div>
 			</div>
 			<div className="row">
 				<div className="col-md-6 mb-3">
@@ -59,14 +62,19 @@ export const ExperienceForm = ({ formData, setFormData, onSubmit, onCancel, edit
 			</div>
 			<div className="row">
 				<div className="col-md-6 mb-3">
-					<label className="form-label">Technologies (icon name, comma separated)</label>
+					<label className="form-label">
+						Technologies <span className="text-muted">(icon name, comma-separated)</span>
+					</label>
 					<input
 						type="text"
 						className="form-control"
 						value={formData.technologies}
 						onChange={e => setFormData({ ...formData, technologies: (e.target as HTMLInputElement).value })}
-						placeholder="e.g. TbBrandCSharp"
+						placeholder="e.g. TbBrandCSharp, TbBrandTypescript, TbBrandJavascript"
 					/>
+					<div className="form-text">
+						Separate each technology with a comma, e.g. TbBrandCSharp, TbBrandTypescript, TbBrandJavascript
+					</div>
 				</div>
 				<div className="col-md-6 mb-3 d-flex align-items-end">
 					<div className="form-check">

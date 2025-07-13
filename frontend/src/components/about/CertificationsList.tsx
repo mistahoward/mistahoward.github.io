@@ -31,7 +31,7 @@ export const CertificationsList = () => {
 	if (certifications.length === 0) return <div>No certifications found.</div>;
 
 	return (
-		<div className="certifications-list">
+		<div className="tab-scroll-area">
 			<div className="row g-3">
 				{certifications.map(cert => (
 					<div key={cert.id} className="col-md-6 col-lg-4">

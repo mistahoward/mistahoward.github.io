@@ -3,6 +3,7 @@ import { fetchItems } from "../../utils/crud";
 import { YakShaverSpinner } from "../shared/YakShaverSpinner";
 import { Experience } from "../../types/experience-list.types";
 import { renderIcon, iconNameToLabel } from "../../utils/iconMap";
+import { FaLinkedin } from "react-icons/fa";
 
 export const ExperienceList = () => {
 	const [experience, setExperience] = useState<Experience[]>([]);
@@ -29,33 +30,77 @@ export const ExperienceList = () => {
 		return date.toLocaleString("default", { month: "short", year: "numeric" });
 	};
 
+	const groupedByCompany = experience.reduce(
+		(acc, exp) => {
+			if (!acc[exp.company]) acc[exp.company] = [];
+			acc[exp.company].push(exp);
+			return acc;
+		},
+		{} as Record<string, Experience[]>
+	);
+
 	return (
-		<ul className="list-group">
-			{experience.map((exp: Experience) => (
-				<li className="list-group-item" key={exp.id}>
-					<span className="text-primary fw-bold">{exp.position}</span> at{" "}
-					<span className="text-secondary fw-bold">{exp.company}</span>
-					<br />
-					<span className="text-muted small">
-						{formatMonthYear(exp.startDate)} - {exp.current ? "Present" : formatMonthYear(exp.endDate) || ""}
-					</span>
-					{exp.description && <div className="mt-1">{exp.description}</div>}
-					{exp.technologies && (
-						<div className="mt-1 text-muted small">
-							Skills:&nbsp;
-							{exp.technologies.split(/,|;/).map((tech: string) => {
-								const t = tech.trim();
-								const label = iconNameToLabel[t.replace(/ /g, "")] || t;
-								return (
-									<span key={t} className="me-2" title={label}>
-										{renderIcon(t.replace(/ /g, ""))}
+		<div className="tab-scroll-area">
+			{Object.entries(groupedByCompany).map(([company, roles]) => (
+				<div className="card mb-3" key={company}>
+					<div className="card-body">
+						<h5 className="card-title text-secondary fw-bold">{company}</h5>
+						<ul className="list-group list-group-flush">
+							{roles.map(exp => (
+								<li className="list-group-item" key={exp.id}>
+									<span className="text-primary fw-bold">{exp.position}</span>
+									<br />
+									<span className="text-muted small">
+										{formatMonthYear(exp.startDate)} - {exp.current ? "Present" : formatMonthYear(exp.endDate) || ""}
 									</span>
-								);
-							})}
-						</div>
-					)}
-				</li>
+									{exp.description &&
+										(exp.description.includes("|") ? (
+											<ul className="mt-1">
+												{exp.description.split("|").map((point: string, idx: number) => (
+													<li key={idx}>{point.trim()}</li>
+												))}
+											</ul>
+										) : (
+											<div className="mt-1">{exp.description}</div>
+										))}
+									{exp.technologies && (
+										<div className="mt-1 text-muted small">
+											Skills:&nbsp;
+											{exp.technologies.split(/,|;/).map((tech: string) => {
+												const t = tech.trim();
+												return (
+													<span key={t} className="me-2" title={iconNameToLabel[t.replace(/ /g, "")] || t}>
+														{renderIcon(t.replace(/ /g, ""))}
+													</span>
+												);
+											})}
+										</div>
+									)}
+								</li>
+							))}
+						</ul>
+					</div>
+				</div>
 			))}
-		</ul>
+			<div className="mt-4 mb-2 d-flex justify-content-between align-items-center">
+				<hr />
+				<div className="footer-left-align">
+					Want more info?&nbsp;
+					<a href="/resume.pdf" download>
+						Download my resume
+					</a>
+					.
+				</div>
+				<div>
+					<button
+						className="btn btn-outline-primary me-2"
+						onClick={() => window.open("https://www.linkedin.com/in/jalexhoward/", "_blank")}
+					>
+						<FaLinkedin />
+						&nbsp;LinkedIn
+					</button>
+				</div>
+			</div>
+		</div>
 	);
 };

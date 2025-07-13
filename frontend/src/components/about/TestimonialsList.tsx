@@ -22,18 +22,20 @@ export const TestimonialsList = () => {
 	if (!testimonials.length) return <div>No testimonials found.</div>;
 
 	return (
-		<ul className="list-group">
-			{testimonials.map(t => (
-				<li className="list-group-item" key={t.id}>
-					<div className="mb-1">{t.content}</div>
-					<div className="text-muted small">
-						— {t.clientName}
-						{t.clientTitle && `, ${t.clientTitle}`}
-						{t.clientCompany && ` (${t.clientCompany})`}
-						{t.rating && <span className="ms-2">{"★".repeat(t.rating)}</span>}
-					</div>
-				</li>
-			))}
-		</ul>
+		<div className="tab-scroll-area">
+			<ul className="list-group">
+				{testimonials.map(t => (
+					<li className="list-group-item" key={t.id}>
+						<div className="mb-1">{t.content}</div>
+						<div className="text-muted small">
+							— {t.clientName}
+							{t.clientTitle && `, ${t.clientTitle}`}
+							{t.clientCompany && ` (${t.clientCompany})`}
+							{t.rating && <span className="ms-2">{"★".repeat(t.rating)}</span>}
+						</div>
+					</li>
+				))}
+			</ul>
+		</div>
 	);
 };
