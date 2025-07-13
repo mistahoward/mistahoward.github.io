@@ -1,9 +1,9 @@
 import { useEffect, useState } from "preact/hooks";
 import { fetchItems } from "../../utils/crud";
-import { YakShaverSpinner } from "../shared/YakShaverSpinner";
 import { Experience } from "../../types/experience-list.types";
 import { renderIcon, iconNameToLabel } from "../../utils/iconMap";
 import { FaLinkedin } from "react-icons/fa";
+import { LoadingSpinner } from "../../utils/ui";
 
 export const ExperienceList = () => {
 	const [experience, setExperience] = useState<Experience[]>([]);
@@ -19,7 +19,13 @@ export const ExperienceList = () => {
 		});
 	}, []);
 
-	if (loading) return <YakShaverSpinner />;
+	if (loading)
+		return (
+			<div className="tab-scroll-area d-flex align-items-center justify-content-center" style={{ minHeight: "200px" }}>
+				<LoadingSpinner />
+			</div>
+		);
+
 	if (error) return <div className="text-danger">{error}</div>;
 	if (!experience.length) return <div>No experience found.</div>;
 

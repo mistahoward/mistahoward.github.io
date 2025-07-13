@@ -2,8 +2,6 @@ import { LoadingSpinner, ErrorAlert } from "../../../utils/ui";
 import { ManagerLayoutProps } from "../../../types/admin-panel.types";
 
 export const ManagerLayout = ({ title, loading, error, onCreate, createButtonText, children }: ManagerLayoutProps) => {
-	if (loading) return <LoadingSpinner />;
-
 	return (
 		<div className="h-100 d-flex flex-column">
 			<div className="d-flex justify-content-between align-items-center mb-3">
@@ -15,7 +13,13 @@ export const ManagerLayout = ({ title, loading, error, onCreate, createButtonTex
 
 			{error && <ErrorAlert error={error} />}
 
-			{children}
+			{loading ? (
+				<div className="flex-grow-1 d-flex align-items-center justify-content-center">
+					<LoadingSpinner />
+				</div>
+			) : (
+				children
+			)}
 		</div>
 	);
 };

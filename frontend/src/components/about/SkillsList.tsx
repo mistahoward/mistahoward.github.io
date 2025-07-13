@@ -1,10 +1,10 @@
 import { useEffect, useState, useMemo } from "preact/hooks";
 import { fetchItems } from "../../utils/crud";
-import { YakShaverSpinner } from "../shared/YakShaverSpinner";
 import { Skill } from "../../types/skills-list.types";
 import { renderIcon } from "../../utils/iconMap";
 import { AiFillStar, AiOutlineStar } from "react-icons/ai";
 import { FaSortAmountUp, FaSortAmountDownAlt } from "react-icons/fa";
+import { LoadingSpinner } from "../../utils/ui";
 
 const categories = ["All", "Frontend", "Backend", "Full-Stack", "DevOps", "Database", "Mobile", "Other"];
 
@@ -59,7 +59,13 @@ export const SkillsList = () => {
 		return skills.filter(skill => matchesSearch(skill) && matchesCategory(skill)).sort(sortSkills);
 	}, [skills, search, sortOrder, selectedCategory]);
 
-	if (loading) return <YakShaverSpinner />;
+	if (loading)
+		return (
+			<div className="tab-scroll-area d-flex align-items-center justify-content-center" style={{ minHeight: "200px" }}>
+				<LoadingSpinner />
+			</div>
+		);
+
 	if (error) return <div className="text-danger">{error}</div>;
 
 	return (

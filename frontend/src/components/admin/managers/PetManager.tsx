@@ -1,11 +1,11 @@
 import { useState, useEffect } from "preact/hooks";
-import { Pet, PetFormState, PetManagerProps } from "../../../types/pet-manager.types";
+import { Pet, PetFormState } from "../../../types/pet-manager.types";
 import { fetchItems, createItem, updateItem, deleteItem, confirmDelete } from "../../../utils/crud";
 import { ManagerLayout } from "../shared/ManagerLayout";
 import { PetForm } from "../forms/PetForm";
 import { apiRequestWithFormData } from "../../../utils/api";
 
-export const PetManager = ({ lastFocusTime = 0 }: PetManagerProps) => {
+export const PetManager = () => {
 	const [pets, setPets] = useState<Pet[]>([]);
 	const [editingPet, setEditingPet] = useState<Pet | null>(null);
 	const [isCreating, setIsCreating] = useState(false);
@@ -49,10 +49,6 @@ export const PetManager = ({ lastFocusTime = 0 }: PetManagerProps) => {
 	useEffect(() => {
 		fetchPets();
 	}, []);
-
-	useEffect(() => {
-		if (lastFocusTime > 0) fetchPets();
-	}, [lastFocusTime]);
 
 	const handleCreate = () => {
 		setIsCreating(true);
@@ -211,22 +207,28 @@ export const PetManager = ({ lastFocusTime = 0 }: PetManagerProps) => {
 			weight: formData.weight ? parseInt(formData.weight) : undefined,
 		};
 		if (editingPet) {
-			await updateItem(
+			await updateItem<Pet, typeof submitData>(
 				"/api/admin/pets",
 				editingPet.id,
 				submitData,
 				() => {
-					fetchPets();
+					// Update local state directly instead of refetching
+					setPets(prevPets =>
+						prevPets.map(pet =>
+							pet.id === editingPet.id ? { ...pet, ...submitData, updatedAt: new Date().toISOString() } : pet
+						)
+					);
 					handleCancel();
 				},
 				undefined,
 				setError
 			);
 		} else {
-			await createItem(
+			await createItem<Pet, typeof submitData>(
 				"/api/admin/pets",
 				submitData,
 				() => {
+					// For create, we need to refetch since we don't have the new pet's ID
 					fetchPets();
 					handleCancel();
 				},

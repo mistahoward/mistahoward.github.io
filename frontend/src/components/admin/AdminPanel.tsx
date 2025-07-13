@@ -145,7 +145,7 @@ export const AdminPanel = ({ isVisible, onClose }: AdminPanelProps) => {
 								</div>
 								<div className="col-md-9 p-3 admin-modal-main">
 									{activeSection === "blog" && <BlogManager lastFocusTime={lastFocusTime} />}
-									{activeSection === "pets" && <PetManager lastFocusTime={lastFocusTime} />}
+									{activeSection === "pets" && <PetManager />}
 									{["projects", "skills", "experience", "testimonials", "certifications"].includes(activeSection) && (
 										<DataManager lastFocusTime={lastFocusTime} initialTab={activeSection as any} />
 									)}

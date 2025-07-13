@@ -23,7 +23,13 @@ export const CertificationsList = () => {
 		loadCertifications();
 	}, []);
 
-	if (loading) return <LoadingSpinner />;
+	if (loading)
+		return (
+			<div className="tab-scroll-area d-flex align-items-center justify-content-center" style={{ minHeight: "200px" }}>
+				<LoadingSpinner />
+			</div>
+		);
+
 	if (error) return <div className="text-danger">{error}</div>;
 
 	if (certifications.length === 0) return <div>No certifications found.</div>;
