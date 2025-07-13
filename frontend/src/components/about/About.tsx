@@ -2,7 +2,8 @@ import { AboutStatic } from "./AboutStatic";
 import { SkillsList } from "./SkillsList";
 import { ExperienceList } from "./ExperienceList";
 import { TestimonialsList } from "./TestimonialsList";
-import { useState } from "react";
+import { CertificationsList } from "./CertificationsList";
+import { useState } from "preact/hooks";
 
 export const About = () => {
 	const [activeTab, setActiveTab] = useState("skills");
@@ -44,6 +45,19 @@ export const About = () => {
 							</li>
 							<li className="nav-item" role="presentation">
 								<button
+									className={`nav-link${activeTab === "certifications" ? " active" : ""}`}
+									id="certifications-tab"
+									data-bs-toggle="tab"
+									type="button"
+									role="tab"
+									aria-selected={activeTab === "certifications"}
+									onClick={() => setActiveTab("certifications")}
+								>
+									Certifications
+								</button>
+							</li>
+							<li className="nav-item" role="presentation">
+								<button
 									className={`nav-link${activeTab === "testimonials" ? " active" : ""}`}
 									id="testimonials-tab"
 									data-bs-toggle="tab"
@@ -68,11 +82,18 @@ export const About = () => {
 							<div
 								className={`tab-pane fade${activeTab === "experience" ? " show active" : ""}`}
 								id="experience"
-								ike
 								role="tabpanel"
 								aria-labelledby="experience-tab"
 							>
 								<ExperienceList />
+							</div>
+							<div
+								className={`tab-pane fade${activeTab === "certifications" ? " show active" : ""}`}
+								id="certifications"
+								role="tabpanel"
+								aria-labelledby="certifications-tab"
+							>
+								<CertificationsList />
 							</div>
 							<div
 								className={`tab-pane fade${activeTab === "testimonials" ? " show active" : ""}`}

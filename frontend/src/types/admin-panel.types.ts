@@ -1,4 +1,15 @@
 export interface AdminPanelProps {
 	isVisible: boolean;
 	onClose: () => void;
+}
+
+export type Section = "blog" | "pets" | "projects" | "skills" | "experience" | "testimonials" | "certifications";
+
+export interface ManagerLayoutProps {
+	title: string;
+	loading: boolean;
+	error: string;
+	onCreate: () => void;
+	createButtonText: string;
+	children: import("preact").ComponentChildren;
 } 

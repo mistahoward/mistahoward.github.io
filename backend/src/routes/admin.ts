@@ -8,6 +8,7 @@ import {
 	projects,
 	skills,
 	experience,
+	certifications,
 } from '../schema';
 import {
 	requireAdmin,
@@ -917,6 +918,143 @@ router.get('/api/admin/testimonials', async (request: Request, env: Env) => {
 		return successResponse(allTestimonials, env, 200);
 	} catch (error) {
 		return errorResponse('Failed to fetch testimonials', env, 500);
+	}
+});
+
+// CERTIFICATIONS ADMIN ROUTES
+
+// POST /admin/certifications - Create new certification
+router.post('/api/admin/certifications', async (request: Request, env: Env) => {
+	const authCheck = requireAdmin(request, env);
+	if (authCheck) return authCheck;
+
+	try {
+		const body = await request.json() as {
+			name: string;
+			issuer: string;
+			issueDate: string;
+			expiryDate?: string;
+			credentialId?: string;
+			credentialUrl?: string;
+			description?: string;
+			category?: string;
+			imageUrl?: string;
+		};
+		const db = drizzle(env.DB);
+
+		const newCertification = await db.insert(certifications).values({
+			name: body.name,
+			issuer: body.issuer,
+			issueDate: body.issueDate,
+			expiryDate: body.expiryDate,
+			credentialId: body.credentialId,
+			credentialUrl: body.credentialUrl,
+			description: body.description,
+			category: body.category,
+			imageUrl: body.imageUrl,
+		}).returning();
+
+		return successResponse(newCertification[0], env, 201);
+	} catch (error) {
+		return errorResponse('Failed to create certification', env, 500);
+	}
+});
+
+// PUT /admin/certifications/:id - Update certification
+router.put('/api/admin/certifications/:id', async (request: Request, env: Env, ctx: any) => {
+	const authCheck = requireAdmin(request, env);
+	if (authCheck) return authCheck;
+
+	try {
+		const url = new URL(request.url);
+		const pathParts = url.pathname.split('/');
+		const idFromPath = pathParts[pathParts.length - 1];
+		const id = parseInt(ctx.params?.id || idFromPath, 10);
+		const body = await request.json() as {
+			name: string;
+			issuer: string;
+			issueDate: string;
+			expiryDate?: string;
+			credentialId?: string;
+			credentialUrl?: string;
+			description?: string;
+			category?: string;
+			imageUrl?: string;
+		};
+		const db = drizzle(env.DB);
+
+		const updatedCertification = await db.update(certifications)
+			.set({
+				name: body.name,
+				issuer: body.issuer,
+				issueDate: body.issueDate,
+				expiryDate: body.expiryDate,
+				credentialId: body.credentialId,
+				credentialUrl: body.credentialUrl,
+				description: body.description,
+				category: body.category,
+				imageUrl: body.imageUrl,
+				updatedAt: new Date().toISOString(),
+			})
+			.where(eq(certifications.id, id))
+			.returning();
+
+		if (!updatedCertification.length) {
+			return errorResponse('Certification not found', env, 404);
+		}
+
+		return successResponse(updatedCertification[0], env, 200);
+	} catch (error) {
+		return errorResponse('Failed to update certification', env, 500);
+	}
+});
+
+// DELETE /admin/certifications/:id - Delete certification
+router.delete('/api/admin/certifications/:id', async (request: Request, env: Env, ctx: any) => {
+	const authCheck = requireAdmin(request, env);
+	if (authCheck) return authCheck;
+
+	try {
+		const url = new URL(request.url);
+		const pathParts = url.pathname.split('/');
+		const idFromPath = pathParts[pathParts.length - 1];
+		const id = parseInt(ctx.params?.id || idFromPath, 10);
+
+		if (Number.isNaN(id)) {
+			console.error('[ADMIN] Invalid certification ID provided:', ctx.params?.id);
+			return errorResponse('Invalid certification ID', env, 400);
+		}
+
+		const db = drizzle(env.DB);
+
+		const result = await db.delete(certifications).where(eq(certifications.id, id));
+
+		if (result.meta.changes === 0) {
+			console.warn(`[ADMIN] No certification found with ID: ${id}`);
+			return errorResponse('Certification not found', env, 404);
+		}
+
+		return successResponse({ message: 'Certification deleted' }, env, 200);
+	} catch (error) {
+		console.error('[ADMIN] Certification delete error:', error);
+		return errorResponse('Failed to delete certification', env, 500);
+	}
+});
+
+// GET /admin/certifications - Get all certifications
+router.get('/api/admin/certifications', async (request: Request, env: Env) => {
+	const authCheck = requireAdmin(request, env);
+	if (authCheck) return authCheck;
+
+	try {
+		const db = drizzle(env.DB);
+		const allCertifications = await db.select()
+			.from(certifications)
+			.orderBy(desc(certifications.createdAt));
+
+		return successResponse(allCertifications, env, 200);
+	} catch (error) {
+		return errorResponse('Failed to fetch certifications', env, 500);
 	}
 });
 

@@ -71,6 +71,22 @@ export const testimonials = sqliteTable('Testimonials', {
 	createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
+// Certifications table schema
+export const certifications = sqliteTable('Certifications', {
+	id: integer('id').primaryKey({ autoIncrement: true }),
+	name: text('name').notNull(),
+	issuer: text('issuer').notNull(),
+	issueDate: text('issue_date').notNull(),
+	expiryDate: text('expiry_date'), // null for certifications that don't expire
+	credentialId: text('credential_id'), // certificate ID or URL
+	credentialUrl: text('credential_url'), // URL to verify the certification
+	description: text('description'),
+	category: text('category'), // 'cloud', 'security', 'development', etc.
+	imageUrl: text('image_url'), // logo or badge image
+	createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+	updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
 // Pets table schema (Pet-dex!)
 export const pets = sqliteTable('Pets', {
 	id: integer('id').primaryKey({ autoIncrement: true }),
@@ -105,5 +121,7 @@ export type Experience = typeof experience.$inferSelect;
 export type NewExperience = typeof experience.$inferInsert;
 export type Testimonial = typeof testimonials.$inferSelect;
 export type NewTestimonial = typeof testimonials.$inferInsert;
+export type Certification = typeof certifications.$inferSelect;
+export type NewCertification = typeof certifications.$inferInsert;
 export type Pet = typeof pets.$inferSelect;
 export type NewPet = typeof pets.$inferInsert;

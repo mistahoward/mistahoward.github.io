@@ -3,22 +3,22 @@
 	width: 3.2em;
 	height: 2em;
 	font-size: 2em;
-}
 
-.yak-shaver-spinner .yak {
-	position: absolute;
-	left: 0.5em;
-	top: 0.1em;
-	z-index: 1;
-}
+	& .yak {
+		position: absolute;
+		left: 0.5em;
+		top: 0.1em;
+		z-index: 1;
+	}
 
-.yak-shaver-spinner .razor {
-	position: absolute;
-	top: 0.1em;
-	left: 0.5em;
-	z-index: 2;
-	font-size: 0.7em;
-	animation: razor-move 1.2s cubic-bezier(0.6, 0.1, 0.4, 1) infinite;
+	& .razor {
+		position: absolute;
+		top: 0.1em;
+		left: 0.5em;
+		z-index: 2;
+		font-size: 0.7em;
+		animation: razor-move 1.2s cubic-bezier(0.6, 0.1, 0.4, 1) infinite;
+	}
 }
 
 @keyframes razor-move {
@@ -26,26 +26,32 @@
 		left: 0.5em;
 		transform: rotate(-20deg) scale(1.1);
 	}
+
 	20% {
 		left: 1em;
 		transform: rotate(-10deg) scale(1.1);
 	}
+
 	40% {
 		left: 1.5em;
 		transform: rotate(0deg) scale(1.1);
 	}
+
 	60% {
 		left: 2em;
 		transform: rotate(10deg) scale(1.1);
 	}
+
 	80% {
 		left: 2em;
 		transform: rotate(20deg) scale(1.1);
 	}
+
 	90% {
 		left: 2em;
 		transform: rotate(20deg) scale(1.1);
 	}
+
 	100% {
 		left: 0.5em;
 		transform: rotate(-20deg) scale(1.1);

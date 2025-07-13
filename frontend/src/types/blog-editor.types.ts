@@ -11,4 +11,20 @@ export interface BlogPost {
 
 export interface BlogEditorProps {
 	lastFocusTime?: number;
-} 
+}
+
+export interface BlogFormState {
+	title: string;
+	slug: string;
+	content: string;
+	excerpt: string;
+	published: boolean;
+}
+
+export type BlogFormProps = {
+	formData: BlogFormState;
+	setFormData: (data: BlogFormState) => void;
+	onSubmit: () => void;
+	onCancel: () => void;
+	editingItem: BlogPost | null;
+}; 
