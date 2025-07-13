@@ -101,7 +101,8 @@ export const pets = sqliteTable('Pets', {
 	favoriteFood: text('favorite_food'),
 	favoriteToy: text('favorite_toy'),
 	rescueStory: text('rescue_story'),
-	imageUrl: text('image_url'),
+	imageUrl: text('image_url'), // Main pet image
+	iconUrl: text('icon_url'), // Icon for PetDex (like Pokédex)
 	stats: text('stats'), // JSON object with HP, Attack, Defense, Speed, etc.
 	nickname: text('nickname'),
 	adoptedDate: text('adopted_date'),

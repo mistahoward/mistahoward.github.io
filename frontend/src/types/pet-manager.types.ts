@@ -12,6 +12,7 @@ export interface Pet {
 	favoriteToy?: string;
 	rescueStory?: string;
 	imageUrl?: string;
+	iconUrl?: string;
 	stats?: string;
 	nickname?: string;
 	adoptedDate?: string;
@@ -37,6 +38,7 @@ export interface PetFormState {
 	favoriteToy: string;
 	rescueStory: string;
 	imageUrl: string;
+	iconUrl: string;
 	stats: string;
 	nickname: string;
 	adoptedDate: string;
@@ -53,4 +55,8 @@ export type PetFormProps = {
 	imagePreview: string;
 	onImageChange: (e: Event) => void;
 	onImageRemove: () => void;
+	iconFile: File | null;
+	iconPreview: string;
+	onIconChange: (e: Event) => void;
+	onIconRemove: () => void;
 }; 

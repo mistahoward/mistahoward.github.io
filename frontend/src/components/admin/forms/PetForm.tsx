@@ -11,6 +11,10 @@ export const PetForm = ({
 	imagePreview,
 	onImageChange,
 	onImageRemove,
+	iconFile,
+	iconPreview,
+	onIconChange,
+	onIconRemove,
 }: PetFormProps) => (
 	<div className="card mb-3">
 		<div className="card-body">
@@ -177,6 +181,34 @@ export const PetForm = ({
 								<button
 									type="button"
 									onClick={onImageRemove}
+									className="btn btn-danger btn-sm position-absolute top-0 end-0"
+									style={{ margin: "5px" }}
+								>
+									×
+								</button>
+							)}
+						</div>
+					)}
+				</div>
+			</div>
+
+			<div className="mb-3">
+				<label className="form-label">Pet Icon (for PetDex)</label>
+				<div className="d-flex flex-column gap-2">
+					<input type="file" accept="image/*" onChange={onIconChange} className="form-control" id="pet-icon-upload" />
+
+					{(iconPreview || formData.iconUrl) && (
+						<div className="position-relative d-inline-block">
+							<img
+								src={iconPreview || formData.iconUrl}
+								alt="Pet icon preview"
+								className="img-thumbnail"
+								style={{ maxWidth: "80px", height: "80px", objectFit: "cover" }}
+							/>
+							{iconFile && (
+								<button
+									type="button"
+									onClick={onIconRemove}
 									className="btn btn-danger btn-sm position-absolute top-0 end-0"
 									style={{ margin: "5px" }}
 								>

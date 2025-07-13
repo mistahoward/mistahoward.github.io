@@ -1,0 +1,1 @@
+ALTER TABLE Pets ADD `icon_url` text;

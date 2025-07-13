@@ -25,6 +25,7 @@ export const PetManager = ({ lastFocusTime = 0 }: PetManagerProps) => {
 		favoriteToy: "",
 		rescueStory: "",
 		imageUrl: "",
+		iconUrl: "",
 		stats: "",
 		nickname: "",
 		adoptedDate: "",
@@ -33,6 +34,8 @@ export const PetManager = ({ lastFocusTime = 0 }: PetManagerProps) => {
 
 	const [imageFile, setImageFile] = useState<File | null>(null);
 	const [imagePreview, setImagePreview] = useState<string>("");
+	const [iconFile, setIconFile] = useState<File | null>(null);
+	const [iconPreview, setIconPreview] = useState<string>("");
 
 	const fetchPets = async () => {
 		await fetchItems({
@@ -67,6 +70,7 @@ export const PetManager = ({ lastFocusTime = 0 }: PetManagerProps) => {
 			favoriteToy: "",
 			rescueStory: "",
 			imageUrl: "",
+			iconUrl: "",
 			stats: "",
 			nickname: "",
 			adoptedDate: "",
@@ -74,6 +78,8 @@ export const PetManager = ({ lastFocusTime = 0 }: PetManagerProps) => {
 		});
 		setImageFile(null);
 		setImagePreview("");
+		setIconFile(null);
+		setIconPreview("");
 	};
 
 	const handleEdit = (pet: Pet) => {
@@ -92,6 +98,7 @@ export const PetManager = ({ lastFocusTime = 0 }: PetManagerProps) => {
 			favoriteToy: pet.favoriteToy || "",
 			rescueStory: pet.rescueStory || "",
 			imageUrl: pet.imageUrl || "",
+			iconUrl: pet.iconUrl || "",
 			stats: pet.stats || "",
 			nickname: pet.nickname || "",
 			adoptedDate: pet.adoptedDate || "",
@@ -99,6 +106,8 @@ export const PetManager = ({ lastFocusTime = 0 }: PetManagerProps) => {
 		});
 		setImageFile(null);
 		setImagePreview(pet.imageUrl || "");
+		setIconFile(null);
+		setIconPreview(pet.iconUrl || "");
 	};
 
 	const handleCancel = () => {
@@ -117,6 +126,7 @@ export const PetManager = ({ lastFocusTime = 0 }: PetManagerProps) => {
 			favoriteToy: "",
 			rescueStory: "",
 			imageUrl: "",
+			iconUrl: "",
 			stats: "",
 			nickname: "",
 			adoptedDate: "",
@@ -124,6 +134,8 @@ export const PetManager = ({ lastFocusTime = 0 }: PetManagerProps) => {
 		});
 		setImageFile(null);
 		setImagePreview("");
+		setIconFile(null);
+		setIconPreview("");
 	};
 
 	const handleImageChange = (e: Event) => {
@@ -143,15 +155,28 @@ export const PetManager = ({ lastFocusTime = 0 }: PetManagerProps) => {
 		setImagePreview("");
 	};
 
-	const uploadImage = async (): Promise<string | null> => {
-		if (!imageFile) return null;
+	const handleIconChange = (e: Event) => {
+		const target = e.target as HTMLInputElement;
+		const file = target.files?.[0];
+		if (file) {
+			setIconFile(file);
+			const reader = new FileReader();
+			reader.onload = e => setIconPreview(e.target?.result as string);
+			reader.readAsDataURL(file);
+		}
+	};
 
+	const handleIconRemove = () => {
+		setIconFile(null);
+		setIconPreview("");
+	};
+
+	const uploadImage = async (file: File | null): Promise<string | null> => {
+		if (!file) return null;
 		try {
 			const formData = new FormData();
-			formData.append("image", imageFile);
-
+			formData.append("image", file);
 			const response = await apiRequestWithFormData("/api/admin/pets/upload-image", formData);
-
 			if (response.ok) {
 				const data = await response.json();
 				return data.imageUrl;
@@ -167,19 +192,24 @@ export const PetManager = ({ lastFocusTime = 0 }: PetManagerProps) => {
 
 	const handleSubmit = async () => {
 		let imageUrl = formData.imageUrl;
+		let iconUrl = formData.iconUrl;
 		if (imageFile) {
-			const uploadedUrl = await uploadImage();
+			const uploadedUrl = await uploadImage(imageFile);
 			if (uploadedUrl) imageUrl = uploadedUrl;
 			else return;
 		}
-
+		if (iconFile) {
+			const uploadedIconUrl = await uploadImage(iconFile);
+			if (uploadedIconUrl) iconUrl = uploadedIconUrl;
+			else return;
+		}
 		const submitData = {
 			...formData,
 			imageUrl,
+			iconUrl,
 			age: formData.age ? parseInt(formData.age) : undefined,
 			weight: formData.weight ? parseInt(formData.weight) : undefined,
 		};
-
 		if (editingPet) {
 			await updateItem(
 				"/api/admin/pets",
@@ -233,6 +263,10 @@ export const PetManager = ({ lastFocusTime = 0 }: PetManagerProps) => {
 					imagePreview={imagePreview}
 					onImageChange={handleImageChange}
 					onImageRemove={handleImageRemove}
+					iconFile={iconFile}
+					iconPreview={iconPreview}
+					onIconChange={handleIconChange}
+					onIconRemove={handleIconRemove}
 				/>
 			)}
 
@@ -241,17 +275,24 @@ export const PetManager = ({ lastFocusTime = 0 }: PetManagerProps) => {
 					<div key={pet.id} className={`card mb-2 ${!pet.isActive ? "opacity-75 bg-light" : ""}`}>
 						<div className="card-body">
 							<div className="d-flex gap-3">
+								{pet.iconUrl && (
+									<div className="flex-shrink-0 d-flex flex-column align-items-center me-2">
+										<img
+											src={pet.iconUrl}
+											alt={pet.name + " icon"}
+											className="img-thumbnail border border-primary"
+											style={{ width: "48px", height: "48px", objectFit: "cover" }}
+										/>
+										<small className="text-muted">Icon</small>
+									</div>
+								)}
 								{pet.imageUrl && (
 									<div className="flex-shrink-0">
 										<img
 											src={pet.imageUrl}
 											alt={pet.name}
 											className="img-thumbnail"
-											style={{
-												width: "80px",
-												height: "80px",
-												objectFit: "cover",
-											}}
+											style={{ width: "80px", height: "80px", objectFit: "cover" }}
 										/>
 									</div>
 								)}

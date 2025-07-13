@@ -188,6 +188,7 @@ router.post('/api/admin/pets', async (request: Request, env: Env) => {
 			favoriteToy?: string;
 			rescueStory?: string;
 			imageUrl?: string;
+			iconUrl?: string;
 			stats?: string;
 			nickname?: string;
 			adoptedDate?: string;
@@ -208,6 +209,7 @@ router.post('/api/admin/pets', async (request: Request, env: Env) => {
 			favoriteToy: body.favoriteToy,
 			rescueStory: body.rescueStory,
 			imageUrl: body.imageUrl,
+			iconUrl: body.iconUrl,
 			stats: body.stats,
 			nickname: body.nickname,
 			adoptedDate: body.adoptedDate,
@@ -243,6 +245,7 @@ router.put('/api/admin/pets/:id', async (request: Request, env: Env, ctx: any) =
 			favoriteToy?: string;
 			rescueStory?: string;
 			imageUrl?: string;
+			iconUrl?: string;
 			stats?: string;
 			nickname?: string;
 			adoptedDate?: string;
@@ -264,6 +267,7 @@ router.put('/api/admin/pets/:id', async (request: Request, env: Env, ctx: any) =
 				favoriteToy: body.favoriteToy,
 				rescueStory: body.rescueStory,
 				imageUrl: body.imageUrl,
+				iconUrl: body.iconUrl,
 				stats: body.stats,
 				nickname: body.nickname,
 				adoptedDate: body.adoptedDate,
