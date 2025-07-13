@@ -1,6 +1,7 @@
 import { h } from "preact";
 import { TbBrandCSharp } from "react-icons/tb";
 import { SiBlazor, SiTypescript, SiJavascript, SiReact, SiXml, SiGit, SiSqlite, SiConfluence } from "react-icons/si";
+import { FaRecycle } from "react-icons/fa";
 import { VscAzureDevops } from "react-icons/vsc";
 
 export const iconMap: Record<string, any> = {
@@ -14,6 +15,7 @@ export const iconMap: Record<string, any> = {
 	SiGit,
 	SiSqlite,
 	SiConfluence,
+	FaRecycle
 };
 
 export const iconNameToLabel: Record<string, string> = {
@@ -27,6 +29,7 @@ export const iconNameToLabel: Record<string, string> = {
 	SiGit: "Git",
 	SiSqlite: "SQLite",
 	SiConfluence: "Confluence",
+	FaRecycle: "Agile Methodology",
 };
 
 export const renderIcon = (iconName: string, size = 24, className = "me-2") => {

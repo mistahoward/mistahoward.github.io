@@ -1,7 +1,7 @@
 import { useState, useEffect } from "preact/hooks";
 import { Certification } from "../../types/data-manager.types";
 import { fetchItems } from "../../utils/crud";
-import { LoadingSpinner, ErrorAlert, formatDate } from "../../utils/ui";
+import { LoadingSpinner, formatDate } from "../../utils/ui";
 
 export const CertificationsList = () => {
 	const [certifications, setCertifications] = useState<Certification[]>([]);
@@ -12,9 +12,7 @@ export const CertificationsList = () => {
 		const loadCertifications = async () => {
 			try {
 				const data = await fetchItems({ endpoint: "/api/certifications", setError });
-				if (data) {
-					setCertifications(data as Certification[]);
-				}
+				if (data) setCertifications(data as Certification[]);
 			} catch (err) {
 				setError("Failed to load certifications");
 			} finally {
@@ -26,7 +24,7 @@ export const CertificationsList = () => {
 	}, []);
 
 	if (loading) return <LoadingSpinner />;
-	if (error) return <ErrorAlert error={error} />;
+	if (error) return <div className="text-danger">{error}</div>;
 
 	if (certifications.length === 0) return <div>No certifications found.</div>;
 
