@@ -2,7 +2,7 @@ import { Router } from 'itty-router';
 import { drizzle } from 'drizzle-orm/d1';
 import { eq, desc } from 'drizzle-orm';
 import {
-	projects, blogPosts, skills, experience, testimonials, certifications,
+	projects, blogPosts, skills, experience, testimonials, certifications, pets,
 } from '../schema';
 import { errorResponse, successResponse } from '../middleware/auth';
 
@@ -104,6 +104,19 @@ router.get('/api/certifications', async (request: Request, env: Env) => {
 		return successResponse(allCertifications, env, 200);
 	} catch (error) {
 		return errorResponse('Failed to fetch certifications', env, 500);
+	}
+});
+
+// GET /pets - Get all active pets
+router.get('/api/pets', async (request: Request, env: Env) => {
+	try {
+		const db = drizzle(env.DB);
+		const allPets = await db.select().from(pets)
+			.where(eq(pets.isActive, true))
+			.orderBy(desc(pets.createdAt));
+		return successResponse(allPets, env, 200);
+	} catch (error) {
+		return errorResponse('Failed to fetch pets', env, 500);
 	}
 });
 

@@ -180,13 +180,14 @@ router.post('/api/admin/pets', async (request: Request, env: Env) => {
 			species: string;
 			breed?: string;
 			age?: number;
-			weight?: number;
 			color?: string;
 			personality?: string;
 			specialAbilities?: string;
 			favoriteFood?: string;
 			favoriteToy?: string;
-			rescueStory?: string;
+			originStory?: string;
+			description?: string;
+			dexId?: string;
 			imageUrl?: string;
 			iconUrl?: string;
 			stats?: string;
@@ -201,13 +202,14 @@ router.post('/api/admin/pets', async (request: Request, env: Env) => {
 			species: body.species,
 			breed: body.breed,
 			age: body.age,
-			weight: body.weight,
 			color: body.color,
 			personality: body.personality,
 			specialAbilities: body.specialAbilities,
 			favoriteFood: body.favoriteFood,
 			favoriteToy: body.favoriteToy,
-			rescueStory: body.rescueStory,
+			originStory: body.originStory,
+			description: body.description,
+			dexId: body.dexId,
 			imageUrl: body.imageUrl,
 			iconUrl: body.iconUrl,
 			stats: body.stats,
@@ -237,13 +239,14 @@ router.put('/api/admin/pets/:id', async (request: Request, env: Env, ctx: any) =
 			species: string;
 			breed?: string;
 			age?: number;
-			weight?: number;
 			color?: string;
 			personality?: string;
 			specialAbilities?: string;
 			favoriteFood?: string;
 			favoriteToy?: string;
-			rescueStory?: string;
+			originStory?: string;
+			description?: string;
+			dexId?: string;
 			imageUrl?: string;
 			iconUrl?: string;
 			stats?: string;
@@ -259,13 +262,14 @@ router.put('/api/admin/pets/:id', async (request: Request, env: Env, ctx: any) =
 				species: body.species,
 				breed: body.breed,
 				age: body.age,
-				weight: body.weight,
 				color: body.color,
 				personality: body.personality,
 				specialAbilities: body.specialAbilities,
 				favoriteFood: body.favoriteFood,
 				favoriteToy: body.favoriteToy,
-				rescueStory: body.rescueStory,
+				originStory: body.originStory,
+				description: body.description,
+				dexId: body.dexId,
 				imageUrl: body.imageUrl,
 				iconUrl: body.iconUrl,
 				stats: body.stats,

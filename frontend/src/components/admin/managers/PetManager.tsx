@@ -17,13 +17,14 @@ export const PetManager = () => {
 		species: "",
 		breed: "",
 		age: "",
-		weight: "",
 		color: "",
 		personality: "",
 		specialAbilities: "",
 		favoriteFood: "",
 		favoriteToy: "",
-		rescueStory: "",
+		originStory: "",
+		description: "",
+		dexId: "",
 		imageUrl: "",
 		iconUrl: "",
 		stats: "",
@@ -58,13 +59,14 @@ export const PetManager = () => {
 			species: "",
 			breed: "",
 			age: "",
-			weight: "",
 			color: "",
 			personality: "",
 			specialAbilities: "",
 			favoriteFood: "",
 			favoriteToy: "",
-			rescueStory: "",
+			originStory: "",
+			description: "",
+			dexId: "",
 			imageUrl: "",
 			iconUrl: "",
 			stats: "",
@@ -86,13 +88,14 @@ export const PetManager = () => {
 			species: pet.species,
 			breed: pet.breed || "",
 			age: pet.age?.toString() || "",
-			weight: pet.weight?.toString() || "",
 			color: pet.color || "",
 			personality: pet.personality || "",
 			specialAbilities: pet.specialAbilities || "",
 			favoriteFood: pet.favoriteFood || "",
 			favoriteToy: pet.favoriteToy || "",
-			rescueStory: pet.rescueStory || "",
+			originStory: pet.originStory || "",
+			description: pet.description || "",
+			dexId: pet.dexId || "",
 			imageUrl: pet.imageUrl || "",
 			iconUrl: pet.iconUrl || "",
 			stats: pet.stats || "",
@@ -114,13 +117,14 @@ export const PetManager = () => {
 			species: "",
 			breed: "",
 			age: "",
-			weight: "",
 			color: "",
 			personality: "",
 			specialAbilities: "",
 			favoriteFood: "",
 			favoriteToy: "",
-			rescueStory: "",
+			originStory: "",
+			description: "",
+			dexId: "",
 			imageUrl: "",
 			iconUrl: "",
 			stats: "",
@@ -204,7 +208,6 @@ export const PetManager = () => {
 			imageUrl,
 			iconUrl,
 			age: formData.age ? parseInt(formData.age) : undefined,
-			weight: formData.weight ? parseInt(formData.weight) : undefined,
 		};
 		if (editingPet) {
 			await updateItem<Pet, typeof submitData>(
@@ -307,8 +310,7 @@ export const PetManager = () => {
 										</span>
 									</div>
 									<p className="text-muted small mb-1">
-										{pet.species} • {pet.breed || "Unknown breed"} • {pet.age ? ` ${pet.age} years old` : ""} •{" "}
-										{pet.weight ? ` ${pet.weight} lbs` : ""}
+										{pet.species} • {pet.breed || "Unknown breed"} • {pet.age ? ` ${pet.age} years old` : ""}
 									</p>
 									{pet.color && <p className="small mb-1">Color: {pet.color}</p>}
 									{pet.personality && <p className="small mb-0">Personality: {pet.personality}</p>}

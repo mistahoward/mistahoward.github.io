@@ -94,13 +94,14 @@ export const pets = sqliteTable('Pets', {
 	species: text('species').notNull(), // "cat" or "dog"
 	breed: text('breed'),
 	age: integer('age'), // in years
-	weight: integer('weight'), // in pounds
 	color: text('color'),
 	personality: text('personality'), // JSON array of traits
 	specialAbilities: text('special_abilities'), // JSON array of fun abilities
 	favoriteFood: text('favorite_food'),
 	favoriteToy: text('favorite_toy'),
-	rescueStory: text('rescue_story'),
+	originStory: text('origin_story'), // Renamed from rescue_story
+	description: text('description'), // New field for pet description
+	dexId: text('dex_id'), // Independent PetDex identifier
 	imageUrl: text('image_url'), // Main pet image
 	iconUrl: text('icon_url'), // Icon for PetDex (like Pokédex)
 	stats: text('stats'), // JSON object with HP, Attack, Defense, Speed, etc.

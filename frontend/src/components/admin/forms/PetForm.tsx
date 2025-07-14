@@ -47,7 +47,7 @@ export const PetForm = ({
 			</div>
 
 			<div className="row">
-				<div className="col-md-6 mb-3">
+				<div className="col-md-4 mb-3">
 					<label className="form-label">Breed</label>
 					<input
 						type="text"
@@ -57,7 +57,7 @@ export const PetForm = ({
 						placeholder="Breed"
 					/>
 				</div>
-				<div className="col-md-6 mb-3">
+				<div className="col-md-4 mb-3">
 					<label className="form-label">Nickname</label>
 					<input
 						type="text"
@@ -67,10 +67,20 @@ export const PetForm = ({
 						placeholder="Nickname"
 					/>
 				</div>
+				<div className="col-md-4 mb-3">
+					<label className="form-label">Dex ID</label>
+					<input
+						type="text"
+						className="form-control"
+						value={formData.dexId}
+						onChange={e => setFormData({ ...formData, dexId: (e.target as HTMLInputElement).value })}
+						placeholder="e.g., #001, #002"
+					/>
+				</div>
 			</div>
 
 			<div className="row">
-				<div className="col-md-4 mb-3">
+				<div className="col-md-6 mb-3">
 					<label className="form-label">Age (years)</label>
 					<input
 						type="number"
@@ -81,18 +91,7 @@ export const PetForm = ({
 						min="0"
 					/>
 				</div>
-				<div className="col-md-4 mb-3">
-					<label className="form-label">Weight (lbs)</label>
-					<input
-						type="number"
-						className="form-control"
-						value={formData.weight}
-						onChange={e => setFormData({ ...formData, weight: (e.target as HTMLInputElement).value })}
-						placeholder="Weight"
-						min="0"
-					/>
-				</div>
-				<div className="col-md-4 mb-3">
+				<div className="col-md-6 mb-3">
 					<label className="form-label">Color</label>
 					<input
 						type="text"
@@ -150,12 +149,23 @@ export const PetForm = ({
 			</div>
 
 			<div className="mb-3">
-				<label className="form-label">Rescue Story</label>
+				<label className="form-label">Description</label>
 				<textarea
 					className="form-control"
-					value={formData.rescueStory}
-					onChange={e => setFormData({ ...formData, rescueStory: (e.target as HTMLTextAreaElement).value })}
-					placeholder="How you found/adopted this pet"
+					value={formData.description}
+					onChange={e => setFormData({ ...formData, description: (e.target as HTMLTextAreaElement).value })}
+					placeholder="A brief description of this pet"
+					rows={3}
+				/>
+			</div>
+
+			<div className="mb-3">
+				<label className="form-label">Origin Story</label>
+				<textarea
+					className="form-control"
+					value={formData.originStory}
+					onChange={e => setFormData({ ...formData, originStory: (e.target as HTMLTextAreaElement).value })}
+					placeholder="The lore and story of how this pet came to be"
 					rows={3}
 				/>
 			</div>
