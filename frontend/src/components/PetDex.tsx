@@ -39,7 +39,15 @@ export const PetDex = () => {
 	}, []);
 
 	const speciesMap = { canine: "dog", feline: "cat" };
-	const filteredPets = useMemo(() => pets.filter(pet => pet.species === speciesMap[category]), [pets, category]);
+	const filteredPets = useMemo(() => {
+		const filtered = pets.filter(pet => pet.species === speciesMap[category]);
+		// Sort by dexId ascending (e.g., #001, #002, ...)
+		return filtered.slice().sort((a, b) => {
+			const aNum = parseInt((a.dexId || "").replace("#", ""), 10);
+			const bNum = parseInt((b.dexId || "").replace("#", ""), 10);
+			return aNum - bNum;
+		});
+	}, [pets, category]);
 	const selectedPet = useMemo(() => filteredPets.find(p => p.id === selectedPetId) || null, [filteredPets, selectedPetId]);
 
 	const parseQuotedList = (val?: string) => {

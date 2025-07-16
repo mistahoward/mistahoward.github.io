@@ -55,10 +55,16 @@ export const AdminPanel = ({ isVisible, onClose }: AdminPanelProps) => {
 
 	return (
 		<>
-			<div className="modal fade show d-block" style={{ backgroundColor: "rgba(0, 0, 0, 0.8)" }} onClick={onClose}>
+			<div
+				data-bs-backdrop="static"
+				className="modal fade show d-block"
+				style={{ backgroundColor: "rgba(0, 0, 0, 0.8)" }}
+				onClick={onClose}
+			>
 				<div
 					className="modal-dialog modal-xl modal-dialog-centered"
 					ref={panelRef}
+					data-bs-backdrop="static"
 					onClick={e => e.stopPropagation()}
 					onFocus={handleFocus}
 					tabIndex={-1}
