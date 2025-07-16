@@ -24,6 +24,7 @@ import { ProjectForm } from "../forms/ProjectForm";
 import { SkillForm } from "../forms/SkillForm";
 import { ExperienceForm } from "../forms/ExperienceForm";
 import { TestimonialForm } from "../forms/TestimonialForm";
+import { renderIcon, iconNameToLabel } from "../../../utils/iconMap";
 
 export const DataManager = ({ lastFocusTime = 0, initialTab = "projects" }: DataManagerProps) => {
 	const [activeTab, setActiveTab] = useState<DataManagerTab>(initialTab);
@@ -345,7 +346,21 @@ export const DataManager = ({ lastFocusTime = 0, initialTab = "projects" }: Data
 																<p className="card-text small">{project.description}</p>
 															)}
 															{project.technologies && (
-																<p className="small mb-0">Tech: {project.technologies}</p>
+																<div className="small mb-0">
+																	<span className="text-muted">Technologies:&nbsp;</span>
+																	{project.technologies.split(/,|;/).map((tech: string) => {
+																		const t = tech.trim();
+																		return (
+																			<span
+																				key={t}
+																				className="me-2"
+																				title={iconNameToLabel[t.replace(/ /g, "")] || t}
+																			>
+																				{renderIcon(t.replace(/ /g, ""))}
+																			</span>
+																		);
+																	})}
+																</div>
 															)}
 														</div>
 														<div className="d-flex gap-2">
@@ -416,7 +431,23 @@ export const DataManager = ({ lastFocusTime = 0, initialTab = "projects" }: Data
 																{exp.current ? "Present" : formatDate(exp.endDate || "")}
 															</p>
 															{exp.description && <p className="card-text small">{exp.description}</p>}
-															{exp.technologies && <p className="small mb-0">Tech: {exp.technologies}</p>}
+															{exp.technologies && (
+																<div className="small mb-0">
+																	<span className="text-muted">Technologies:&nbsp;</span>
+																	{exp.technologies.split(/,|;/).map((tech: string) => {
+																		const t = tech.trim();
+																		return (
+																			<span
+																				key={t}
+																				className="me-2"
+																				title={iconNameToLabel[t.replace(/ /g, "")] || t}
+																			>
+																				{renderIcon(t.replace(/ /g, ""))}
+																			</span>
+																		);
+																	})}
+																</div>
+															)}
 														</div>
 														<div className="d-flex gap-2">
 															<button onClick={() => handleEdit(exp)} className="btn btn-warning btn-sm">

@@ -15,8 +15,11 @@
 		"Avenir",
 		"Blazor",
 		"Compyl",
+		"Fastapi",
 		"itty",
+		"Langchain",
 		"Laravel",
+		"Msql",
 		"Unapprove"
 	],
   }

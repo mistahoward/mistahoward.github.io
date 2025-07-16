@@ -13,7 +13,14 @@ import {
 	SiRedux,
 	SiJquery,
 	SiJest,
-	SiRedis
+	SiRedis,
+	SiPreact,
+	SiCloudflare,
+	SiServerless,
+	SiLangchain,
+	SiFastapi,
+	SiMysql,
+	SiGatsby
 } from "react-icons/si";
 import {
 	FaRecycle,
@@ -31,6 +38,9 @@ import { VscAzureDevops } from "react-icons/vsc";
 import { TbBrandReactNative } from "react-icons/tb";
 import { RiPhpFill } from "react-icons/ri";
 import { CgCPlusPlus } from "react-icons/cg";
+import { MdDataArray } from "react-icons/md";
+import { DiMsqlServer } from "react-icons/di";
+import { PiWindowsLogo } from "react-icons/pi";
 
 export const iconMap: Record<string, any> = {
 	TbBrandCSharp,
@@ -60,7 +70,17 @@ export const iconMap: Record<string, any> = {
 	FaTheaterMasks,
 	SiJest,
 	FaDocker,
-	SiRedis
+	SiRedis,
+	SiPreact,
+	SiCloudflare,
+	SiServerless,
+	SiLangchain,
+	SiFastapi,
+	SiMysql,
+	MdDataArray,
+	DiMsqlServer,
+	PiWindowsLogo,
+	SiGatsby
 };
 
 export const iconNameToLabel: Record<string, string> = {
@@ -91,7 +111,17 @@ export const iconNameToLabel: Record<string, string> = {
 	FaTheaterMasks: "Playwright",
 	SiJest: "Jest",
 	FaDocker: "Docker",
-	SiRedis: "Redis"
+	SiRedis: "Redis",
+	SiPreact: "Preact",
+	SiCloudflare: "Cloudflare",
+	SiServerless: "Serverless",
+	SiLangchain: "Langchain",
+	SiFastapi: "FastAPI",
+	SiMysql: "MySQL",
+	MdDataArray: "Vertex Database",
+	DiMsqlServer: "Microsoft SQL Server",
+	PiWindowsLogo: "Windows Forms",
+	SiGatsby: "Gatsby"
 };
 
 export const renderIcon = (iconName: string, size = 24, className = "me-2") => {

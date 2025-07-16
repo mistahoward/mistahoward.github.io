@@ -62,14 +62,17 @@ export const ProjectForm = ({ formData, setFormData, onSubmit, onCancel, editing
 			</div>
 			<div className="row">
 				<div className="col-md-6 mb-3">
-					<label className="form-label">Technologies</label>
+					<label className="form-label">
+						Technologies <span className="text-muted">(icon name, comma-separated)</span>
+					</label>
 					<input
 						type="text"
 						className="form-control"
 						value={formData.technologies}
 						onChange={e => setFormData({ ...formData, technologies: (e.target as HTMLInputElement).value })}
-						placeholder="React, Node.js, TypeScript (comma separated)"
+						placeholder="e.g. SiReact, SiTypescript, SiJavascript"
 					/>
+					<div className="form-text">Separate each technology with a comma, e.g. SiReact, SiTypescript, SiJavascript</div>
 				</div>
 				<div className="col-md-6 mb-3">
 					<label className="form-label">Image URL</label>
