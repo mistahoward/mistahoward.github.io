@@ -15,11 +15,13 @@
 		"Avenir",
 		"Blazor",
 		"Compyl",
+		"dexid",
 		"Fastapi",
 		"itty",
 		"Langchain",
 		"Laravel",
 		"Msql",
+		"pokedex",
 		"Unapprove"
 	],
   }
