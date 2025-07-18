@@ -45,6 +45,13 @@ router.post('/api/admin/auth', async (request: Request, env: Env) => {
 	}
 });
 
+// Admin token verification endpoint
+router.get('/api/admin/verify', async (request: Request, env: Env) => {
+	const authCheck = requireAdmin(request, env);
+	if (authCheck) return authCheck;
+	return successResponse({ message: 'Token valid' }, env, 200);
+});
+
 // BLOG ADMIN ROUTES
 
 // POST /admin/blog - Create new blog post

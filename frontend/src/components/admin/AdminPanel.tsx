@@ -44,7 +44,23 @@ export const AdminPanel = ({ isVisible, onClose }: AdminPanelProps) => {
 
 	useEffect(() => {
 		const token = localStorage.getItem("adminToken");
-		if (token) setIsAuthenticated(true);
+		if (!token) return;
+
+		fetch(`${API_URL}/api/admin/verify`, {
+			method: "GET",
+			headers: { Authorization: `Bearer ${token}` },
+		})
+			.then(res => {
+				if (res.ok) setIsAuthenticated(true);
+				else {
+					localStorage.removeItem("adminToken");
+					setIsAuthenticated(false);
+				}
+			})
+			.catch(() => {
+				localStorage.removeItem("adminToken");
+				setIsAuthenticated(false);
+			});
 	}, []);
 
 	useEffect(() => {
