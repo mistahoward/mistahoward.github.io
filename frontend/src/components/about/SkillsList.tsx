@@ -121,11 +121,11 @@ export const SkillsList = () => {
 				<ul className="list-group w-100">
 					{filteredSkills.length === 0 && <li className="list-group-item">No skills found.</li>}
 					{filteredSkills.map((skill: Skill) => (
-						<li className="list-group-item d-flex align-items-center" key={skill.id}>
-							{skill.icon && renderIcon(skill.icon)}
-							<span className="fw-bold me-2">{skill.name}</span>
-							<span className="text-muted small me-2">{skill.category}</span>
-							<span className="ms-auto">{renderStars(skill.proficiency)}</span>
+						<li className="list-group-item skills-list-item" key={skill.id}>
+							{skill.icon && <span className="skills-list-icon">{renderIcon(skill.icon)}</span>}
+							<span className="skills-list-name">{skill.name}</span>
+							<span className="skills-list-category text-muted small">{skill.category}</span>
+							<span className="skills-list-stars">{renderStars(skill.proficiency)}</span>
 						</li>
 					))}
 				</ul>

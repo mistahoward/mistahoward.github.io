@@ -29,7 +29,6 @@ html, body, main, .custom-navbar {
 	max-width: 100%;
 	margin: 0;
 	padding: 0;
-	// overflow-x: hidden; // Removed to allow sticky navbar
 }
 
 html, body, main {
@@ -54,7 +53,6 @@ main {
 	margin-top: 0;
 }
 
-// Responsive About Tabs
 .about-tabs-dropdown {
 	display: none;
 }
@@ -92,6 +90,72 @@ main {
 
 @media (min-width: 992px) {
 	.skills-category-dropdown {
+		display: none !important;
+	}
+} 
+
+.projects-type-dropdown {
+	display: none;
+}
+
+@media (max-width: 991.98px) {
+	.projects-type-dropdown {
+		display: block;
+		margin-bottom: 1.5rem;
+	}
+	.d-lg-flex {
+		display: none !important;
+	}
+}
+
+@media (min-width: 992px) {
+	.projects-type-dropdown {
+		display: none !important;
+	}
+} 
+
+.skills-list-item {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	white-space: nowrap;
+	width: 100%;
+	min-width: 0;
+}
+
+.skills-list-name {
+	flex: 1 1 0;
+	min-width: 0;
+	font-weight: 600;
+	margin-right: 0.5rem;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.skills-list-category {
+	flex: 0 0 auto;
+	color: #888;
+	font-size: 0.95rem;
+	margin-right: 0.5rem;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	max-width: 5.5rem;
+}
+
+.skills-list-stars {
+	flex: 0 0 auto;
+	margin-left: auto;
+	white-space: nowrap;
+}
+
+@media (max-width: 575px) {
+	.skills-list-name {
+		max-width: 7.5rem;
+	}
+	.skills-list-category,
+	.skills-list-icon {
 		display: none !important;
 	}
 } 

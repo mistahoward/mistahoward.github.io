@@ -73,7 +73,21 @@ export const ProjectList = () => {
 
 	return (
 		<div className="projects-container w-100" style={{ width: "100%" }}>
-			<div className="mb-3 d-flex flex-wrap gap-2">
+			<div className="projects-type-dropdown d-lg-none mb-3">
+				<select
+					className="form-select"
+					value={selectedType}
+					onChange={e => setSelectedType(e.currentTarget.value)}
+					aria-label="Select Project Type"
+				>
+					{projectTypes.map(type => (
+						<option key={type} value={type}>
+							{type}
+						</option>
+					))}
+				</select>
+			</div>
+			<div className="mb-3 d-flex flex-wrap gap-2 d-none d-lg-flex">
 				{projectTypes.map(type => (
 					<button
 						key={type}
