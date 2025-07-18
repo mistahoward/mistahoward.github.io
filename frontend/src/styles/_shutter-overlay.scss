@@ -1,0 +1,27 @@
+.shutter-overlay {
+	position: absolute;
+	inset: 0;
+	z-index: 10;
+	pointer-events: none;
+	display: flex;
+}
+
+.shutter-bar {
+	position: absolute;
+	top: 0; bottom: 0;
+	width: 0;
+	background: #111;
+	transition: none;
+
+	&.left {
+		border-radius: 1.25rem;
+		left: 0;
+		animation: shutter-in-left 0.4s forwards, shutter-out-left 0.4s 0.5s forwards;
+	}
+
+	&.right {
+		border-radius: 1.25rem;
+		right: 0;
+		animation: shutter-in-right 0.4s forwards, shutter-out-right 0.4s 0.5s forwards;
+	}
+} 

@@ -1,0 +1,35 @@
+.form-control:focus,
+.form-select:focus,
+.btn:focus,
+input[type="text"]:focus,
+input[type="search"]:focus,
+textarea:focus {
+	border-color: var(--bs-primary) !important;
+	box-shadow: 0 0 0 0.125rem rgb(var(--bs-primary-rgb), 0.25) !important;
+	outline: none !important;
+}
+
+.btn-primary {
+	--bs-btn-bg: var(--bs-primary) !important;
+	--bs-btn-border-color: var(--bs-primary) !important;
+	--bs-btn-hover-bg: #ea580c !important;
+	--bs-btn-hover-border-color: #ea580c !important;
+	--bs-btn-active-bg: #c2410c !important;
+	--bs-btn-active-border-color: #c2410c !important;
+	--bs-btn-color: #fff !important;
+	--bs-btn-hover-color: #fff !important;
+	--bs-btn-active-color: #fff !important;
+	--bs-btn-focus-shadow-rgb: 249, 115, 22 !important;
+}
+
+.btn-outline-primary {
+	--bs-btn-color: var(--bs-primary) !important;
+	--bs-btn-border-color: var(--bs-primary) !important;
+	--bs-btn-hover-bg: var(--bs-primary) !important;
+	--bs-btn-hover-border-color: var(--bs-primary) !important;
+	--bs-btn-hover-color: #fff !important;
+	--bs-btn-active-bg: #ea580c !important;
+	--bs-btn-active-border-color: #ea580c !important;
+	--bs-btn-active-color: #fff !important;
+	--bs-btn-focus-shadow-rgb: 249, 115, 22 !important;
+} 
