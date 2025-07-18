@@ -1,3 +1,11 @@
+// Bootstrap Breakpoints
+$breakpoint-xs: 0;        // <576px
+$breakpoint-sm: 576px;    // ≥576px
+$breakpoint-md: 768px;    // ≥768px
+$breakpoint-lg: 992px;    // ≥992px
+$breakpoint-xl: 1200px;   // ≥1200px
+$breakpoint-xxl: 1400px;  // ≥1400px
+
 :root {
 	--bs-primary: #f97316;
 	--bs-primary-rgb: 249, 115, 22;
@@ -130,18 +138,48 @@ html {
 
 .custom-navbar {
 	display: flex;
-	align-items: baseline;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0;
+	height: 80px;
+	background: #232837;
+	backdrop-filter: none;
+	box-shadow: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	width: auto;
+	z-index: 2000;
+	box-sizing: border-box;
+	transition: background 0.3s ease, box-shadow 0.3s ease;
+	border: none;
+}
+
+.custom-navbar-inner {
+	width: 100%;
+	box-sizing: border-box;
+	display: flex;
+	align-items: center;
 	justify-content: space-between;
 	padding: 0 2rem;
-	padding-bottom: 0.5rem;
+	height: 100%;
+}
+
+.navbar-hamburger,
+.navbar-theme-toggle {
 	height: 80px;
-	background: rgb(17 24 39 / 90%);
-	backdrop-filter: blur(8px);
-	box-shadow: 0 2px 4px rgb(0 0 0 / 2%);
-	position: sticky;
-	top: 0;
-	z-index: 1000;
-	transition: background 0.3s ease, box-shadow 0.3s ease;
+	display: flex;
+	align-items: center;
+	padding: 0 0.75rem;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+main {
+	width: 100%;
+	padding-top: 80px;
+	margin-top: 0;
 }
 
 .navbar-section {
@@ -947,4 +985,267 @@ $gba-yellow-dark: #d7a000;
 @keyframes shutter-out-right {
 	0% { width: 50vw; }
 	100% { width: 0; }
+} 
+
+// Hamburger & Mobile Navbar Styles
+.navbar-hamburger {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: none;
+	border: none;
+	padding: 0.5rem 0.75rem;
+	margin-left: 0.5rem;
+	font-size: 2rem;
+	z-index: 1201;
+	cursor: pointer;
+	transition: background 0.2s;
+	border-radius: 0.5rem;
+	&:hover,
+	&:focus { background: rgba(0,0,0,0.08); }
+}
+
+.navbar-toggler-icon {
+	display: inline-block;
+	width: 2rem;
+	height: 2rem;
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255,255,255,0.8%29' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 100% 100%;
+}
+
+// Hide hamburger on sm and up
+@media (min-width: #{$breakpoint-sm}) {
+	.navbar-hamburger { display: none !important; }
+}
+
+// Mobile menu overlay
+.navbar-mobile-overlay {
+	position: fixed;
+	inset: 0;
+	z-index: 1200;
+	background: rgba(0,0,0,0.45);
+	display: flex;
+	align-items: flex-start;
+	justify-content: flex-end;
+}
+
+.navbar-mobile-menu {
+	background: var(--bs-body-bg);
+	color: var(--bs-body-color);
+	width: 80vw;
+	max-width: 320px;
+	height: 100vh;
+	box-shadow: -2px 0 16px rgba(0,0,0,0.12);
+	display: flex;
+	flex-direction: column;
+	padding: 1.5rem 1rem 1rem 1.5rem;
+	position: relative;
+	animation: slideInRight 0.25s cubic-bezier(0.4,0,0.2,1);
+}
+
+@keyframes slideInRight {
+	from { transform: translateX(100%); opacity: 0; }
+	to { transform: none; opacity: 1; }
+}
+
+.navbar-mobile-close {
+	position: absolute;
+	top: 1rem;
+	right: 1.25rem;
+	background: none;
+	border: none;
+	font-size: 2.2rem;
+	color: var(--bs-primary);
+	cursor: pointer;
+	z-index: 1;
+	line-height: 1;
+}
+
+.navbar-mobile-links {
+	display: flex;
+	flex-direction: column;
+	gap: 1.25rem;
+	margin-top: 2.5rem;
+}
+
+.navbar-mobile-links .nav-link {
+	font-size: 1.25rem;
+	color: var(--bs-heading-color);
+	background: none;
+	border: none;
+	text-align: left;
+	padding: 0.5rem 0;
+	transition: color 0.2s;
+	&.active,
+	&:hover { color: var(--bs-primary); }
+}
+
+// Hide regular nav links on xs
+@media (max-width: #{$breakpoint-sm - 1}) {
+	.custom-navbar .navbar-section { display: none !important; }
+} 
+
+// Full width and overflow fix for mobile
+html, body, main, .custom-navbar {
+	max-width: 100%;
+}
+#app {
+	width: 100vw;
+	max-width: 100vw;
+	margin: 0;
+	padding: 0;
+	// overflow-x: hidden; // Removed to allow sticky navbar
+}
+
+html, body, main {
+	margin-top: 0 !important;
+	padding-top: 0 !important;
+	width: 100%;
+}
+
+main {
+	padding-top: 80px;
+}
+
+@media (max-width: #{$breakpoint-sm - 1}) {
+	.custom-navbar {
+		height: 56px;
+	}
+	.custom-navbar-inner {
+		padding: 0 1rem;
+		height: 100%;
+	}
+	main {
+		padding-top: 56px;
+	}
+	// Prevent vertical overflow in hero section
+	.hero {
+		/* max-height: 380px; */
+		overflow-y: hidden;
+		padding-top: 4.5rem;
+	}
+	.hero-portrait {
+		max-height: 180px;
+		width: 180px;
+		height: 180px;
+		margin-bottom: 1rem;
+	}
+	.hero-portrait-ring {
+		max-width: 170px;
+		max-height: 170px;
+		width: 170px;
+		height: 170px;
+		margin-top: 0.5rem;
+		opacity: 0.25;
+	}
+} 
+
+.navbar-mobile-left {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin: 0;
+}
+
+.navbar-mobile-brand {
+	font-size: 1.3rem;
+	padding: 0 0.5rem 0 0;
+	line-height: 1;
+}
+
+.navbar-hamburger {
+	margin-left: 0;
+	line-height: 1;
+}
+
+.navbar-theme-toggle {
+	display: flex;
+	align-items: center;
+	margin: 0;
+	line-height: 1;
+}
+
+.custom-navbar * {
+	line-height: 1;
+} 
+
+html, body {
+	overflow-x: hidden;
+}
+
+.custom-navbar,
+.custom-navbar-inner {
+	max-width: 100vw;
+}
+
+.hero {
+	max-width: 100vw;
+	overflow-x: hidden;
+}
+
+.hero-portrait-ring {
+	max-width: 100vw;
+	left: 50%;
+	right: auto;
+}
+
+.custom-navbar-inner {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 2rem;
+	height: 100%;
+}
+
+.navbar-theme-toggle {
+	display: flex;
+	align-items: center;
+	margin: 0;
+	line-height: 1;
+	height: 100%;
+}
+
+@media (max-width: #{$breakpoint-sm - 1}) {
+	.custom-navbar {
+		height: 56px;
+	}
+	.custom-navbar-inner {
+		padding: 0 1rem;
+		height: 100%;
+	}
+	main {
+		padding-top: 56px;
+	}
+} 
+
+@media (min-width: #{$breakpoint-sm}) {
+	.hero {
+		padding-top: 3rem;
+	}
+	.hero-portrait {
+		width: 240px;
+		height: 240px;
+		max-height: 240px;
+		margin-bottom: 2rem;
+	}
+	.hero-portrait-ring {
+		width: 260px;
+		height: 250px;
+		max-width: 260px;
+		max-height: 250px;
+		margin-top: 0;
+		opacity: 0.4;
+	}
+	.navbar-theme-toggle {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		right: 2rem;
+		margin: auto 0;
+		display: flex;
+		align-items: center;
+		height: 2.2rem;
+	}
 } 

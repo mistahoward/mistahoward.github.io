@@ -14,6 +14,7 @@ const rightNavItems: NavItem[] = [
 
 export const Navbar = () => {
 	const [activeSection, setActiveSection] = useState<string>("");
+	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
 	useEffect(() => {
 		const sectionIds = [...leftNavItems.map(item => item.id), ...rightNavItems.map(item => item.id)];
@@ -39,42 +40,87 @@ export const Navbar = () => {
 	const handleNavClick = (item: NavItem) => {
 		if (item.id === "name") {
 			document.getElementById("home")?.scrollIntoView({ behavior: "smooth", block: "start" });
+			setMobileMenuOpen(false);
 			return;
 		}
 		scrollToSection(item.id);
+		setMobileMenuOpen(false);
 	};
 
 	return (
 		<nav className="custom-navbar">
-			<div className="navbar-section left">
-				{leftNavItems.map(item => (
+			<div className="custom-navbar-inner">
+				{/* Mobile: Hamburger, Brand, Theme Toggle */}
+				<div className="navbar-mobile-left d-sm-none">
 					<button
-						key={item.id}
-						className={`nav-link${activeSection === item.id ? " active" : ""}`}
-						onClick={() => handleNavClick(item)}
+						className="navbar-hamburger"
+						aria-label="Open menu"
+						onClick={() => setMobileMenuOpen(true)}
+						style={{ display: mobileMenuOpen ? "none" : undefined }}
 					>
-						{item.label}
+						<span className="navbar-toggler-icon" />
 					</button>
-				))}
-			</div>
-			<div className="navbar-section center">
-				<button className="nav-link fw-bold text-primary" onClick={() => handleNavClick(centerNavItem)}>
-					{centerNavItem.label}
-				</button>
-			</div>
-			<div className="navbar-section right">
-				{rightNavItems.map(item => (
-					<button
-						key={item.id}
-						className={`nav-link${activeSection === item.id ? " active" : ""}`}
-						onClick={() => handleNavClick(item)}
-					>
-						{item.label}
+					<button className="nav-link fw-bold text-primary navbar-mobile-brand" onClick={() => handleNavClick(centerNavItem)}>
+						{centerNavItem.label}
 					</button>
-				))}
-			</div>
-			<div className="navbar-theme-toggle">
-				<ThemeToggle />
+				</div>
+				<div className="navbar-theme-toggle d-sm-none">
+					<ThemeToggle />
+				</div>
+
+				{/* Desktop: Regular nav links */}
+				<div className="navbar-section left d-none d-sm-flex">
+					{leftNavItems.map(item => (
+						<button
+							key={item.id}
+							className={`nav-link${activeSection === item.id ? " active" : ""}`}
+							onClick={() => handleNavClick(item)}
+						>
+							{item.label}
+						</button>
+					))}
+				</div>
+				<div className="navbar-section center d-none d-sm-flex">
+					<button className="nav-link fw-bold text-primary" onClick={() => handleNavClick(centerNavItem)}>
+						{centerNavItem.label}
+					</button>
+				</div>
+				<div className="navbar-section right d-none d-sm-flex">
+					{rightNavItems.map(item => (
+						<button
+							key={item.id}
+							className={`nav-link${activeSection === item.id ? " active" : ""}`}
+							onClick={() => handleNavClick(item)}
+						>
+							{item.label}
+						</button>
+					))}
+				</div>
+				<div className="navbar-theme-toggle d-none d-sm-flex">
+					<ThemeToggle />
+				</div>
+
+				{/* Mobile menu overlay */}
+				{mobileMenuOpen && (
+					<div className="navbar-mobile-overlay" onClick={() => setMobileMenuOpen(false)}>
+						<div className="navbar-mobile-menu" onClick={e => e.stopPropagation()}>
+							<button className="navbar-mobile-close" aria-label="Close menu" onClick={() => setMobileMenuOpen(false)}>
+								&times;
+							</button>
+							<div className="navbar-mobile-links">
+								{[...leftNavItems, centerNavItem, ...rightNavItems].map(item => (
+									<button
+										key={item.id}
+										className={`nav-link${activeSection === item.id ? " active" : ""}`}
+										onClick={() => handleNavClick(item)}
+									>
+										{item.label}
+									</button>
+								))}
+							</div>
+						</div>
+					</div>
+				)}
 			</div>
 		</nav>
 	);
