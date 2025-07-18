@@ -456,13 +456,12 @@ $gba-green: #6fcf97;
 $gba-blue: #4f8edc;
 $gba-orange: #f7b267;
 $gba-yellow: #ffe066;
-
 $gba-red-dark: #e54b4b;
 $gba-text-dark: #e0e0e0;
 $gba-bg-dark: #1e1e1e;
-$gba-gray-dark: #666666;
+$gba-gray-dark: #666;
 $gba-accent-dark: #d7a000;
-$gba-border-dark: #444444;
+$gba-border-dark: #444;
 $gba-shadow-dark: 0 4px 24px rgb(0 0 0 / 35%);
 $gba-green-dark: #85e0a3;
 $gba-blue-dark: #77a9f2;
@@ -900,4 +899,52 @@ $gba-yellow-dark: #d7a000;
 		color: $gba-bg-dark;
 		font-weight: 700;
 	}
+} 
+
+.shutter-overlay {
+	position: absolute;
+	inset: 0;
+	z-index: 10;
+	pointer-events: none;
+	display: flex;
+}
+
+.shutter-bar {
+	position: absolute;
+	top: 0; bottom: 0;
+	width: 0;
+	background: #111;
+	transition: none;
+
+	&.left {
+		border-radius: 1.25rem;
+		left: 0;
+		animation: shutter-in-left 0.4s forwards, shutter-out-left 0.4s 0.5s forwards;
+	}
+
+	&.right {
+		border-radius: 1.25rem;
+		right: 0;
+		animation: shutter-in-right 0.4s forwards, shutter-out-right 0.4s 0.5s forwards;
+	}
+}
+
+@keyframes shutter-in-left {
+	0% { width: 0; }
+	100% { width: 50vw; }
+}
+
+@keyframes shutter-in-right {
+	0% { width: 0; }
+	100% { width: 50vw; }
+}
+
+@keyframes shutter-out-left {
+	0% { width: 50vw; }
+	100% { width: 0; }
+}
+
+@keyframes shutter-out-right {
+	0% { width: 50vw; }
+	100% { width: 0; }
 } 

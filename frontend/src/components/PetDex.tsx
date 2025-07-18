@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "preact/hooks";
+import { useState, useMemo, useEffect, useRef } from "preact/hooks";
 import { Pet } from "../types/pet-manager.types";
 import { fetchItems } from "../utils/crud";
 import { YakShaverSpinner } from "./shared/YakShaverSpinner";
@@ -6,6 +6,7 @@ import { GiHealthNormal } from "react-icons/gi";
 import { LuSword } from "react-icons/lu";
 import { FaShieldDog, FaShieldCat } from "react-icons/fa6";
 import { HiLightningBolt } from "react-icons/hi";
+import { ShutterOverlay } from "./shared/ShutterOverlay";
 
 const GBA_CATEGORIES = [
 	{ key: "canine", label: "Canine" },
@@ -18,6 +19,10 @@ export const PetDex = () => {
 	const [error, setError] = useState("");
 	const [category, setCategory] = useState<"canine" | "feline">("canine");
 	const [selectedPetId, setSelectedPetId] = useState<number | null>(null);
+	const [shutterActive, setShutterActive] = useState(false);
+	const [pendingCategory, setPendingCategory] = useState<"canine" | "feline" | null>(null);
+	const shutterCategoryTimeout = useRef<number | null>(null);
+	const shutterEndTimeout = useRef<number | null>(null);
 
 	useEffect(() => {
 		fetchItems<Pet>({
@@ -74,6 +79,33 @@ export const PetDex = () => {
 		return {};
 	};
 
+	const handleCategoryChange = (cat: "canine" | "feline") => {
+		if (cat === category) return;
+		setPendingCategory(cat);
+		setShutterActive(true);
+	};
+
+	const handleShutterEnd = () => {
+		setShutterActive(false);
+		setPendingCategory(null);
+	};
+
+	useEffect(() => {
+		if (!shutterActive || !pendingCategory) return;
+		// Update category at midpoint (0.4s)
+		shutterCategoryTimeout.current = window.setTimeout(() => {
+			setCategory(pendingCategory);
+		}, 400);
+		// End shutter after full animation (0.9s)
+		shutterEndTimeout.current = window.setTimeout(() => {
+			handleShutterEnd();
+		}, 900);
+		return () => {
+			if (shutterCategoryTimeout.current) clearTimeout(shutterCategoryTimeout.current);
+			if (shutterEndTimeout.current) clearTimeout(shutterEndTimeout.current);
+		};
+	}, [shutterActive, pendingCategory]);
+
 	if (loading)
 		return (
 			<section id="pet-dex" className="gba-pokedex-section min-vh-100 d-flex align-items-center justify-content-center">
@@ -100,7 +132,8 @@ export const PetDex = () => {
 
 	return (
 		<section id="pet-dex" className="gba-pokedex-section min-vh-100 d-flex align-items-center justify-content-center">
-			<div className="gba-pokedex-container container">
+			<div className="gba-pokedex-container container" style={{ position: "relative" }}>
+				<ShutterOverlay show={shutterActive} onAnimationEnd={handleShutterEnd} />
 				<div className="row gba-pokedex-row justify-content-center">
 					<div className="col-lg-6 col-md-7 col-12 gba-pokedex-info-panel">
 						<div className="gba-pokedex-info card">
@@ -231,7 +264,7 @@ export const PetDex = () => {
 							)}
 						</div>
 					</div>
-					<div className="col-lg-5 col-md-5 col-12 gba-pokedex-list-panel">
+					<div className="col-lg-5 col-md-5 col-12 gba-pokedex-list-panel" style={{ position: "relative" }}>
 						<div className="d-flex justify-content-between align-items-center mb-2">
 							<h4 className="gba-pokedex-list-title mt-2 mb-0">Pet Dex</h4>
 							<div className="gba-pokedex-toggle btn-group">
@@ -239,7 +272,7 @@ export const PetDex = () => {
 									<button
 										key={cat.key}
 										className={`btn btn-sm gba-toggle-btn${category === cat.key ? " active" : ""}`}
-										onClick={() => setCategory(cat.key as "canine" | "feline")}
+										onClick={() => handleCategoryChange(cat.key as "canine" | "feline")}
 									>
 										{cat.label}
 									</button>
