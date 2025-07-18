@@ -21,11 +21,12 @@ html, body {
 }
 
 html, body, main, .custom-navbar {
+	width: 100%;
 	max-width: 100%;
 }
 #app {
-	width: 100vw;
-	max-width: 100vw;
+	width: 100%;
+	max-width: 100%;
 	margin: 0;
 	padding: 0;
 	// overflow-x: hidden; // Removed to allow sticky navbar
@@ -37,14 +38,18 @@ html, body, main {
 	width: 100%;
 }
 
-main {
-	width: 100%;
-	padding-top: 5rem;
-	margin-top: 0;
+:root {
+	--navbar-height: 5rem;
 }
 
 @media (max-width: 575px) {
-	main {
-		padding-top: 3.5rem;
+	:root {
+		--navbar-height: 3.5rem;
 	}
+}
+
+main {
+	width: 100%;
+	padding-top: var(--navbar-height);
+	margin-top: 0;
 } 

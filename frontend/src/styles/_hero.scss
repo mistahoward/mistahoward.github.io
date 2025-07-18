@@ -123,7 +123,8 @@
 
 @media (min-width: 576px) {
 	.hero {
-		padding-top: 3rem;
+		padding-top: calc(var(--navbar-height) + 3rem);
+		overflow-y: hidden;
 	}
 	.hero-portrait {
 		width: 15rem;
