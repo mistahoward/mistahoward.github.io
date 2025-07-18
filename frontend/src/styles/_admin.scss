@@ -1,7 +1,7 @@
 .modal.fade.show.d-block {
 	height: 100vh;
 	width: 100vw;
-	z-index: 1050;
+	z-index: 2000;
 }
 
 .admin-modal-content,
@@ -9,6 +9,12 @@
 .admin-modal-sidebar,
 .admin-modal-main {
 	min-height: 0;
+}
+
+.admin-modal-body-flex {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
 }
 
 .admin-modal-sidebar {

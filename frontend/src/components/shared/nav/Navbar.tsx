@@ -19,11 +19,14 @@ export const Navbar = () => {
 	useEffect(() => {
 		const sectionIds = [...leftNavItems.map(item => item.id), ...rightNavItems.map(item => item.id)];
 		const handleScroll = () => {
+			const navbar = document.querySelector<HTMLElement>(".custom-navbar");
+			const navbarHeight = navbar ? navbar.offsetHeight : 0;
+			const offset = navbarHeight + 20;
 			const active = sectionIds.find(id => {
 				const section = document.getElementById(id);
 				if (!section) return false;
 				const rect = section.getBoundingClientRect();
-				return rect.top <= 80 && rect.bottom > 80;
+				return rect.top <= offset && rect.bottom > offset;
 			});
 			setActiveSection(active || "");
 		};
@@ -34,7 +37,15 @@ export const Navbar = () => {
 
 	const scrollToSection = (sectionId: string) => {
 		const element = document.getElementById(sectionId);
-		if (element) element.scrollIntoView({ behavior: "smooth", block: "start" });
+		const navbar = document.querySelector<HTMLElement>(".custom-navbar");
+		if (element) {
+			const rect = element.getBoundingClientRect();
+			const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+			const navbarHeight = navbar ? navbar.offsetHeight : 0;
+			const offset = navbarHeight + 8; // 8px extra offset
+			const top = rect.top + scrollTop - offset;
+			window.scrollTo({ top, behavior: "smooth" });
+		}
 	};
 
 	const handleNavClick = (item: NavItem) => {

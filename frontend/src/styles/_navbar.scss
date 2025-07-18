@@ -155,6 +155,26 @@
 
 @media (min-width: #{$breakpoint-sm}) {
 	.navbar-hamburger { display: none !important; }
+	.custom-navbar .nav-link {
+		position: relative;
+	}
+	.custom-navbar .nav-link::after {
+		content: "";
+		display: block;
+		position: absolute;
+		left: 50%;
+		right: 50%;
+		bottom: -0.4rem;
+		height: 0.12rem;
+		background: var(--bs-primary);
+		border-radius: 0.1rem;
+		transition: left 0.25s cubic-bezier(0.4,0,0.2,1), right 0.25s cubic-bezier(0.4,0,0.2,1), width 0.25s cubic-bezier(0.4,0,0.2,1);
+		pointer-events: none;
+	}
+	.custom-navbar .nav-link.active::after {
+		left: 0;
+		right: 0;
+	}
 }
 
 .navbar-mobile-overlay {
