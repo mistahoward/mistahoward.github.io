@@ -9,14 +9,29 @@ export const About = () => {
 	const [activeTab, setActiveTab] = useState("skills");
 
 	return (
-		<section id="about" className="min-vh-100 d-flex align-items-center justify-content-center">
+		<section id="about" className="min-vh-100 d-flex align-items-center justify-content-center mt-4 mt-sm-0 mt-md-4 mt-xl-0">
 			<div className="container">
 				<div className="row justify-content-center align-items-start">
 					<div className="col-lg-5 mb-4 mb-lg-0">
 						<AboutStatic />
 					</div>
 					<div className="col-lg-7">
-						<ul className="nav nav-tabs mb-3" role="tablist">
+						{/* Mobile Dropdown for Tabs */}
+						<div className="about-tabs-dropdown d-lg-none mb-3">
+							<select
+								className="form-select"
+								value={activeTab}
+								onChange={e => setActiveTab(e.currentTarget.value)}
+								aria-label="Select About Section"
+							>
+								<option value="skills">Skills</option>
+								<option value="experience">Experience</option>
+								<option value="certifications">Certifications</option>
+								<option value="testimonials">Testimonials</option>
+							</select>
+						</div>
+						{/* Desktop Tabs */}
+						<ul className="nav nav-tabs mb-3 d-none d-lg-flex" role="tablist">
 							<li className="nav-item" role="presentation">
 								<button
 									className={`nav-link${activeTab === "skills" ? " active" : ""}`}

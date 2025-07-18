@@ -52,4 +52,46 @@ main {
 	width: 100%;
 	padding-top: var(--navbar-height);
 	margin-top: 0;
+}
+
+// Responsive About Tabs
+.about-tabs-dropdown {
+	display: none;
+}
+
+@media (max-width: 991.98px) {
+	.about-tabs-dropdown {
+		display: block;
+		margin-bottom: 1.5rem;
+	}
+	.nav-tabs.d-lg-flex {
+		display: none !important;
+	}
+}
+
+@media (min-width: 992px) {
+	.about-tabs-dropdown {
+		display: none !important;
+	}
+} 
+
+// Responsive Skills Category Dropdown
+.skills-category-dropdown {
+	display: none;
+}
+
+@media (max-width: 991.98px) {
+	.skills-category-dropdown {
+		display: block;
+		margin-bottom: 1.5rem;
+	}
+	.d-lg-flex {
+		display: none !important;
+	}
+}
+
+@media (min-width: 992px) {
+	.skills-category-dropdown {
+		display: none !important;
+	}
 } 

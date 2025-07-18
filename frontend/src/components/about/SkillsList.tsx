@@ -70,7 +70,23 @@ export const SkillsList = () => {
 
 	return (
 		<div className="skills-container w-100" style={{ width: "100%" }}>
-			<div className="mb-3 d-flex flex-wrap gap-2">
+			{/* Mobile Dropdown for Categories */}
+			<div className="skills-category-dropdown d-lg-none mb-3">
+				<select
+					className="form-select"
+					value={selectedCategory}
+					onChange={e => setSelectedCategory(e.currentTarget.value)}
+					aria-label="Select Skill Category"
+				>
+					{categories.map(category => (
+						<option key={category} value={category}>
+							{category}
+						</option>
+					))}
+				</select>
+			</div>
+			{/* Desktop Category Chips */}
+			<div className="mb-3 d-flex flex-wrap gap-2 d-none d-lg-flex">
 				{categories.map(category => (
 					<button
 						key={category}
