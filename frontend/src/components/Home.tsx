@@ -1,4 +1,5 @@
 import { Hero } from "./Hero";
+import { ContactInfo } from "./shared/ContactInfo";
 
 export const Home = () => {
 	return (
@@ -11,8 +12,9 @@ export const Home = () => {
 						<p className="display-5 lead text-primary mb-4">Full Stack Software Engineer II</p>
 						<h2 className="text-muted">Front End Subject Matter Expert</h2>
 						<p className="fs-3 text-muted">
-							I&apos;m the engineer who makes sure the back-end is powerful and the front-end proves it.
+							I&apos;m the engineer who makes sure the front end is beautiful and the backend fuels it.
 						</p>
+						<ContactInfo />
 					</div>
 				</div>
 			</div>

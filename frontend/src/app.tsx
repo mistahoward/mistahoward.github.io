@@ -6,7 +6,7 @@ import { Home } from "./components/Home";
 import { About } from "./components/about/About";
 import { Projects } from "./components/Projects";
 import { PetDex } from "./components/PetDex";
-import { Contact } from "./components/Contact";
+import { Blogs } from "./components/Blogs";
 
 export const App = () => {
 	const [showAdmin, setShowAdmin] = useState(false);
@@ -22,7 +22,7 @@ export const App = () => {
 				<About />
 				<Projects />
 				<PetDex />
-				<Contact />
+				<Blogs />
 			</main>
 
 			<AdminPanel isVisible={showAdmin} onClose={() => setShowAdmin(false)} />

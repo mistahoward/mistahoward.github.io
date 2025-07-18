@@ -9,7 +9,7 @@ const leftNavItems: NavItem[] = [
 const centerNavItem: NavItem = { id: "name", label: "A.H" };
 const rightNavItems: NavItem[] = [
 	{ id: "pet-dex", label: "Pet-Dex" },
-	{ id: "contact", label: "Contact" },
+	{ id: "blogs", label: "Blogs" },
 ];
 
 export const Navbar = () => {
