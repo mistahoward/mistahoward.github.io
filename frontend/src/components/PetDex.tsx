@@ -233,7 +233,7 @@ export const PetDex = () => {
 					</div>
 					<div className="col-lg-5 col-md-5 col-12 gba-pokedex-list-panel">
 						<div className="d-flex justify-content-between align-items-center mb-2">
-							<h4 className="gba-pokedex-list-title mb-0">Pet List</h4>
+							<h4 className="gba-pokedex-list-title mt-2 mb-0">Pet Dex</h4>
 							<div className="gba-pokedex-toggle btn-group">
 								{GBA_CATEGORIES.map(cat => (
 									<button
