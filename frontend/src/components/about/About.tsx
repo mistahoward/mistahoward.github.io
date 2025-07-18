@@ -16,7 +16,6 @@ export const About = () => {
 						<AboutStatic />
 					</div>
 					<div className="col-lg-7">
-						{/* Mobile Dropdown for Tabs */}
 						<div className="about-tabs-dropdown d-lg-none mb-3">
 							<select
 								className="form-select"
@@ -30,7 +29,6 @@ export const About = () => {
 								<option value="testimonials">Testimonials</option>
 							</select>
 						</div>
-						{/* Desktop Tabs */}
 						<ul className="nav nav-tabs mb-3 d-none d-lg-flex" role="tablist">
 							<li className="nav-item" role="presentation">
 								<button
