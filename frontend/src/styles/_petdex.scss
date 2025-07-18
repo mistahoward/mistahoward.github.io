@@ -412,3 +412,21 @@
 		font-weight: 700;
 	}
 } 
+
+.petdex-info-scroll {
+	max-height: 32rem;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+@media (max-width: 991.98px) {
+	.petdex-info-scroll {
+		max-height: 22rem;
+	}
+}
+
+@media (max-width: 575px) {
+	.petdex-info-scroll {
+		max-height: 16rem;
+	}
+} 

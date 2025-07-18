@@ -135,136 +135,138 @@ export const PetDex = () => {
 			<div className="gba-pokedex-container container" style={{ position: "relative" }}>
 				<ShutterOverlay show={shutterActive} onAnimationEnd={handleShutterEnd} />
 				<div className="row gba-pokedex-row justify-content-center">
-					<div className="col-lg-6 col-md-7 col-12 gba-pokedex-info-panel">
+					<div className="col-lg-6 col-md-7 col-12 gba-pokedex-info-panel order-2 order-md-1">
 						<div className="gba-pokedex-info card">
-							{selectedPet ? (
-								<div className="gba-pet-info-content animate__fadeIn">
-									<div className="d-flex align-items-center mb-3">
-										<img src={selectedPet.imageUrl} alt={selectedPet.name} className="gba-pet-image me-3" />
-										<div>
-											<h3 className="gba-pet-name mb-1">{selectedPet.name}</h3>
-											{selectedPet.nickname && (
-												<div className="gba-pet-nickname fst-italic small">({selectedPet.nickname})</div>
-											)}
-											<div className="gba-pet-dexid text-muted">{selectedPet.dexId}</div>
-											{selectedPet.age && (
-												<div
-													className="gba-pet-level text-secondary"
-													style={{ fontWeight: 600, fontSize: "1.1rem" }}
-												>
-													Lv. {selectedPet.age}
+							<div className="petdex-info-scroll">
+								{selectedPet ? (
+									<div className="gba-pet-info-content animate__fadeIn">
+										<div className="d-flex align-items-center mb-3">
+											<img src={selectedPet.imageUrl} alt={selectedPet.name} className="gba-pet-image me-3" />
+											<div>
+												<h3 className="gba-pet-name mb-1">{selectedPet.name}</h3>
+												{selectedPet.nickname && (
+													<div className="gba-pet-nickname fst-italic small">({selectedPet.nickname})</div>
+												)}
+												<div className="gba-pet-dexid text-muted">{selectedPet.dexId}</div>
+												{selectedPet.age && (
+													<div
+														className="gba-pet-level text-secondary"
+														style={{ fontWeight: 600, fontSize: "1.1rem" }}
+													>
+														Lv. {selectedPet.age}
+													</div>
+												)}
+											</div>
+										</div>
+										<div className="mb-3">
+											<div className="gba-pet-description">
+												<strong>Description:</strong> {selectedPet.description}
+											</div>
+											<div className="gba-pet-origin">
+												<strong>Origin Story:</strong> {selectedPet.originStory}
+											</div>
+										</div>
+										<div className="gba-pet-details">
+											<div className="row mb-2">
+												<div className="col-6">
+													<strong>Breed:</strong> {selectedPet.breed || "Unknown"}
 												</div>
-											)}
-										</div>
-									</div>
-									<div className="mb-3">
-										<div className="gba-pet-description">
-											<strong>Description:</strong> {selectedPet.description}
-										</div>
-										<div className="gba-pet-origin">
-											<strong>Origin Story:</strong> {selectedPet.originStory}
-										</div>
-									</div>
-									<div className="gba-pet-details">
-										<div className="row mb-2">
-											<div className="col-6">
-												<strong>Breed:</strong> {selectedPet.breed || "Unknown"}
+												<div className="col-6">
+													<strong>Color:</strong> {selectedPet.color || "?"}
+												</div>
 											</div>
-											<div className="col-6">
-												<strong>Color:</strong> {selectedPet.color || "?"}
+											<div className="mb-2">
+												<strong>Personality:</strong>
+												{parseQuotedList(selectedPet.personality).length > 0 && (
+													<div className="gba-pet-personality-list mb-1">
+														{parseQuotedList(selectedPet.personality).map((trait, i) => (
+															<div key={i} className="gba-pet-personality-item">
+																{trait}
+															</div>
+														))}
+													</div>
+												)}
 											</div>
-										</div>
-										<div className="mb-2">
-											<strong>Personality:</strong>
-											{parseQuotedList(selectedPet.personality).length > 0 && (
-												<div className="gba-pet-personality-list mb-1">
-													{parseQuotedList(selectedPet.personality).map((trait, i) => (
-														<div key={i} className="gba-pet-personality-item">
-															{trait}
+											<div className="mb-2">
+												<strong>Abilities:</strong>
+												{parseQuotedList(selectedPet.specialAbilities).length > 0 &&
+													parseQuotedList(selectedPet.specialAbilities).map((ability, i) => (
+														<div key={i} className="gba-pet-ability-item">
+															{ability}
 														</div>
 													))}
-												</div>
-											)}
-										</div>
-										<div className="mb-2">
-											<strong>Abilities:</strong>
-											{parseQuotedList(selectedPet.specialAbilities).length > 0 &&
-												parseQuotedList(selectedPet.specialAbilities).map((ability, i) => (
-													<div key={i} className="gba-pet-ability-item">
-														{ability}
-													</div>
-												))}
-										</div>
-										<div className="mb-2">
-											<strong>Favorite Food:</strong> {selectedPet.favoriteFood}
-										</div>
-										<div className="mb-2">
-											<strong>Favorite Toy:</strong> {selectedPet.favoriteToy}
-										</div>
-										<div className="mb-2">
-											<strong>Stats:</strong>
-											{Object.keys(parseStats(selectedPet.stats)).length > 0 ? (
-												<table className="gba-pet-stats-table mt-1">
-													<tbody>
-														{Object.entries(parseStats(selectedPet.stats)).map(([stat, value]) => {
-															let icon = null;
-															const statKey = stat.toLowerCase();
-															if (statKey === "hp" || statKey === "health")
-																icon = (
-																	<span className="gba-pet-stat-icon me-1">
-																		<GiHealthNormal />
-																	</span>
-																);
-															else if (statKey === "attack")
-																icon = (
-																	<span className="gba-pet-stat-icon me-1">
-																		<LuSword />
-																	</span>
-																);
-															else if (statKey === "defense")
-																icon =
-																	selectedPet.species === "dog" ? (
+											</div>
+											<div className="mb-2">
+												<strong>Favorite Food:</strong> {selectedPet.favoriteFood}
+											</div>
+											<div className="mb-2">
+												<strong>Favorite Toy:</strong> {selectedPet.favoriteToy}
+											</div>
+											<div className="mb-2">
+												<strong>Stats:</strong>
+												{Object.keys(parseStats(selectedPet.stats)).length > 0 ? (
+													<table className="gba-pet-stats-table mt-1">
+														<tbody>
+															{Object.entries(parseStats(selectedPet.stats)).map(([stat, value]) => {
+																let icon = null;
+																const statKey = stat.toLowerCase();
+																if (statKey === "hp" || statKey === "health")
+																	icon = (
 																		<span className="gba-pet-stat-icon me-1">
-																			<FaShieldDog />
-																		</span>
-																	) : (
-																		<span className="gba-pet-stat-icon me-1">
-																			<FaShieldCat />
+																			<GiHealthNormal />
 																		</span>
 																	);
-															else if (statKey === "speed")
-																icon = (
-																	<span className="gba-pet-stat-icon me-1">
-																		<HiLightningBolt />
-																	</span>
+																else if (statKey === "attack")
+																	icon = (
+																		<span className="gba-pet-stat-icon me-1">
+																			<LuSword />
+																		</span>
+																	);
+																else if (statKey === "defense")
+																	icon =
+																		selectedPet.species === "dog" ? (
+																			<span className="gba-pet-stat-icon me-1">
+																				<FaShieldDog />
+																			</span>
+																		) : (
+																			<span className="gba-pet-stat-icon me-1">
+																				<FaShieldCat />
+																			</span>
+																		);
+																else if (statKey === "speed")
+																	icon = (
+																		<span className="gba-pet-stat-icon me-1">
+																			<HiLightningBolt />
+																		</span>
+																	);
+																return (
+																	<tr key={stat}>
+																		<td className={`gba-pet-stat-label gba-pet-stat-${statKey}`}>
+																			{icon}
+																			{stat.charAt(0).toUpperCase() + stat.slice(1)}
+																		</td>
+																		<td className="gba-pet-stat-value">{value as string | number}</td>
+																	</tr>
 																);
-															return (
-																<tr key={stat}>
-																	<td className={`gba-pet-stat-label gba-pet-stat-${statKey}`}>
-																		{icon}
-																		{stat.charAt(0).toUpperCase() + stat.slice(1)}
-																	</td>
-																	<td className="gba-pet-stat-value">{value as string | number}</td>
-																</tr>
-															);
-														})}
-													</tbody>
-												</table>
-											) : null}
+															})}
+														</tbody>
+													</table>
+												) : null}
+											</div>
 										</div>
 									</div>
-								</div>
-							) : (
-								<div className="gba-pet-info-placeholder text-center p-5 animate__fadeIn">
-									<div className="gba-pet-placeholder-emoji mb-3" style={{ fontSize: "2.5rem" }}>
-										🐾
+								) : (
+									<div className="gba-pet-info-placeholder text-center p-5 animate__fadeIn">
+										<div className="gba-pet-placeholder-emoji mb-3" style={{ fontSize: "2.5rem" }}>
+											🐾
+										</div>
+										<div className="gba-pet-placeholder-text fs-4">Pick a pet to get started!</div>
 									</div>
-									<div className="gba-pet-placeholder-text fs-4">Pick a pet to get started!</div>
-								</div>
-							)}
+								)}
+							</div>
 						</div>
 					</div>
-					<div className="col-lg-5 col-md-5 col-12 gba-pokedex-list-panel" style={{ position: "relative" }}>
+					<div className="col-lg-5 col-md-5 col-12 gba-pokedex-list-panel order-1 order-md-2" style={{ position: "relative" }}>
 						<div className="d-flex justify-content-between align-items-center mb-2">
 							<h4 className="gba-pokedex-list-title mt-2 mb-0">Pet Dex</h4>
 							<div className="gba-pokedex-toggle btn-group">
