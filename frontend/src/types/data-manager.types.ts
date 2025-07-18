@@ -41,10 +41,10 @@ export interface Testimonial {
 	clientCompany?: string;
 	content: string;
 	rating?: number;
-	projectId?: number;
-	approved: boolean;
 	createdAt: string;
 	updatedAt: string;
+	relationship: string;
+	status: "needs_review" | "approved" | "denied";
 }
 
 export interface Certification {
@@ -140,8 +140,7 @@ export type TestimonialFormState = {
 	clientCompany: string;
 	content: string;
 	rating: number;
-	projectId: string;
-	approved: boolean;
+	status: "needs_review" | "approved" | "denied";
 };
 
 export type CertificationFormState = {

@@ -46,6 +46,8 @@ export const DataManager = ({ lastFocusTime = 0, initialTab = "projects" }: Data
 	const [experienceForm, setExperienceForm] = useState(getInitialExperienceForm());
 	const [testimonialForm, setTestimonialForm] = useState(getInitialTestimonialForm());
 
+	const [testimonialTab, setTestimonialTab] = useState("needs_review");
+
 	const fetchData = async () => {
 		try {
 			const [projectsData, skillsData, experienceData, testimonialsData, certificationsData] = await Promise.all([
@@ -126,8 +128,8 @@ export const DataManager = ({ lastFocusTime = 0, initialTab = "projects" }: Data
 					clientCompany: item.clientCompany || "",
 					content: item.content,
 					rating: item.rating || 5,
-					projectId: item.projectId ? String(item.projectId) : "",
-					approved: item.approved || false,
+					relationship: item.relationship || "",
+					status: item.status || "needs_review",
 				});
 				break;
 			case "certifications":
@@ -176,7 +178,6 @@ export const DataManager = ({ lastFocusTime = 0, initialTab = "projects" }: Data
 				data = {
 					...testimonialForm,
 					rating: Number(testimonialForm.rating),
-					projectId: testimonialForm.projectId ? Number(testimonialForm.projectId) : undefined,
 				};
 				break;
 			case "certifications":
@@ -283,8 +284,8 @@ export const DataManager = ({ lastFocusTime = 0, initialTab = "projects" }: Data
 						if (isCreating || editingItem)
 							return (
 								<TestimonialForm
-									formData={testimonialForm}
-									setFormData={setTestimonialForm}
+									formData={testimonialForm as any}
+									setFormData={setTestimonialForm as any}
 									onSubmit={handleSubmit}
 									onCancel={handleCancel}
 									editingItem={editingItem}
@@ -467,45 +468,118 @@ export const DataManager = ({ lastFocusTime = 0, initialTab = "projects" }: Data
 						case "testimonials":
 							return (
 								<div>
+									<ul className="nav nav-tabs mb-3">
+										<li className="nav-item">
+											<button
+												className={`nav-link${testimonialTab === "needs_review" ? " active" : ""}`}
+												onClick={() => setTestimonialTab("needs_review")}
+											>
+												Needs Review
+											</button>
+										</li>
+										<li className="nav-item">
+											<button
+												className={`nav-link${testimonialTab === "approved" ? " active" : ""}`}
+												onClick={() => setTestimonialTab("approved")}
+											>
+												Approved
+											</button>
+										</li>
+										<li className="nav-item">
+											<button
+												className={`nav-link${testimonialTab === "denied" ? " active" : ""}`}
+												onClick={() => setTestimonialTab("denied")}
+											>
+												Denied
+											</button>
+										</li>
+									</ul>
 									<div className="d-flex flex-column gap-2">
-										{testimonials.map(testimonial => (
-											<div key={testimonial.id} className="card">
-												<div className="card-body">
-													<div className="d-flex justify-content-between align-items-start">
-														<div className="flex-grow-1">
-															<h5 className="card-title mb-1">{testimonial.clientName}</h5>
-															<p className="text-muted small mb-2">
-																{testimonial.clientTitle}{" "}
-																{testimonial.clientCompany && `@ ${testimonial.clientCompany}`}
-															</p>
-															<p className="small mb-0">
-																Rating: {testimonial.rating}/5{" "}
-																{testimonial.approved && (
-																	<span className="badge bg-success ms-2">Approved</span>
+										{testimonials
+											.filter(t => t.status === testimonialTab)
+											.map(testimonial => (
+												<div key={testimonial.id} className="card">
+													<div className="card-body">
+														<div className="d-flex justify-content-between align-items-start">
+															<div className="flex-grow-1">
+																<h5 className="card-title mb-1">{testimonial.clientName}</h5>
+																<p className="text-muted small mb-2">
+																	{testimonial.clientTitle}{" "}
+																	{testimonial.clientCompany && `@ ${testimonial.clientCompany}`}
+																</p>
+																<p className="small mb-0">
+																	Rating: {testimonial.rating}/5{" "}
+																	{testimonial.status === "approved" && (
+																		<span className="badge bg-success ms-2">Approved</span>
+																	)}
+																	{testimonial.status === "needs_review" && (
+																		<span className="badge bg-warning text-dark ms-2">
+																			Needs Review
+																		</span>
+																	)}
+																	{testimonial.status === "denied" && (
+																		<span className="badge bg-danger ms-2">Denied</span>
+																	)}
+																</p>
+																{testimonial.content && (
+																	<p className="card-text small mt-2">{testimonial.content}</p>
 																)}
-															</p>
-															{testimonial.content && (
-																<p className="card-text small mt-2">{testimonial.content}</p>
-															)}
-														</div>
-														<div className="d-flex gap-2">
-															<button
-																onClick={() => handleEdit(testimonial)}
-																className="btn btn-warning btn-sm"
-															>
-																Edit
-															</button>
-															<button
-																onClick={() => handleDelete(testimonial.id)}
-																className="btn btn-danger btn-sm"
-															>
-																Delete
-															</button>
+															</div>
+															<div className="d-flex gap-2">
+																{testimonialTab === "needs_review" && (
+																	<>
+																		<button
+																			className="btn btn-success btn-sm"
+																			onClick={async () => {
+																				await updateItem(
+																					"/api/admin/testimonials",
+																					testimonial.id,
+																					{ status: "approved" },
+																					fetchData,
+																					undefined,
+																					setError
+																				);
+																			}}
+																		>
+																			Approve
+																		</button>
+																		<button
+																			className="btn btn-danger btn-sm"
+																			onClick={async () => {
+																				await updateItem(
+																					"/api/admin/testimonials",
+																					testimonial.id,
+																					{ status: "denied" },
+																					fetchData,
+																					undefined,
+																					setError
+																				);
+																			}}
+																		>
+																			Deny
+																		</button>
+																	</>
+																)}
+																<button
+																	onClick={() => handleEdit(testimonial)}
+																	className="btn btn-warning btn-sm"
+																>
+																	Edit
+																</button>
+																<button
+																	onClick={() => handleDelete(testimonial.id)}
+																	className="btn btn-danger btn-sm"
+																>
+																	Delete
+																</button>
+															</div>
 														</div>
 													</div>
 												</div>
-											</div>
-										))}
+											))}
+										{testimonials.filter(t => t.status === testimonialTab).length === 0 && (
+											<div className="text-muted text-center">No testimonials in this category.</div>
+										)}
 									</div>
 								</div>
 							);

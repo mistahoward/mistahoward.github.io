@@ -31,8 +31,8 @@ export const getInitialTestimonialForm = () => ({
 	clientCompany: "",
 	content: "",
 	rating: 5,
-	projectId: "",
-	approved: false,
+	relationship: "",
+	status: "needs_review",
 });
 
 export const getInitialCertificationForm = () => ({

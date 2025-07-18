@@ -6,4 +6,6 @@ export interface Testimonial {
 	content: string;
 	rating?: number;
 	createdAt: string;
+	relationship: string;
+	status: "needs_review" | "approved" | "denied";
 } 

@@ -2,7 +2,7 @@ import { Router } from 'itty-router';
 import { drizzle } from 'drizzle-orm/d1';
 import { eq, desc } from 'drizzle-orm';
 import {
-	projects, blogPosts, skills, experience, testimonials, certifications, pets,
+	projects, blogPosts, skills, experience, testimonials, certifications, pets, testimonialInvites,
 } from '../schema';
 import { errorResponse, successResponse } from '../middleware/auth';
 
@@ -87,11 +87,60 @@ router.get('/api/testimonials', async (request: Request, env: Env) => {
 	try {
 		const db = drizzle(env.DB);
 		const allTestimonials = await db.select().from(testimonials)
-			.where(eq(testimonials.approved, true))
+			.where(eq(testimonials.status, 'approved'))
 			.orderBy(desc(testimonials.createdAt));
 		return successResponse(allTestimonials, env, 200);
 	} catch (error) {
 		return errorResponse('Failed to fetch testimonials', env, 500);
+	}
+});
+
+// POST /api/testimonials - Public testimonial submission
+router.post('/api/testimonials', async (request: Request, env: Env) => {
+	try {
+		const body = (await request.json()) as {
+			clientName: string;
+			clientTitle?: string;
+			clientCompany?: string;
+			content: string;
+			rating?: number;
+			relationship: string;
+			token: string;
+		};
+
+		const {
+			clientName,
+			clientTitle,
+			clientCompany,
+			content,
+			rating,
+			relationship,
+			token
+		} = body;
+
+		if (!clientName || !content || !relationship || !token) return errorResponse('Missing required fields', env, 400);
+
+		const db = drizzle(env.DB);
+		const inviteRows = await db.select().from(testimonialInvites).where(eq(testimonialInvites.token, token));
+		const invite = inviteRows[0];
+		if (!invite) return errorResponse('Invalid or expired invite token', env, 403);
+		if (invite.used) return errorResponse('This invite link has already been used', env, 403);
+		if (invite.expiresAt && new Date(invite.expiresAt) < new Date()) return errorResponse('This invite link has expired', env, 403);
+
+		await db.insert(testimonials).values({
+			clientName,
+			clientTitle,
+			clientCompany,
+			content,
+			rating,
+			relationship,
+			status: 'needs_review',
+		});
+		await db.update(testimonialInvites).set({ used: true, usedAt: new Date().toISOString() }).where(eq(testimonialInvites.id, invite.id));
+
+		return successResponse({ message: 'Testimonial submitted for review.' }, env, 201);
+	} catch (error) {
+		return errorResponse('Failed to submit testimonial', env, 500);
 	}
 });
 
@@ -117,6 +166,24 @@ router.get('/api/pets', async (request: Request, env: Env) => {
 		return successResponse(allPets, env, 200);
 	} catch (error) {
 		return errorResponse('Failed to fetch pets', env, 500);
+	}
+});
+
+// Public endpoint to validate testimonial invite token
+router.get('/api/testimonials/validate-token', async (request: Request, env: Env) => {
+	try {
+		const url = new URL(request.url);
+		const token = url.searchParams.get("token");
+		if (!token) return errorResponse("Token is required", env, 400);
+		const db = drizzle(env.DB);
+		const inviteRows = await db.select().from(testimonialInvites).where(eq(testimonialInvites.token, token));
+		const invite = inviteRows[0];
+		if (!invite) return successResponse({ valid: false, reason: "Invalid or expired invite token." }, env, 200);
+		if (invite.used) return successResponse({ valid: false, reason: "This invite link has already been used." }, env, 200);
+		if (invite.expiresAt && new Date(invite.expiresAt) < new Date()) return successResponse({ valid: false, reason: "This invite link has expired." }, env, 200);
+		return successResponse({ valid: true }, env, 200);
+	} catch (error) {
+		return errorResponse("Failed to validate invite token", env, 500);
 	}
 });
 

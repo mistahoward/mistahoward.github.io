@@ -7,6 +7,8 @@ import { About } from "./components/about/About";
 import { Projects } from "./components/Projects";
 import { PetDex } from "./components/PetDex";
 import { Blogs } from "./components/Blogs";
+import Router from "preact-router";
+import { TestimonialSubmitPage } from "./components/about/TestimonialSubmitPage";
 
 export const App = () => {
 	const [showAdmin, setShowAdmin] = useState(false);
@@ -17,13 +19,16 @@ export const App = () => {
 		<>
 			<Navbar />
 
-			<main>
-				<Home />
-				<About />
-				<Projects />
-				<PetDex />
-				<Blogs />
-			</main>
+			<Router>
+				<main path="/">
+					<Home />
+					<About />
+					<Projects />
+					<PetDex />
+					<Blogs />
+				</main>
+				<TestimonialSubmitPage path="/testimonials/submit" />
+			</Router>
 
 			<AdminPanel isVisible={showAdmin} onClose={() => setShowAdmin(false)} />
 		</>

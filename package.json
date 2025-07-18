@@ -50,5 +50,8 @@
     "portfolio"
   ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "preact-router": "^4.1.2"
+  }
 }

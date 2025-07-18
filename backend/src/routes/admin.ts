@@ -9,6 +9,7 @@ import {
 	skills,
 	experience,
 	certifications,
+	testimonialInvites,
 } from '../schema';
 import {
 	requireAdmin,
@@ -822,8 +823,8 @@ router.post('/api/admin/testimonials', async (request: Request, env: Env) => {
 			clientCompany?: string;
 			content: string;
 			rating?: number;
-			projectId?: number;
-			approved?: boolean;
+			relationship: string;
+			status?: string;
 		};
 		const db = drizzle(env.DB);
 
@@ -833,8 +834,8 @@ router.post('/api/admin/testimonials', async (request: Request, env: Env) => {
 			clientCompany: body.clientCompany,
 			content: body.content,
 			rating: body.rating,
-			projectId: body.projectId,
-			approved: body.approved || false,
+			relationship: body.relationship,
+			status: body.status || 'needs_review',
 		}).returning();
 
 		return successResponse(newTestimonial[0], env, 201);
@@ -854,25 +855,25 @@ router.put('/api/admin/testimonials/:id', async (request: Request, env: Env, ctx
 		const idFromPath = pathParts[pathParts.length - 1];
 		const id = parseInt(ctx.params?.id || idFromPath, 10);
 		const body = await request.json() as {
-			clientName: string;
+			clientName?: string;
 			clientTitle?: string;
 			clientCompany?: string;
-			content: string;
+			content?: string;
 			rating?: number;
-			projectId?: number;
-			approved?: boolean;
+			relationship?: string;
+			status?: string;
 		};
 		const db = drizzle(env.DB);
 
 		const updatedTestimonial = await db.update(testimonials)
 			.set({
-				clientName: body.clientName,
-				clientTitle: body.clientTitle,
-				clientCompany: body.clientCompany,
-				content: body.content,
-				rating: body.rating,
-				projectId: body.projectId,
-				approved: body.approved,
+				...(body.clientName !== undefined && { clientName: body.clientName }),
+				...(body.clientTitle !== undefined && { clientTitle: body.clientTitle }),
+				...(body.clientCompany !== undefined && { clientCompany: body.clientCompany }),
+				...(body.content !== undefined && { content: body.content }),
+				...(body.rating !== undefined && { rating: body.rating }),
+				...(body.relationship !== undefined && { relationship: body.relationship }),
+				...(body.status !== undefined && { status: body.status }),
 			})
 			.where(eq(testimonials.id, id))
 			.returning();
@@ -1070,6 +1071,62 @@ router.get('/api/admin/certifications', async (request: Request, env: Env) => {
 		return successResponse(allCertifications, env, 200);
 	} catch (error) {
 		return errorResponse('Failed to fetch certifications', env, 500);
+	}
+});
+
+// TESTIMONIAL INVITES ADMIN ROUTES
+// POST /api/admin/testimonial-invites - Create new invite
+router.post('/api/admin/testimonial-invites', async (request: Request, env: Env) => {
+	const authCheck = requireAdmin(request, env);
+	if (authCheck) return authCheck;
+
+	try {
+		const body = await request.json() as { name?: string; email?: string; expiresAt?: string };
+		const db = drizzle(env.DB);
+		const token = crypto.randomUUID();
+		const invite = await db.insert(testimonialInvites).values({
+			token,
+			name: body.name,
+			email: body.email,
+			expiresAt: body.expiresAt,
+		}).returning();
+		return successResponse(invite[0], env, 201);
+	} catch (error) {
+		return errorResponse('Failed to create testimonial invite', env, 500);
+	}
+});
+
+// GET /api/admin/testimonial-invites - List all invites
+router.get('/api/admin/testimonial-invites', async (request: Request, env: Env) => {
+	const authCheck = requireAdmin(request, env);
+	if (authCheck) return authCheck;
+
+	try {
+		const db = drizzle(env.DB);
+		const invites = await db.select().from(testimonialInvites);
+		return successResponse(invites, env, 200);
+	} catch (error) {
+		return errorResponse('Failed to fetch testimonial invites', env, 500);
+	}
+});
+
+// DELETE /api/admin/testimonial-invites/:id - Delete an invite
+router.delete('/api/admin/testimonial-invites/:id', async (request: Request, env: Env, ctx: any) => {
+	const authCheck = requireAdmin(request, env);
+	if (authCheck) return authCheck;
+
+	try {
+		const url = new URL(request.url);
+		const pathParts = url.pathname.split('/');
+		const idFromPath = pathParts[pathParts.length - 1];
+		const id = parseInt(ctx.params?.id || idFromPath, 10);
+		if (Number.isNaN(id)) return errorResponse('Invalid invite ID', env, 400);
+		const db = drizzle(env.DB);
+		const result = await db.delete(testimonialInvites).where(eq(testimonialInvites.id, id));
+		if (result.meta.changes === 0) return errorResponse('Invite not found', env, 404);
+		return successResponse({ message: 'Invite deleted' }, env, 200);
+	} catch (error) {
+		return errorResponse('Failed to delete testimonial invite', env, 500);
 	}
 });
 

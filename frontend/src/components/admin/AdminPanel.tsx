@@ -4,6 +4,7 @@ import { PetManager } from "./managers/PetManager";
 import { DataManager } from "./managers/DataManager";
 import { AdminPanelProps } from "../../types/admin-panel.types";
 import { Section } from "../../types/admin-panel.types";
+import { TestimonialInvitesManager } from "./managers/TestimonialInvitesManager";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -158,6 +159,12 @@ export const AdminPanel = ({ isVisible, onClose }: AdminPanelProps) => {
 										>
 											Certifications
 										</button>
+										<button
+											className={`nav-link ${activeSection === "testimonial-invites" ? "active" : ""}`}
+											onClick={() => setActiveSection("testimonial-invites")}
+										>
+											Testimonial Invites
+										</button>
 										<div className="mt-auto p-3">
 											<button onClick={handleLogout} className="btn btn-outline-danger w-100">
 												Logout
@@ -171,6 +178,7 @@ export const AdminPanel = ({ isVisible, onClose }: AdminPanelProps) => {
 									{["projects", "skills", "experience", "testimonials", "certifications"].includes(activeSection) && (
 										<DataManager lastFocusTime={lastFocusTime} initialTab={activeSection as any} />
 									)}
+									{activeSection === "testimonial-invites" && <TestimonialInvitesManager />}
 								</div>
 							</div>
 						)}

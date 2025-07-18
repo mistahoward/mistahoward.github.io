@@ -59,28 +59,14 @@ export const TestimonialForm = ({ formData, setFormData, onSubmit, onCancel, edi
 					/>
 				</div>
 				<div className="col-md-6 mb-3">
-					<label className="form-label">Project ID</label>
+					<label className="form-label">Relationship *</label>
 					<input
-						type="number"
+						type="text"
 						className="form-control"
-						value={formData.projectId}
-						onChange={e => setFormData({ ...formData, projectId: (e.target as HTMLInputElement).value })}
-						placeholder="Related project ID"
+						value={formData.relationship}
+						onChange={e => setFormData({ ...formData, relationship: (e.target as HTMLInputElement).value })}
+						placeholder="How do you know Alex?"
 					/>
-				</div>
-			</div>
-			<div className="mb-3">
-				<div className="form-check">
-					<input
-						type="checkbox"
-						className="form-check-input"
-						checked={formData.approved}
-						onChange={e => setFormData({ ...formData, approved: (e.target as HTMLInputElement).checked })}
-						id="approved-check"
-					/>
-					<label className="form-check-label" htmlFor="approved-check">
-						Approved
-					</label>
 				</div>
 			</div>
 			<div className="d-flex gap-2">

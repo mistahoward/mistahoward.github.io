@@ -7,8 +7,6 @@ export const ProjectType = {
 	ACADEMIC: 'academic',
 } as const;
 
-export type ProjectType = typeof ProjectType[keyof typeof ProjectType];
-
 export const projects = sqliteTable('Projects', {
 	id: integer('id').primaryKey({ autoIncrement: true }),
 	name: text('name').notNull(),
@@ -66,8 +64,8 @@ export const testimonials = sqliteTable('Testimonials', {
 	clientCompany: text('client_company'),
 	content: text('content').notNull(),
 	rating: integer('rating'), // 1-5 stars
-	projectId: integer('project_id').references(() => projects.id),
-	approved: integer('approved', { mode: 'boolean' }).default(false),
+	relationship: text('relationship').notNull(), // How you know Alex
+	status: text('status').notNull().default('needs_review'), // 'needs_review', 'approved', 'denied'
 	createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
@@ -110,6 +108,18 @@ export const pets = sqliteTable('Pets', {
 	isActive: integer('is_active', { mode: 'boolean' }).default(true), // for pets that have passed
 	createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
+// Testimonial invite tokens table
+export const testimonialInvites = sqliteTable('TestimonialInvites', {
+	id: integer('id').primaryKey({ autoIncrement: true }),
+	token: text('token').notNull().unique(),
+	email: text('email'),
+	name: text('name'),
+	used: integer('used', { mode: 'boolean' }).default(false),
+	usedAt: text('used_at'),
+	createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+	expiresAt: text('expires_at'),
 });
 
 // Type exports for use in your application
