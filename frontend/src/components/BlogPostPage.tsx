@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { route } from "preact-router";
 import { markdownToHtml } from "../utils/markdown";
 import { API_URL } from "../utils/api";
+import { updatePageTitle } from "../utils/title";
 
 const BlogPostPage = (props: { slug?: string }) => {
 	const { slug } = props;
@@ -25,14 +26,25 @@ const BlogPostPage = (props: { slug?: string }) => {
 			.then(data => {
 				console.log("Fetched blog post data:", data);
 				setPost(data);
+				// Update page title with blog post title
+				updatePageTitle(undefined, data.title);
 				setLoading(false);
 			})
 			.catch(err => {
 				console.error("Error fetching blog post:", err);
 				setError("Blog post not found.");
+				// Reset title on error
+				updatePageTitle();
 				setLoading(false);
 			});
 	}, [slug]);
+
+	// Reset title when component unmounts
+	useEffect(() => {
+		return () => {
+			updatePageTitle();
+		};
+	}, []);
 
 	if (loading) return <YakShaverSpinner />;
 	if (error) return <div className="container my-5 text-center text-danger">{error}</div>;

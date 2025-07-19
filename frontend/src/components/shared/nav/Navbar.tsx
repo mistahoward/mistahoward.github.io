@@ -2,6 +2,7 @@ import { useEffect, useState } from "preact/hooks";
 import { route } from "preact-router";
 import { ThemeToggle } from "./ThemeToggle";
 import type { NavItem } from "../../../types/navbar.types";
+import { updatePageTitle } from "../../../utils/title";
 
 const leftNavItems: NavItem[] = [
 	{ id: "about", label: "About" },
@@ -19,22 +20,14 @@ export const Navbar = () => {
 	const [currentPath, setCurrentPath] = useState<string>("");
 
 	useEffect(() => {
-		// Get current path
 		setCurrentPath(window.location.pathname);
 
-		// Handle route changes
-		const handleRouteChange = () => {
-			setCurrentPath(window.location.pathname);
-		};
+		const handleRouteChange = () => setCurrentPath(window.location.pathname);
 
-		// Listen for both popstate and custom route changes
 		window.addEventListener("popstate", handleRouteChange);
 
-		// Also check for route changes periodically (for preact-router)
 		const interval = setInterval(() => {
-			if (window.location.pathname !== currentPath) {
-				setCurrentPath(window.location.pathname);
-			}
+			if (window.location.pathname !== currentPath) setCurrentPath(window.location.pathname);
 		}, 100);
 
 		return () => {
@@ -44,17 +37,11 @@ export const Navbar = () => {
 	}, [currentPath]);
 
 	useEffect(() => {
-		// If we're on a specific route, set the active section
-		if (currentPath === "/about") {
-			setActiveSection("about");
-		} else if (currentPath === "/projects") {
-			setActiveSection("projects");
-		} else if (currentPath === "/pet-dex") {
-			setActiveSection("pet-dex");
-		} else if (currentPath === "/blogs" || currentPath.startsWith("/blog/")) {
-			setActiveSection("blogs");
-		} else if (currentPath === "/") {
-			// On home page, use scroll-based detection
+		const homePageRoutes = ["/", "/about", "/projects", "/pet-dex", "/blogs"];
+		const isHomePageRoute = homePageRoutes.includes(currentPath);
+		const isBlogPostRoute = currentPath.startsWith("/blog/");
+
+		if (isHomePageRoute) {
 			const sectionIds = [...leftNavItems.map(item => item.id), ...rightNavItems.map(item => item.id)];
 			const handleScroll = () => {
 				const navbar = document.querySelector<HTMLElement>(".custom-navbar");
@@ -67,10 +54,34 @@ export const Navbar = () => {
 					return rect.top <= offset && rect.bottom > offset;
 				});
 				setActiveSection(active || "");
+				// Update page title based on active section
+				updatePageTitle(active || "");
 			};
 			document.addEventListener("scroll", handleScroll, { passive: true });
 			handleScroll();
 			return () => document.removeEventListener("scroll", handleScroll);
+		} else if (isBlogPostRoute) {
+			// For blog post routes, don't apply scroll detection - let the blog post component handle the title
+			setActiveSection("blogs");
+		} else {
+			switch (true) {
+				case currentPath === "/about":
+					setActiveSection("about");
+					break;
+				case currentPath === "/projects":
+					setActiveSection("projects");
+					break;
+				case currentPath === "/pet-dex":
+					setActiveSection("pet-dex");
+					break;
+				case currentPath === "/blogs":
+				case currentPath.startsWith("/blog/"):
+					setActiveSection("blogs");
+					break;
+				default:
+					setActiveSection("");
+					break;
+			}
 		}
 	}, [currentPath]);
 
@@ -78,10 +89,10 @@ export const Navbar = () => {
 		if (item.id === "name") {
 			route("/");
 			setMobileMenuOpen(false);
+			window.scrollTo({ top: 0, behavior: "smooth" });
 			return;
 		}
 
-		// Always navigate to the anchor route, regardless of current page
 		route(`/${item.id}`);
 		setMobileMenuOpen(false);
 	};
@@ -89,7 +100,6 @@ export const Navbar = () => {
 	return (
 		<nav className="custom-navbar">
 			<div className="custom-navbar-inner">
-				{/* Mobile: Hamburger, Brand, Theme Toggle */}
 				<div className="navbar-mobile-left d-sm-none">
 					<button
 						className="navbar-hamburger"
@@ -107,7 +117,6 @@ export const Navbar = () => {
 					<ThemeToggle />
 				</div>
 
-				{/* Desktop: Regular nav links */}
 				<div className="navbar-section left d-none d-sm-flex">
 					{leftNavItems.map(item => (
 						<button
@@ -139,7 +148,6 @@ export const Navbar = () => {
 					<ThemeToggle />
 				</div>
 
-				{/* Mobile menu overlay */}
 				{mobileMenuOpen && (
 					<div className="navbar-mobile-overlay" onClick={() => setMobileMenuOpen(false)}>
 						<div className="navbar-mobile-menu" onClick={e => e.stopPropagation()}>
