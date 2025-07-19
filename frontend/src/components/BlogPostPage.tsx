@@ -33,20 +33,9 @@ const BlogPostPage = (props: { slug?: string }) => {
 			});
 	}, [slug]);
 
-	console.log("BlogPostPage post state:", post);
-
-	if (loading) {
-		console.log("BlogPostPage: Loading...");
-		return <YakShaverSpinner />;
-	}
-	if (error) {
-		console.log("BlogPostPage: Error -", error);
-		return <div className="container my-5 text-center text-danger">{error}</div>;
-	}
-	if (!post) {
-		console.log("BlogPostPage: No post data");
-		return null;
-	}
+	if (loading) return <YakShaverSpinner />;
+	if (error) return <div className="container my-5 text-center text-danger">{error}</div>;
+	if (!post) return null;
 
 	console.log("BlogPostPage: Rendering post:", post.title);
 

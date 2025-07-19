@@ -9,8 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/dompurify": "^3.0.5",
     "@uiw/react-md-editor": "^4.0.8",
     "bootstrap": "^5.3.7",
+    "dompurify": "^3.2.6",
     "gsap": "^3.12.7",
     "marked": "^16.1.1",
     "preact": "^10.26.2",
