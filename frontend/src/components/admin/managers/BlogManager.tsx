@@ -4,6 +4,7 @@ import { fetchItems, createItem, updateItem, deleteItem, confirmDelete } from ".
 import { formatDate } from "../../../utils/ui";
 import { ManagerLayout } from "../shared/ManagerLayout";
 import { BlogForm } from "../forms/BlogForm";
+import { StatePersistence } from "../../../utils/state-persistence";
 
 console.log("BlogManager rendered");
 
@@ -106,6 +107,10 @@ export const BlogManager = () => {
 
 	const handleDelete = async (id: number) => {
 		if (!confirmDelete("this post")) return;
+
+		// Clear any auto-saved data for this post
+		const autoSaveKey = `blog_edit_${id}`;
+		StatePersistence.getInstance(autoSaveKey).clear();
 
 		await deleteItem(
 			"/api/admin/blog",

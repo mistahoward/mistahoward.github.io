@@ -1,6 +1,6 @@
-import { useState, useRef, useCallback, useEffect } from "preact/hooks";
+import { useState, useRef, useCallback, useEffect, useMemo } from "preact/hooks";
 import { YakShaverSpinner } from "../../shared/YakShaverSpinner";
-import { markdownToHtml } from "../../../utils/markdown";
+import { markdownToHtml, createDebouncedMarkdownConverter } from "../../../utils/markdown";
 
 interface MarkdownEditorProps {
 	value: string;
@@ -13,7 +13,13 @@ interface MarkdownEditorProps {
 export const MarkdownEditor = ({ value, onChange, placeholder, rows = 15, className = "" }: MarkdownEditorProps) => {
 	const [isUploading, setIsUploading] = useState(false);
 	const [previewMode, setPreviewMode] = useState(false);
+	const [previewContent, setPreviewContent] = useState("");
+	const [isPreviewLoading, setIsPreviewLoading] = useState(false);
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
+	const lastValueRef = useRef<string>("");
+
+	// Create debounced markdown converter only once
+	const debouncedConverter = useMemo(() => createDebouncedMarkdownConverter(300), []);
 
 	const insertImageAtCursor = useCallback(
 		(imageUrl: string, altText: string = "") => {
@@ -35,6 +41,48 @@ export const MarkdownEditor = ({ value, onChange, placeholder, rows = 15, classN
 		},
 		[value, onChange]
 	);
+
+	// Update preview content only when in preview mode and value changes
+	useEffect(() => {
+		if (!previewMode) {
+			// Clear preview content when not in preview mode to save memory
+			setPreviewContent("");
+			return;
+		}
+
+		// Only update if value actually changed
+		if (value === lastValueRef.current) return;
+		lastValueRef.current = value;
+
+		const updatePreview = async () => {
+			setIsPreviewLoading(true);
+			try {
+				// Use debounced converter for better performance
+				const html = await debouncedConverter(value || "");
+				setPreviewContent(html);
+			} catch (error) {
+				console.error("Error converting markdown:", error);
+				// Fallback to immediate conversion
+				setPreviewContent(markdownToHtml(value || ""));
+			} finally {
+				setIsPreviewLoading(false);
+			}
+		};
+
+		updatePreview();
+	}, [value, previewMode, debouncedConverter]);
+
+	// Cleanup function to clear preview content when component unmounts
+	useEffect(() => {
+		return () => {
+			setPreviewContent("");
+			lastValueRef.current = "";
+			// Cleanup the debounced converter to prevent memory leaks
+			if (debouncedConverter.cleanup) {
+				debouncedConverter.cleanup();
+			}
+		};
+	}, [debouncedConverter]);
 
 	useEffect(() => {
 		const textarea = textareaRef.current;
@@ -196,6 +244,14 @@ export const MarkdownEditor = ({ value, onChange, placeholder, rows = 15, classN
 		[insertImageAtCursor]
 	);
 
+	const handlePreviewToggle = useCallback(() => {
+		setPreviewMode(!previewMode);
+		if (!previewMode && !previewContent) {
+			// Initialize preview content when switching to preview mode
+			setPreviewContent(markdownToHtml(value || ""));
+		}
+	}, [previewMode, previewContent, value]);
+
 	return (
 		<div className={`markdown-editor ${className}`}>
 			<div className="d-flex justify-content-between align-items-center mb-2">
@@ -210,7 +266,7 @@ export const MarkdownEditor = ({ value, onChange, placeholder, rows = 15, classN
 					<button
 						type="button"
 						className={`btn btn-sm ${previewMode ? "btn-primary" : "btn-outline-primary"}`}
-						onClick={() => setPreviewMode(true)}
+						onClick={handlePreviewToggle}
 					>
 						Preview
 					</button>
@@ -238,7 +294,13 @@ export const MarkdownEditor = ({ value, onChange, placeholder, rows = 15, classN
 				</div>
 			) : (
 				<div className="form-control" style={{ minHeight: `${rows * 1.5}rem`, overflowY: "auto" }}>
-					<div className="markdown-preview" dangerouslySetInnerHTML={{ __html: markdownToHtml(value || "") }} />
+					{isPreviewLoading ? (
+						<div className="d-flex justify-content-center align-items-center" style={{ minHeight: "10rem" }}>
+							<YakShaverSpinner />
+						</div>
+					) : (
+						<div className="markdown-preview" dangerouslySetInnerHTML={{ __html: previewContent }} />
+					)}
 				</div>
 			)}
 
