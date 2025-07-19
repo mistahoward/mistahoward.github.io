@@ -68,7 +68,7 @@ const SectionScroller = () => {
 					const top = rect.top + scrollTop - offset;
 					window.scrollTo({ top, behavior: "smooth" });
 				} else {
-					console.log(`SectionScroller: Element not found, retrying...`);
+					console.log("SectionScroller: Element not found, retrying...");
 					// Retry after a longer delay
 					setTimeout(scrollToSection, 500);
 				}
@@ -128,8 +128,8 @@ export const App = () => {
 					<PetDex />
 					<Blogs />
 				</main>
-				<BlogPostPage path="/blog/:slug" />
-				<TestimonialSubmitPage path="/testimonials/submit" />
+				<BlogPostPage />
+				<TestimonialSubmitPage />
 			</Router>
 
 			<AdminPanel isVisible={showAdmin} onClose={() => setShowAdmin(false)} />

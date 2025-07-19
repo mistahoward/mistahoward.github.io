@@ -140,6 +140,7 @@ export type TestimonialFormState = {
 	clientCompany: string;
 	content: string;
 	rating: number;
+	relationship: string;
 	status: "needs_review" | "approved" | "denied";
 };
 

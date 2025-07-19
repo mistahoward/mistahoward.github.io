@@ -74,19 +74,6 @@ export const Navbar = () => {
 		}
 	}, [currentPath]);
 
-	const scrollToSection = (sectionId: string) => {
-		const element = document.getElementById(sectionId);
-		const navbar = document.querySelector<HTMLElement>(".custom-navbar");
-		if (element) {
-			const rect = element.getBoundingClientRect();
-			const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-			const navbarHeight = navbar ? navbar.offsetHeight : 0;
-			const offset = navbarHeight + 8; // 8px extra offset
-			const top = rect.top + scrollTop - offset;
-			window.scrollTo({ top, behavior: "smooth" });
-		}
-	};
-
 	const handleNavClick = (item: NavItem) => {
 		if (item.id === "name") {
 			route("/");
