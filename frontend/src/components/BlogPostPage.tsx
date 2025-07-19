@@ -61,7 +61,7 @@ const BlogPostPage = (props: { slug?: string }) => {
 							<span>{post.publishedAt ? format(new Date(post.publishedAt), "PPP") : ""}</span>
 						</div>
 						{post.excerpt && <p className="lead text-muted mb-4">{post.excerpt}</p>}
-						<div className="blog-post-content" dangerouslySetInnerHTML={{ __html: markdownToHtml(post.content) }} />
+						<div className="blog-post-content mb-4" dangerouslySetInnerHTML={{ __html: markdownToHtml(post.content) }} />
 					</div>
 				</div>
 			</div>
