@@ -139,7 +139,7 @@ export const PetDex = () => {
 						<div className="gba-pokedex-info card">
 							<div className="petdex-info-scroll">
 								{selectedPet ? (
-									<div className="gba-pet-info-content animate__fadeIn">
+									<div className="gba-pet-info-content animate-fade-in">
 										<div className="d-flex align-items-center mb-3">
 											<img src={selectedPet.imageUrl} alt={selectedPet.name} className="gba-pet-image me-3" />
 											<div>
@@ -256,7 +256,7 @@ export const PetDex = () => {
 										</div>
 									</div>
 								) : (
-									<div className="gba-pet-info-placeholder text-center p-5 animate__fadeIn">
+									<div className="gba-pet-info-placeholder text-center p-5 animate-fade-in">
 										<div className="gba-pet-placeholder-emoji mb-3" style={{ fontSize: "2.5rem" }}>
 											🐾
 										</div>
@@ -291,7 +291,7 @@ export const PetDex = () => {
 											"gba-pet-list-item",
 											"d-flex",
 											"align-items-center",
-											selectedPetId === pet.id ? "selected animate__pulse" : "",
+											selectedPetId === pet.id ? "selected animate-pulse" : "",
 										].join(" ");
 										return (
 											<li

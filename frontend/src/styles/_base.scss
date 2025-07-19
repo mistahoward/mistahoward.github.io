@@ -10,9 +10,9 @@ html {
 	& * {
 		transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 
-			&:not(.nav-link, .btn, .form-select, .dropdown-menu, .modal, .tooltip, .popover) {
-		transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-	}
+		&:not(.nav-link, .btn, .form-select, .dropdown-menu, .modal, .tooltip, .popover) {
+			transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+		}
 	}
 }
 
@@ -24,6 +24,7 @@ html, body, main, .custom-navbar {
 	width: 100%;
 	max-width: 100%;
 }
+
 #app {
 	width: 100%;
 	max-width: 100%;
@@ -39,11 +40,9 @@ html, body, main {
 
 :root {
 	--navbar-height: 5rem;
-}
 
-@media (max-width: 575px) {
-	:root {
-		--navbar-height: 3.5rem;
+	@media (width <= 575px) {
+		--navbar-height: 3.5rem
 	}
 }
 
@@ -55,19 +54,20 @@ main {
 
 .about-tabs-dropdown {
 	display: none;
+
+	@media (width <= 991.98px) {
+		display: block;
+		margin-bottom: 1.5rem
+	}
 }
 
-@media (max-width: 991.98px) {
-	.about-tabs-dropdown {
-		display: block;
-		margin-bottom: 1.5rem;
-	}
+@media (width <= 991.98px) {
 	.nav-tabs.d-lg-flex {
 		display: none !important;
 	}
 }
 
-@media (min-width: 992px) {
+@media (width >= 992px) {
 	.about-tabs-dropdown {
 		display: none !important;
 	}
@@ -76,19 +76,20 @@ main {
 // Responsive Skills Category Dropdown
 .skills-category-dropdown {
 	display: none;
+
+	@media (width <= 991.98px) {
+		display: block;
+		margin-bottom: 1.5rem
+	}
 }
 
-@media (max-width: 991.98px) {
-	.skills-category-dropdown {
-		display: block;
-		margin-bottom: 1.5rem;
-	}
+@media (width <= 991.98px) {
 	.d-lg-flex {
 		display: none !important;
 	}
 }
 
-@media (min-width: 992px) {
+@media (width >= 992px) {
 	.skills-category-dropdown {
 		display: none !important;
 	}
@@ -96,19 +97,20 @@ main {
 
 .projects-type-dropdown {
 	display: none;
+
+	@media (width <= 991.98px) {
+		display: block;
+		margin-bottom: 1.5rem
+	}
 }
 
-@media (max-width: 991.98px) {
-	.projects-type-dropdown {
-		display: block;
-		margin-bottom: 1.5rem;
-	}
+@media (width <= 991.98px) {
 	.d-lg-flex {
 		display: none !important;
 	}
 }
 
-@media (min-width: 992px) {
+@media (width >= 992px) {
 	.projects-type-dropdown {
 		display: none !important;
 	}
@@ -150,10 +152,11 @@ main {
 	white-space: nowrap;
 }
 
-@media (max-width: 575px) {
+@media (width <= 575px) {
 	.skills-list-name {
 		max-width: 7.5rem;
 	}
+
 	.skills-list-category,
 	.skills-list-icon {
 		display: none !important;
@@ -163,11 +166,11 @@ main {
 // Blog card styles
 .blog-card {
 	transition: transform 0.2s ease, box-shadow 0.2s ease;
-	border: 1px solid rgba(0, 0, 0, 0.125);
+	border: 1px solid rgb(0 0 0 / 12.5%);
 	
 	&:hover {
 		transform: translateY(-0.25rem);
-		box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+		box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 15%);
 		text-decoration: none;
 	}
 	
@@ -180,13 +183,13 @@ main {
 	.card-text {
 		line-height: 1.5;
 	}
-}
 
-[data-bs-theme="dark"] .blog-card {
-	border: 1px solid rgba(255, 255, 255, 0.125);
+	[data-bs-theme="dark"] & {
+		border: 1px solid rgb(255 255 255 / 12.5%);
 	
-	&:hover {
-		box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+		&:hover {
+			box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 30%);
+		}
 	}
 } 
 
@@ -213,7 +216,7 @@ main {
 		height: auto;
 		margin: 1.5rem 0;
 		border-radius: 0.5rem;
-		box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+		box-shadow: 0 0.25rem 0.5rem rgb(0 0 0 / 10%);
 	}
 	
 	strong {
@@ -237,7 +240,7 @@ main {
 		background-color: #f8f9fa;
 		padding: 0.125rem 0.25rem;
 		border-radius: 0.25rem;
-		font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+		font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
 		font-size: 0.875em;
 	}
 	

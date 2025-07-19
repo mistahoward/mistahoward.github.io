@@ -41,13 +41,20 @@
 	100% { transform: translate(-50%, -50%) scaleX(1.38) scaleY(0.85) rotate(-110deg); }
 }
 
-@keyframes fadeIn {
-	from { opacity: 0; transform: translateY(1rem); }
-	to { opacity: 1; transform: none; }
+@keyframes fade-in {
+	from { 
+		opacity: 0; 
+		transform: translateY(1rem); 
+	}
+
+	to { 
+		opacity: 1; 
+		transform: none; 
+	}
 }
 
-.animate__fadeIn {
-	animation: fadeIn 0.4s;
+.animate-fade-in {
+	animation: fade-in 0.4s;
 }
 
 @keyframes pulse {
@@ -56,7 +63,7 @@
 	100% { box-shadow: 0 0 0 0 rgb(248 208 48 / 0%); }
 }
 
-.animate__pulse {
+.animate-pulse {
 	animation: pulse 0.7s;
 }
 

@@ -99,18 +99,20 @@
 	border-radius: 50%;
 }
 
-@media (max-width: 575px) {
+@media (width <= 575px) {
 	.hero {
 		/* max-height: 380px; */
 		overflow-y: hidden;
 		padding-top: 4.5rem;
 	}
+
 	.hero-portrait {
 		max-height: 11.25rem;
 		width: 11.25rem;
 		height: 11.25rem;
 		margin-bottom: 1rem;
 	}
+
 	.hero-portrait-ring {
 		max-width: 10.625rem;
 		max-height: 10.625rem;
@@ -121,17 +123,19 @@
 	}
 }
 
-@media (min-width: 576px) {
+@media (width >= 576px) {
 	.hero {
 		padding-top: calc(var(--navbar-height) + 3rem);
 		overflow-y: hidden;
 	}
+
 	.hero-portrait {
 		width: 15rem;
 		height: 15rem;
 		max-height: 15rem;
 		margin-bottom: 2rem;
 	}
+
 	.hero-portrait-ring {
 		width: 16.25rem;
 		height: 15.625rem;

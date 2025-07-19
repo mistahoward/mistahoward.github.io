@@ -225,7 +225,7 @@
 .gba-pet-stat-label {
 	font-weight: 600;
 	color: $gba-blue;
-	letter-spacing: 0.03125rem;
+	letter-spacing: 0.0313rem;
 	min-width: 5rem;
 	&.gba-pet-stat-hp { color: $gba-green; }
 	&.gba-pet-stat-attack { color: $gba-orange; }
@@ -259,21 +259,25 @@
 .gba-pet-ability-item { border-left: 3px solid $gba-orange; }
 
 // Responsive tweaks
-@media (max-width: 991px) {
+@media (width <= 991px) {
 	.gba-pokedex-row {
 		flex-direction: column;
 	}
-	.gba-pokedex-container { max-width: 98vw; }
-	.gba-pokedex-info-panel, .gba-pokedex-list-panel { max-width: 100%; flex: 0 0 100%; }
 
-	.gba-pokedex-info-panel,
-	.gba-pokedex-list-panel {
+	.gba-pokedex-container { 
+		max-width: 98vw; 
+	}
+
+	.gba-pokedex-info-panel, 
+	.gba-pokedex-list-panel { 
+		max-width: 100%; 
+		flex: 0 0 100%; 
 		min-height: 20rem;
 		margin-bottom: 1rem;
 	}
 }
 
-@media (max-width: 767px) {
+@media (width <= 767px) {
 	.gba-pokedex-container {
 		padding: 0.5rem 0.25rem;
 	}
@@ -360,6 +364,10 @@
 		& td {
 			border-bottom: 1px solid $gba-border-dark;
 		}
+
+		& tr:last-child td {
+			border-bottom: none;
+		}
 	}
 
 	.gba-pet-stat-label {
@@ -415,18 +423,13 @@
 
 .petdex-info-scroll {
 	max-height: 32rem;
-	overflow-y: auto;
-	overflow-x: hidden;
-}
+	overflow: hidden auto;
 
-@media (max-width: 991.98px) {
-	.petdex-info-scroll {
-		max-height: 22rem;
+	@media (width <= 991.98px) {
+		max-height: 22rem
 	}
-}
 
-@media (max-width: 575px) {
-	.petdex-info-scroll {
+	@media (width <= 575px) {
 		max-height: 22rem
 	}
 } 
