@@ -9,8 +9,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@uiw/react-md-editor": "^4.0.8",
     "bootstrap": "^5.3.7",
     "gsap": "^3.12.7",
+    "marked": "^16.1.1",
     "preact": "^10.26.2",
     "preact-iso": "^2.6.2",
     "react": "npm:@preact/compat@^18.3.1",

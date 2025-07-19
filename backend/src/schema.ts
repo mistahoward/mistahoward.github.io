@@ -1,4 +1,9 @@
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import {
+	sqliteTable,
+	text,
+	integer,
+	primaryKey,
+} from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 
 export const ProjectType = {
@@ -121,6 +126,24 @@ export const testimonialInvites = sqliteTable('TestimonialInvites', {
 	createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 	expiresAt: text('expires_at'),
 });
+
+// Tags table schema
+export const tags = sqliteTable('Tags', {
+	id: integer('id').primaryKey({ autoIncrement: true }),
+	name: text('name').notNull().unique(),
+});
+
+// BlogPostTags join table schema
+export const blogPostTags = sqliteTable(
+	'BlogPostTags',
+	{
+		blogPostId: integer('blog_post_id').notNull().references(() => blogPosts.id, { onDelete: 'cascade' }),
+		tagId: integer('tag_id').notNull().references(() => tags.id, { onDelete: 'cascade' }),
+	},
+	(table) => ({
+		pk: primaryKey({ columns: [table.blogPostId, table.tagId] }),
+	}),
+);
 
 // Type exports for use in your application
 export type Project = typeof projects.$inferSelect;

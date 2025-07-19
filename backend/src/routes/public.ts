@@ -2,7 +2,7 @@ import { Router } from 'itty-router';
 import { drizzle } from 'drizzle-orm/d1';
 import { eq, desc } from 'drizzle-orm';
 import {
-	projects, blogPosts, skills, experience, testimonials, certifications, pets, testimonialInvites,
+	projects, blogPosts, skills, experience, testimonials, certifications, pets, testimonialInvites, tags, blogPostTags,
 } from '../schema';
 import { errorResponse, successResponse } from '../middleware/auth';
 
@@ -30,7 +30,24 @@ router.get('/api/blog', async (request: Request, env: Env) => {
 		const posts = await db.select().from(blogPosts)
 			.where(eq(blogPosts.published, true))
 			.orderBy(desc(blogPosts.publishedAt));
-		return successResponse(posts, env, 200);
+
+		// Get tags for each post
+		const postsWithTags = await Promise.all(
+			posts.map(async (post) => {
+				const postTags = await db
+					.select({ name: tags.name })
+					.from(blogPostTags)
+					.innerJoin(tags, eq(blogPostTags.tagId, tags.id))
+					.where(eq(blogPostTags.blogPostId, post.id));
+
+				return {
+					...post,
+					tags: postTags.map(t => t.name)
+				};
+			})
+		);
+
+		return successResponse(postsWithTags, env, 200);
 	} catch (error) {
 		return errorResponse('Failed to fetch blog posts', env, 500);
 	}
@@ -39,11 +56,15 @@ router.get('/api/blog', async (request: Request, env: Env) => {
 // GET /blog/:slug - Get specific blog post
 router.get('/api/blog/:slug', async (request: Request, env: Env, ctx: any) => {
 	try {
-		const slug = ctx.params?.slug;
+		let slug = ctx && ctx.params ? ctx.params.slug : undefined;
+		if (!slug) {
+			const url = new URL(request.url);
+			slug = url.pathname.split('/').pop();
+			console.log('[DEBUG] manual slug:', slug);
+		}
 		if (!slug) {
 			return errorResponse('Slug is required', env, 400);
 		}
-
 		const db = drizzle(env.DB);
 		const post = await db.select().from(blogPosts)
 			.where(eq(blogPosts.slug, slug))
@@ -53,7 +74,19 @@ router.get('/api/blog/:slug', async (request: Request, env: Env, ctx: any) => {
 			return errorResponse('Post not found', env, 404);
 		}
 
-		return successResponse(post[0], env, 200);
+		// Get tags for the post
+		const postTags = await db
+			.select({ name: tags.name })
+			.from(blogPostTags)
+			.innerJoin(tags, eq(blogPostTags.tagId, tags.id))
+			.where(eq(blogPostTags.blogPostId, post[0].id));
+
+		const postWithTags = {
+			...post[0],
+			tags: postTags.map(t => t.name)
+		};
+
+		return successResponse(postWithTags, env, 200);
 	} catch (error) {
 		return errorResponse('Failed to fetch blog post', env, 500);
 	}
@@ -166,6 +199,17 @@ router.get('/api/pets', async (request: Request, env: Env) => {
 		return successResponse(allPets, env, 200);
 	} catch (error) {
 		return errorResponse('Failed to fetch pets', env, 500);
+	}
+});
+
+// GET /tags - Get all tags for public use
+router.get('/api/tags', async (request: Request, env: Env) => {
+	try {
+		const db = drizzle(env.DB);
+		const allTags = await db.select().from(tags).orderBy(tags.name);
+		return successResponse(allTags, env, 200);
+	} catch (error) {
+		return errorResponse('Failed to fetch tags', env, 500);
 	}
 });
 

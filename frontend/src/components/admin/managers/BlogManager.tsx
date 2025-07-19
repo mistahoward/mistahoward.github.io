@@ -1,11 +1,13 @@
 import { useState, useEffect } from "preact/hooks";
-import { BlogPost, BlogFormState, BlogEditorProps } from "../../../types/blog-editor.types";
+import { BlogPost, BlogFormState } from "../../../types/blog-editor.types";
 import { fetchItems, createItem, updateItem, deleteItem, confirmDelete } from "../../../utils/crud";
 import { formatDate } from "../../../utils/ui";
 import { ManagerLayout } from "../shared/ManagerLayout";
 import { BlogForm } from "../forms/BlogForm";
 
-export const BlogManager = ({ lastFocusTime = 0 }: BlogEditorProps) => {
+console.log("BlogManager rendered");
+
+export const BlogManager = () => {
 	const [posts, setPosts] = useState<BlogPost[]>([]);
 	const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
 	const [isCreating, setIsCreating] = useState(false);
@@ -18,6 +20,7 @@ export const BlogManager = ({ lastFocusTime = 0 }: BlogEditorProps) => {
 		content: "",
 		excerpt: "",
 		published: false,
+		tags: [],
 	});
 
 	const fetchPosts = async () => {
@@ -33,9 +36,7 @@ export const BlogManager = ({ lastFocusTime = 0 }: BlogEditorProps) => {
 		fetchPosts();
 	}, []);
 
-	useEffect(() => {
-		if (lastFocusTime > 0) fetchPosts();
-	}, [lastFocusTime]);
+	// Removed the lastFocusTime effect to prevent infinite loop
 
 	const handleCreate = () => {
 		setIsCreating(true);
@@ -46,6 +47,7 @@ export const BlogManager = ({ lastFocusTime = 0 }: BlogEditorProps) => {
 			content: "",
 			excerpt: "",
 			published: false,
+			tags: [],
 		});
 	};
 
@@ -58,6 +60,7 @@ export const BlogManager = ({ lastFocusTime = 0 }: BlogEditorProps) => {
 			content: post.content,
 			excerpt: post.excerpt || "",
 			published: post.published,
+			tags: post.tags || [],
 		});
 	};
 
@@ -70,6 +73,7 @@ export const BlogManager = ({ lastFocusTime = 0 }: BlogEditorProps) => {
 			content: "",
 			excerpt: "",
 			published: false,
+			tags: [],
 		});
 	};
 

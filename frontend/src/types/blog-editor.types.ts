@@ -7,6 +7,8 @@ export interface BlogPost {
 	published: boolean;
 	createdAt: string;
 	updatedAt: string;
+	publishedAt?: string;
+	tags: string[];
 }
 
 export interface BlogEditorProps {
@@ -19,6 +21,7 @@ export interface BlogFormState {
 	content: string;
 	excerpt: string;
 	published: boolean;
+	tags: string[];
 }
 
 export type BlogFormProps = {

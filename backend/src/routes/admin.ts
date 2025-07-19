@@ -1,6 +1,6 @@
 import { Router } from 'itty-router';
 import { drizzle } from 'drizzle-orm/d1';
-import { eq, desc } from 'drizzle-orm';
+import { eq, desc, inArray } from 'drizzle-orm';
 import {
 	blogPosts,
 	pets,
@@ -10,6 +10,8 @@ import {
 	experience,
 	certifications,
 	testimonialInvites,
+	tags,
+	blogPostTags,
 } from '../schema';
 import {
 	requireAdmin,
@@ -17,6 +19,7 @@ import {
 	errorResponse,
 	successResponse,
 } from '../middleware/auth';
+import { and } from 'drizzle-orm';
 
 interface Env {
 	DB: D1Database;
@@ -67,10 +70,11 @@ router.post('/api/admin/blog', async (request: Request, env: Env) => {
 			content: string;
 			excerpt?: string;
 			published?: boolean;
+			tags?: string[];
 		};
 		const db = drizzle(env.DB);
 
-		const newPost = await db.insert(blogPosts).values({
+		const newPostArr = await db.insert(blogPosts).values({
 			title: body.title,
 			slug: body.slug,
 			content: body.content,
@@ -78,8 +82,24 @@ router.post('/api/admin/blog', async (request: Request, env: Env) => {
 			published: body.published || false,
 			publishedAt: body.published ? new Date().toISOString() : null,
 		}).returning();
+		const newPost = newPostArr[0];
 
-		return successResponse(newPost[0], env, 201);
+		if (body.tags && Array.isArray(body.tags)) {
+			const tagIds: number[] = [];
+			for (const tagName of body.tags) {
+				let tag = (await db.select().from(tags).where(eq(tags.name, tagName)))[0];
+				if (!tag) {
+					const inserted = await db.insert(tags).values({ name: tagName }).returning();
+					tag = inserted[0];
+				}
+				tagIds.push(tag.id);
+			}
+			for (const tagId of tagIds) {
+				await db.insert(blogPostTags).values({ blogPostId: newPost.id, tagId }).onConflictDoNothing();
+			}
+		}
+
+		return successResponse(newPost, env, 201);
 	} catch (error) {
 		return errorResponse('Failed to create blog post', env, 500);
 	}
@@ -101,10 +121,11 @@ router.put('/api/admin/blog/:id', async (request: Request, env: Env, ctx: any) =
 			content: string;
 			excerpt?: string;
 			published?: boolean;
+			tags?: string[];
 		};
 		const db = drizzle(env.DB);
 
-		const updatedPost = await db.update(blogPosts)
+		const updatedPostArr = await db.update(blogPosts)
 			.set({
 				title: body.title,
 				slug: body.slug,
@@ -117,11 +138,30 @@ router.put('/api/admin/blog/:id', async (request: Request, env: Env, ctx: any) =
 			.where(eq(blogPosts.id, id))
 			.returning();
 
-		if (!updatedPost.length) {
+		if (!updatedPostArr.length) {
 			return errorResponse('Blog post not found', env, 404);
 		}
+		const updatedPost = updatedPostArr[0];
 
-		return successResponse(updatedPost[0], env, 200);
+		if (body.tags && Array.isArray(body.tags)) {
+			const tagIds: number[] = [];
+			for (const tagName of body.tags) {
+				let tag = (await db.select().from(tags).where(eq(tags.name, tagName)))[0];
+				if (!tag) {
+					const inserted = await db.insert(tags).values({ name: tagName }).returning();
+					tag = inserted[0];
+				}
+				tagIds.push(tag.id);
+			}
+			// Remove old associations
+			await db.delete(blogPostTags).where(eq(blogPostTags.blogPostId, id));
+			// Add new associations
+			for (const tagId of tagIds) {
+				await db.insert(blogPostTags).values({ blogPostId: id, tagId }).onConflictDoNothing();
+			}
+		}
+
+		return successResponse(updatedPost, env, 200);
 	} catch (error) {
 		return errorResponse('Failed to update blog post', env, 500);
 	}
@@ -168,10 +208,45 @@ router.get('/api/admin/blog', async (request: Request, env: Env) => {
 		const db = drizzle(env.DB);
 		const posts = await db.select().from(blogPosts).orderBy(desc(blogPosts.createdAt));
 
-		return successResponse(posts, env, 200);
+		// Fetch tags for all posts
+		const postIds = posts.map(p => p.id);
+		let tagsByPostId: Record<number, string[]> = {};
+		if (postIds.length > 0) {
+			const tagRows = await db
+				.select({ blogPostId: blogPostTags.blogPostId, tagName: tags.name })
+				.from(blogPostTags)
+				.leftJoin(tags, eq(blogPostTags.tagId, tags.id))
+				.where(inArray(blogPostTags.blogPostId, postIds));
+			tagsByPostId = tagRows.reduce((acc, row) => {
+				if (!acc[row.blogPostId]) acc[row.blogPostId] = [];
+				if (row.tagName) acc[row.blogPostId].push(row.tagName);
+				return acc;
+			}, {} as Record<number, string[]>);
+		}
+
+		const postsWithTags = posts.map(post => ({
+			...post,
+			tags: tagsByPostId[post.id] || [],
+		}));
+
+		return successResponse(postsWithTags, env, 200);
 	} catch (error) {
 		console.error('[ADMIN] Database error:', error);
 		return errorResponse('Failed to fetch blog posts', env, 500);
+	}
+});
+
+// GET /api/admin/tags - Get all tags
+router.get('/api/admin/tags', async (request: Request, env: Env) => {
+	const authCheck = requireAdmin(request, env);
+	if (authCheck) return authCheck;
+
+	try {
+		const db = drizzle(env.DB);
+		const allTags = await db.select().from(tags).orderBy(tags.name);
+		return successResponse(allTags, env, 200);
+	} catch (error) {
+		return errorResponse('Failed to fetch tags', env, 500);
 	}
 });
 
@@ -1127,6 +1202,53 @@ router.delete('/api/admin/testimonial-invites/:id', async (request: Request, env
 		return successResponse({ message: 'Invite deleted' }, env, 200);
 	} catch (error) {
 		return errorResponse('Failed to delete testimonial invite', env, 500);
+	}
+});
+
+// IMAGE UPLOAD ROUTES
+
+// POST /admin/upload-image - Upload image for blog posts
+router.post('/api/admin/upload-image', async (request: Request, env: Env) => {
+	const authCheck = requireAdmin(request, env);
+	if (authCheck) return authCheck;
+
+	try {
+		const formData = await request.formData();
+		const imageFile = formData.get('image') as unknown as File;
+
+		if (!imageFile) {
+			return errorResponse('No image file provided', env, 400);
+		}
+
+		// Validate file type
+		if (!imageFile.type.startsWith('image/')) {
+			return errorResponse('File must be an image', env, 400);
+		}
+
+		// Validate file size (5MB limit)
+		if (imageFile.size > 5 * 1024 * 1024) {
+			return errorResponse('Image file too large (max 5MB)', env, 400);
+		}
+
+		// Generate unique filename
+		const timestamp = Date.now();
+		const extension = imageFile.name.split('.').pop() || 'jpg';
+		const filename = `blog-images/${timestamp}-${Math.random().toString(36).substring(2)}.${extension}`;
+
+		// Upload to R2
+		await env.PET_IMAGES.put(filename, imageFile.stream(), {
+			httpMetadata: {
+				contentType: imageFile.type,
+			},
+		});
+
+		// Generate public URL
+		const imageUrl = env.R2_DOMAIN ? `${env.R2_DOMAIN}/${filename}` : `/api/images/${filename}`;
+
+		return successResponse({ url: imageUrl }, env, 200);
+	} catch (error) {
+		console.error('[ADMIN] Image upload error:', error);
+		return errorResponse('Failed to upload image', env, 500);
 	}
 });
 

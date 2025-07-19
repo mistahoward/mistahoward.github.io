@@ -6,6 +6,8 @@ import { AdminPanelProps } from "../../types/admin-panel.types";
 import { Section } from "../../types/admin-panel.types";
 import { TestimonialInvitesManager } from "./managers/TestimonialInvitesManager";
 
+console.log("AdminPanel rendered");
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const AdminPanel = ({ isVisible, onClose }: AdminPanelProps) => {

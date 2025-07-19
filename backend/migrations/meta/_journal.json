@@ -29,6 +29,13 @@
       "when": 1752870071458,
       "tag": "0003_deep_professor_monster",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1752874077492,
+      "tag": "0004_good_yellow_claw",
+      "breakpoints": true
     }
   ]
 }
