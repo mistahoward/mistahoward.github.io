@@ -7,7 +7,7 @@ import { About } from "./components/about/About";
 import { Projects } from "./components/Projects";
 import { PetDex } from "./components/PetDex";
 import { Blogs } from "./components/Blogs";
-import Router from "preact-router";
+import Router, { Route } from "preact-router";
 import { TestimonialSubmitPage } from "./components/about/TestimonialSubmitPage";
 import BlogPostPage from "./components/BlogPostPage";
 
@@ -93,43 +93,43 @@ export const App = () => {
 			<SectionScroller />
 
 			<Router>
-				<main path="/">
+				<div path="/">
 					<Home />
 					<About />
 					<Projects />
 					<PetDex />
 					<Blogs />
-				</main>
-				<main path="/about">
+				</div>
+				<div path="/about">
 					<Home />
 					<About />
 					<Projects />
 					<PetDex />
 					<Blogs />
-				</main>
-				<main path="/projects">
+				</div>
+				<div path="/projects">
 					<Home />
 					<About />
 					<Projects />
 					<PetDex />
 					<Blogs />
-				</main>
-				<main path="/pet-dex">
+				</div>
+				<div path="/pet-dex">
 					<Home />
 					<About />
 					<Projects />
 					<PetDex />
 					<Blogs />
-				</main>
-				<main path="/blogs">
+				</div>
+				<div path="/blogs">
 					<Home />
 					<About />
 					<Projects />
 					<PetDex />
 					<Blogs />
-				</main>
-				<BlogPostPage />
-				<TestimonialSubmitPage />
+				</div>
+				<Route path="/blog/:slug" component={BlogPostPage} />
+				<Route path="/testimonials/submit" component={TestimonialSubmitPage} />
 			</Router>
 
 			<AdminPanel isVisible={showAdmin} onClose={() => setShowAdmin(false)} />
