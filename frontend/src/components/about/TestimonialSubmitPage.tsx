@@ -1,4 +1,5 @@
 import { useState, useEffect } from "preact/hooks";
+import { API_URL } from "../../utils/api";
 
 function getTokenFromUrl() {
 	const params = new URLSearchParams(window.location.search);
@@ -32,7 +33,7 @@ export const TestimonialSubmitPage = () => {
 			return;
 		}
 		// Validate token with new public endpoint
-		fetch(`/api/testimonials/validate-token?token=${encodeURIComponent(t)}`)
+		fetch(`${API_URL}/api/testimonials/validate-token?token=${encodeURIComponent(t)}`)
 			.then(res => res.json())
 			.then(data => {
 				console.log("Token validation response:", data);
@@ -58,7 +59,7 @@ export const TestimonialSubmitPage = () => {
 		setSuccess("");
 		setError("");
 		try {
-			const res = await fetch("/api/testimonials", {
+			const res = await fetch(`${API_URL}/api/testimonials`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({

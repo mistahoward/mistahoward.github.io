@@ -4,6 +4,7 @@ import { YakShaverSpinner } from "./shared/YakShaverSpinner";
 import { format } from "date-fns";
 import { route } from "preact-router";
 import { markdownToHtml } from "../utils/markdown";
+import { API_URL } from "../utils/api";
 
 const BlogPostPage = (props: { slug?: string }) => {
 	const { slug } = props;
@@ -19,7 +20,7 @@ const BlogPostPage = (props: { slug?: string }) => {
 			return;
 		}
 		setLoading(true);
-		fetch(`/api/blog/${encodeURIComponent(slug)}`)
+		fetch(`${API_URL}/api/blog/${encodeURIComponent(slug)}`)
 			.then(res => (res.ok ? res.json() : Promise.reject(res)))
 			.then(data => {
 				console.log("Fetched blog post data:", data);

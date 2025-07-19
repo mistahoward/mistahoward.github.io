@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, useMemo } from "preact/hooks";
 import { BlogPost } from "../types/blog-editor.types";
 import { YakShaverSpinner } from "./shared/YakShaverSpinner";
 import { format } from "date-fns";
+import { API_URL } from "../utils/api";
 
 export const Blogs = () => {
 	const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -16,7 +17,7 @@ export const Blogs = () => {
 
 	useEffect(() => {
 		setLoading(true);
-		fetch("/api/blog")
+		fetch(`${API_URL}/api/blog`)
 			.then(res => res.json())
 			.then(data => {
 				const postsData = Array.isArray(data) ? data : data.data || [];
@@ -28,7 +29,7 @@ export const Blogs = () => {
 				setLoading(false);
 			});
 		// Fetch all tags for filter using public endpoint
-		fetch("/api/tags")
+		fetch(`${API_URL}/api/tags`)
 			.then(res => res.json())
 			.then(data => {
 				const tags = Array.isArray(data) ? data : data.data || [];
