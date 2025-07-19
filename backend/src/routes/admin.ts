@@ -19,7 +19,6 @@ import {
 	errorResponse,
 	successResponse,
 } from '../middleware/auth';
-import { and } from 'drizzle-orm';
 
 interface Env {
 	DB: D1Database;
@@ -247,6 +246,42 @@ router.get('/api/admin/tags', async (request: Request, env: Env) => {
 		return successResponse(allTags, env, 200);
 	} catch (error) {
 		return errorResponse('Failed to fetch tags', env, 500);
+	}
+});
+
+// DELETE /api/admin/tags/:id - Delete tag
+router.delete('/api/admin/tags/:id', async (request: Request, env: Env, ctx: any) => {
+	const authCheck = requireAdmin(request, env);
+	if (authCheck) return authCheck;
+
+	try {
+		const url = new URL(request.url);
+		const pathParts = url.pathname.split('/');
+		const idFromPath = pathParts[pathParts.length - 1];
+		const id = parseInt(ctx.params?.id || idFromPath, 10);
+
+		if (Number.isNaN(id)) {
+			console.error('[ADMIN] Invalid tag ID provided:', ctx.params?.id);
+			return errorResponse('Invalid tag ID', env, 400);
+		}
+
+		const db = drizzle(env.DB);
+
+		// First delete all blog post associations
+		await db.delete(blogPostTags).where(eq(blogPostTags.tagId, id));
+
+		// Then delete the tag itself
+		const result = await db.delete(tags).where(eq(tags.id, id));
+
+		if (result.meta.changes === 0) {
+			console.warn(`[ADMIN] No tag found with ID: ${id}`);
+			return errorResponse('Tag not found', env, 404);
+		}
+
+		return successResponse({ message: 'Tag deleted' }, env, 200);
+	} catch (error) {
+		console.error('[ADMIN] Tag delete error:', error);
+		return errorResponse('Failed to delete tag', env, 500);
 	}
 });
 
@@ -604,9 +639,6 @@ router.delete('/api/admin/projects/:id', async (request: Request, env: Env, ctx:
 		}
 
 		const db = drizzle(env.DB);
-
-		// First delete any testimonials that reference this project
-		await db.delete(testimonials).where(eq(testimonials.projectId, id));
 
 		// Then delete the project
 		const result = await db.delete(projects).where(eq(projects.id, id));

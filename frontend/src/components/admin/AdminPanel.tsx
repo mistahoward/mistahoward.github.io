@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "preact/hooks";
 import { BlogManager } from "./managers/BlogManager";
 import { PetManager } from "./managers/PetManager";
 import { DataManager } from "./managers/DataManager";
+import { TagManager } from "./managers/TagManager";
 import { AdminPanelProps } from "../../types/admin-panel.types";
 import { Section } from "../../types/admin-panel.types";
 import { TestimonialInvitesManager } from "./managers/TestimonialInvitesManager";
@@ -167,6 +168,12 @@ export const AdminPanel = ({ isVisible, onClose }: AdminPanelProps) => {
 										>
 											Testimonial Invites
 										</button>
+										<button
+											className={`nav-link ${activeSection === "tags" ? "active" : ""}`}
+											onClick={() => setActiveSection("tags")}
+										>
+											Tags
+										</button>
 										<div className="mt-auto p-3">
 											<button onClick={handleLogout} className="btn btn-outline-danger w-100">
 												Logout
@@ -175,12 +182,13 @@ export const AdminPanel = ({ isVisible, onClose }: AdminPanelProps) => {
 									</div>
 								</div>
 								<div className="col-md-9 p-3 admin-modal-main">
-									{activeSection === "blog" && <BlogManager lastFocusTime={lastFocusTime} />}
+									{activeSection === "blog" && <BlogManager />}
 									{activeSection === "pets" && <PetManager />}
 									{["projects", "skills", "experience", "testimonials", "certifications"].includes(activeSection) && (
 										<DataManager lastFocusTime={lastFocusTime} initialTab={activeSection as any} />
 									)}
 									{activeSection === "testimonial-invites" && <TestimonialInvitesManager />}
+									{activeSection === "tags" && <TagManager />}
 								</div>
 							</div>
 						)}

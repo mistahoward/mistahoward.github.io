@@ -3,7 +3,16 @@ export interface AdminPanelProps {
 	onClose: () => void;
 }
 
-export type Section = "blog" | "pets" | "projects" | "skills" | "experience" | "testimonials" | "certifications" | "testimonial-invites";
+export type Section =
+	| "blog"
+	| "pets"
+	| "projects"
+	| "skills"
+	| "experience"
+	| "testimonials"
+	| "certifications"
+	| "testimonial-invites"
+	| "tags";
 
 export interface ManagerLayoutProps {
 	title: string;
