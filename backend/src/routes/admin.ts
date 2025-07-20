@@ -1,6 +1,8 @@
 import { Router } from 'itty-router';
 import { drizzle } from 'drizzle-orm/d1';
-import { eq, desc, inArray, and, sum } from 'drizzle-orm';
+import {
+	eq, desc, inArray, and, sum,
+} from 'drizzle-orm';
 import {
 	blogPosts,
 	pets,
@@ -211,7 +213,7 @@ router.get('/api/admin/blog', async (request: Request, env: Env) => {
 		const posts = await db.select().from(blogPosts).orderBy(desc(blogPosts.createdAt));
 
 		// Fetch tags for all posts
-		const postIds = posts.map(p => p.id);
+		const postIds = posts.map((p) => p.id);
 		let tagsByPostId: Record<number, string[]> = {};
 		if (postIds.length > 0) {
 			const tagRows = await db
@@ -226,7 +228,7 @@ router.get('/api/admin/blog', async (request: Request, env: Env) => {
 			}, {} as Record<number, string[]>);
 		}
 
-		const postsWithTags = posts.map(post => ({
+		const postsWithTags = posts.map((post) => ({
 			...post,
 			tags: tagsByPostId[post.id] || [],
 		}));
@@ -1336,7 +1338,7 @@ router.get('/api/admin/comments', async (request: Request, env: Env) => {
 			.offset(offset);
 
 		// Get vote counts for all comments
-		const commentIds = commentsWithUsers.map(comment => comment.id);
+		const commentIds = commentsWithUsers.map((comment) => comment.id);
 		const voteCounts = commentIds.length > 0 ? await db
 			.select({
 				commentId: votes.commentId,
@@ -1347,8 +1349,8 @@ router.get('/api/admin/comments', async (request: Request, env: Env) => {
 			.groupBy(votes.commentId) : [];
 
 		// Combine comments with vote counts
-		const commentsWithVotes = commentsWithUsers.map(comment => {
-			const voteData = voteCounts.find(v => v.commentId === comment.id);
+		const commentsWithVotes = commentsWithUsers.map((comment) => {
+			const voteData = voteCounts.find((v) => v.commentId === comment.id);
 			return {
 				...comment,
 				voteCount: voteData?.voteCount || 0,
@@ -1407,7 +1409,7 @@ router.get('/api/admin/comments/blog-slugs', async (request: Request, env: Env) 
 			.where(eq(comments.isDeleted, false))
 			.orderBy(comments.blogSlug);
 
-		return successResponse(blogSlugs.map(slug => slug.blogSlug), env);
+		return successResponse(blogSlugs.map((slug) => slug.blogSlug), env);
 	} catch (error) {
 		console.error('Error fetching blog slugs:', error);
 		return errorResponse('Failed to fetch blog slugs', env, 500);

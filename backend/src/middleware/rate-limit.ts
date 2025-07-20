@@ -19,55 +19,53 @@ const rateLimitStore: RateLimitStore = {};
 // Clean up expired entries periodically
 const cleanupExpiredEntries = () => {
 	const now = Date.now();
-	Object.keys(rateLimitStore).forEach(key => {
+	Object.keys(rateLimitStore).forEach((key) => {
 		if (rateLimitStore[key].resetTime < now) {
 			delete rateLimitStore[key];
 		}
 	});
 };
 
-export const createRateLimit = (config: RateLimitConfig) => {
-	return async (request: Request, env: any): Promise<Response | null> => {
-		// Clean up expired entries periodically
-		cleanupExpiredEntries();
+export const createRateLimit = (config: RateLimitConfig) => async (request: Request, env: any): Promise<Response | null> => {
+	// Clean up expired entries periodically
+	cleanupExpiredEntries();
 
-		const key = config.keyGenerator
-			? config.keyGenerator(request, env)
-			: request.headers.get('cf-connecting-ip') || 'unknown';
+	const key = config.keyGenerator
+		? config.keyGenerator(request, env)
+		: request.headers.get('cf-connecting-ip') || 'unknown';
 
-		const now = Date.now();
+	const now = Date.now();
 
-		// Initialize or get existing rate limit data
-		if (!rateLimitStore[key] || rateLimitStore[key].resetTime < now) {
-			rateLimitStore[key] = {
-				count: 0,
-				resetTime: now + config.windowMs,
-			};
-		}
-
-		// Increment request count
-		rateLimitStore[key].count++;
-
-		// Check if rate limit exceeded
-		if (rateLimitStore[key].count > config.maxRequests) {
-			const retryAfter = Math.ceil((rateLimitStore[key].resetTime - now) / 1000);
-			return errorResponse(
-				`Rate limit exceeded. Please try again in ${retryAfter} seconds.`,
-				env,
-				429
-			);
-		}
-
-		// Add rate limit headers to response
-		const remaining = Math.max(0, config.maxRequests - rateLimitStore[key].count);
-		(request as any).rateLimitHeaders = {
-			'X-RateLimit-Limit': config.maxRequests.toString(),
-			'X-RateLimit-Remaining': remaining.toString(),
-			'X-RateLimit-Reset': rateLimitStore[key].resetTime.toString(),
+	// Initialize or get existing rate limit data
+	if (!rateLimitStore[key] || rateLimitStore[key].resetTime < now) {
+		rateLimitStore[key] = {
+			count: 0,
+			resetTime: now + config.windowMs,
 		};
+	}
 
-		return null; // Continue to next middleware/handler
+	// Increment request count
+	rateLimitStore[key].count++;
+
+	// Check if rate limit exceeded
+	if (rateLimitStore[key].count > config.maxRequests) {
+		const retryAfter = Math.ceil((rateLimitStore[key].resetTime - now) / 1000);
+		return errorResponse(
+			`Rate limit exceeded. Please try again in ${retryAfter} seconds.`,
+			env,
+			429,
+		);
+	}
+
+	// Add rate limit headers to response
+	const remaining = Math.max(0, config.maxRequests - rateLimitStore[key].count);
+	(request as any).rateLimitHeaders = {
+		'X-RateLimit-Limit': config.maxRequests.toString(),
+		'X-RateLimit-Remaining': remaining.toString(),
+		'X-RateLimit-Reset': rateLimitStore[key].resetTime.toString(),
 	};
+
+	return null; // Continue to next middleware/handler
 };
 
 // Predefined rate limit configurations
@@ -105,8 +103,6 @@ export const rateLimits = {
 	general: createRateLimit({
 		windowMs: 60 * 1000, // 1 minute
 		maxRequests: 100,
-		keyGenerator: (request: Request, env: any) => {
-			return `general_${request.headers.get('cf-connecting-ip') || 'unknown'}`;
-		},
+		keyGenerator: (request: Request, env: any) => `general_${request.headers.get('cf-connecting-ip') || 'unknown'}`,
 	}),
-}; 
+};

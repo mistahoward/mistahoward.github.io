@@ -1,12 +1,14 @@
 import { Router } from 'itty-router';
 import { drizzle } from 'drizzle-orm/d1';
-import { eq, and, desc, inArray, sum } from 'drizzle-orm';
+import {
+	eq, and, desc, inArray, sum,
+} from 'drizzle-orm';
+import { v4 as uuidv4 } from 'uuid';
 import { users, comments, votes } from '../schema';
 import { requireAuth, errorResponse, successResponse } from '../middleware/auth';
 import { rateLimits } from '../middleware/rate-limit';
 import { contentValidators } from '../middleware/content-validation';
 import { perspectiveValidators } from '../middleware/perspective-api';
-import { v4 as uuidv4 } from 'uuid';
 import { initializeFirebaseAdmin } from '../utils/firebase-admin';
 
 interface Env {
@@ -60,8 +62,8 @@ router.get('/api/comments/:blogSlug', async (request: Request, env: Env, ctx: an
 			.where(
 				and(
 					eq(comments.blogSlug, blogSlug),
-					eq(comments.isDeleted, false)
-				)
+					eq(comments.isDeleted, false),
+				),
 			)
 			.orderBy(desc(comments.createdAt));
 
@@ -73,7 +75,7 @@ router.get('/api/comments/:blogSlug', async (request: Request, env: Env, ctx: an
 		const paginatedTopLevelComments = topLevelComments.slice(offset, offset + limit);
 
 		// Get vote counts for all comments (including replies)
-		const allCommentIds = allCommentsWithUsers.map(comment => comment.id);
+		const allCommentIds = allCommentsWithUsers.map((comment) => comment.id);
 		const voteCounts = allCommentIds.length > 0 ? await db
 			.select({
 				commentId: votes.commentId,
@@ -93,15 +95,15 @@ router.get('/api/comments/:blogSlug', async (request: Request, env: Env, ctx: an
 			.from(votes)
 			.where(and(
 				inArray(votes.commentId, allCommentIds),
-				eq(votes.userId, userId)
+				eq(votes.userId, userId),
 			)) : [];
 
 		console.log('Found user votes:', userVotes);
 
 		// Combine all comments with vote counts and user's current vote
-		const allCommentsWithVotes = allCommentsWithUsers.map(comment => {
-			const voteData = voteCounts.find(v => v.commentId === comment.id);
-			const userVote = userVotes.find(v => v.commentId === comment.id);
+		const allCommentsWithVotes = allCommentsWithUsers.map((comment) => {
+			const voteData = voteCounts.find((v) => v.commentId === comment.id);
+			const userVote = userVotes.find((v) => v.commentId === comment.id);
 			return {
 				...comment,
 				voteCount: voteData?.voteCount || 0,
@@ -111,10 +113,10 @@ router.get('/api/comments/:blogSlug', async (request: Request, env: Env, ctx: an
 
 		// Build nested structure
 		const buildNestedComments = (parentId: string | null = null): any[] => {
-			const levelComments = allCommentsWithVotes.filter(comment => comment.parentId === parentId);
-			return levelComments.map(comment => ({
+			const levelComments = allCommentsWithVotes.filter((comment) => comment.parentId === parentId);
+			return levelComments.map((comment) => ({
 				...comment,
-				replies: buildNestedComments(comment.id)
+				replies: buildNestedComments(comment.id),
 			}));
 		};
 
@@ -150,14 +152,16 @@ router.post('/api/comments', async (request: Request, env: Env) => {
 		const perspectiveValidationResult = await perspectiveValidators.commentCreation(request, env);
 		if (perspectiveValidationResult) return perspectiveValidationResult;
 
-		const user = (request as any).user;
+		const { user } = (request as any);
 		const body = (await request.json()) as {
 			blogSlug: string;
 			content: string;
 			parentId?: string;
 			githubUsername?: string;
 		};
-		const { blogSlug, content, parentId, githubUsername: providedGithubUsername } = body;
+		const {
+			blogSlug, content, parentId, githubUsername: providedGithubUsername,
+		} = body;
 
 		if (!blogSlug) {
 			return errorResponse('Blog slug is required', env, 400);
@@ -183,7 +187,7 @@ router.post('/api/comments', async (request: Request, env: Env) => {
 			else if (user.photoURL && user.photoURL.includes('githubusercontent.com')) {
 				const urlParts = user.photoURL.split('/');
 				// Look for the 'u' path which contains the username
-				const uIndex = urlParts.findIndex(part => part === 'u');
+				const uIndex = urlParts.findIndex((part) => part === 'u');
 				if (uIndex > 0 && uIndex + 1 < urlParts.length) {
 					const potentialUsername = urlParts[uIndex + 1];
 					// Remove query parameters if present
@@ -192,7 +196,7 @@ router.post('/api/comments', async (request: Request, env: Env) => {
 			}
 			// Try to get from provider data if available
 			else if (user.providerData && user.providerData.length > 0) {
-				const githubProvider = user.providerData.find(provider => provider.providerId === 'github.com');
+				const githubProvider = user.providerData.find((provider) => provider.providerId === 'github.com');
 				if (githubProvider && githubProvider.uid) {
 					githubUsername = githubProvider.uid;
 				}
@@ -207,11 +211,10 @@ router.post('/api/comments', async (request: Request, env: Env) => {
 		}
 
 		// Determine user role - check multiple identifiers for admin
-		const isAdmin =
-			githubUsername === 'mistahoward' ||
-			user.email?.includes('mistahoward') ||
-			user.displayName?.toLowerCase().includes('mistahoward') ||
-			user.uid === '6iB3ZSjic5aBSklmUsrzkk9Prkl2'; // Your specific Firebase UID
+		const isAdmin =			githubUsername === 'mistahoward'
+			|| user.email?.includes('mistahoward')
+			|| user.displayName?.toLowerCase().includes('mistahoward')
+			|| user.uid === '6iB3ZSjic5aBSklmUsrzkk9Prkl2'; // Your specific Firebase UID
 
 		const userRole = isAdmin ? 'admin' : 'user';
 
@@ -224,7 +227,7 @@ router.post('/api/comments', async (request: Request, env: Env) => {
 			role: userRole,
 			isAdmin,
 			providerData: user.providerData,
-			additionalUserInfo: user.additionalUserInfo
+			additionalUserInfo: user.additionalUserInfo,
 		});
 
 		console.log('Raw user object from request:', user);
@@ -308,7 +311,7 @@ router.put('/api/comments/:id', async (request: Request, env: Env, ctx: any) => 
 		const perspectiveValidationResult = await perspectiveValidators.commentUpdate(request, env);
 		if (perspectiveValidationResult) return perspectiveValidationResult;
 
-		const user = (request as any).user;
+		const { user } = (request as any);
 		let id = ctx && ctx.params ? ctx.params.id : undefined;
 		if (!id) {
 			const url = new URL(request.url);
@@ -368,7 +371,7 @@ router.delete('/api/comments/:id', async (request: Request, env: Env, ctx: any) 
 		const authResult = await requireAuth(request);
 		if (authResult) return authResult;
 
-		const user = (request as any).user;
+		const { user } = (request as any);
 		let id = ctx && ctx.params ? ctx.params.id : undefined;
 		if (!id) {
 			const url = new URL(request.url);
@@ -421,7 +424,7 @@ router.post('/api/comments/:id/vote', async (request: Request, env: Env, ctx: an
 		const authResult = await requireAuth(request);
 		if (authResult) return authResult;
 
-		const user = (request as any).user;
+		const { user } = (request as any);
 		let id = ctx && ctx.params ? ctx.params.id : undefined;
 		if (!id) {
 			const url = new URL(request.url);
@@ -501,7 +504,7 @@ router.delete('/api/comments/:id/vote', async (request: Request, env: Env, ctx: 
 		const authResult = await requireAuth(request);
 		if (authResult) return authResult;
 
-		const user = (request as any).user;
+		const { user } = (request as any);
 		let id = ctx && ctx.params ? ctx.params.id : undefined;
 		if (!id) {
 			const url = new URL(request.url);
@@ -524,4 +527,4 @@ router.delete('/api/comments/:id/vote', async (request: Request, env: Env, ctx: 
 	}
 });
 
-export default router; 
+export default router;

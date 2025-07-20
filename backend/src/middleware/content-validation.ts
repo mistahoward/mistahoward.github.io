@@ -65,31 +65,27 @@ export const validateContent = (content: string, config: Partial<ContentValidati
 		}
 	}
 
-
-
 	return { valid: true };
 };
 
-export const createContentValidator = (config: Partial<ContentValidationConfig> = {}) => {
-	return async (request: Request, env: any): Promise<Response | null> => {
-		try {
-			const body = await request.json();
-			const content = body.content;
+export const createContentValidator = (config: Partial<ContentValidationConfig> = {}) => async (request: Request, env: any): Promise<Response | null> => {
+	try {
+		const body = await request.json();
+		const { content } = body;
 
-			if (!content || typeof content !== 'string') {
-				return errorResponse('Content is required and must be a string', env, 400);
-			}
-
-			const validation = validateContent(content, config);
-			if (!validation.valid) {
-				return errorResponse(validation.error, env, 400);
-			}
-
-			return null; // Continue to next middleware/handler
-		} catch (error) {
-			return errorResponse('Invalid request body', env, 400);
+		if (!content || typeof content !== 'string') {
+			return errorResponse('Content is required and must be a string', env, 400);
 		}
-	};
+
+		const validation = validateContent(content, config);
+		if (!validation.valid) {
+			return errorResponse(validation.error, env, 400);
+		}
+
+		return null; // Continue to next middleware/handler
+	} catch (error) {
+		return errorResponse('Invalid request body', env, 400);
+	}
 };
 
 // Predefined content validation configurations
@@ -109,4 +105,4 @@ export const contentValidators = {
 		allowUrls: true,
 		maxUrls: 3,
 	}),
-}; 
+};

@@ -47,7 +47,7 @@ const DEFAULT_CONFIG: PerspectiveConfig = {
 
 export const analyzeContentWithPerspective = async (
 	content: string,
-	config: Partial<PerspectiveConfig> = {}
+	config: Partial<PerspectiveConfig> = {},
 ): Promise<{ valid: boolean; error?: string; scores?: any }> => {
 	const finalConfig = { ...DEFAULT_CONFIG, ...config };
 
@@ -74,7 +74,7 @@ export const analyzeContentWithPerspective = async (
 						return acc;
 					}, {} as Record<string, {}>),
 				}),
-			}
+			},
 		);
 
 		if (!response.ok) {
@@ -125,11 +125,11 @@ export const analyzeContentWithPerspective = async (
 			return {
 				valid: false,
 				error: `Comment contains ${violations.join(', ')} and has been rejected.`,
-				scores: scores,
+				scores,
 			};
 		}
 
-		return { valid: true, scores: scores };
+		return { valid: true, scores };
 	} catch (error) {
 		console.error('Error calling Perspective API:', error);
 		// If API fails, we'll allow the content but log the error
@@ -137,31 +137,29 @@ export const analyzeContentWithPerspective = async (
 	}
 };
 
-export const createPerspectiveValidator = (config: Partial<PerspectiveConfig> = {}) => {
-	return async (request: Request, env: any): Promise<Response | null> => {
-		try {
-			const body = await request.json();
-			const content = body.content;
+export const createPerspectiveValidator = (config: Partial<PerspectiveConfig> = {}) => async (request: Request, env: any): Promise<Response | null> => {
+	try {
+		const body = await request.json();
+		const { content } = body;
 
-			if (!content || typeof content !== 'string') {
-				return errorResponse('Content is required and must be a string', env, 400);
-			}
-
-			// Get API key from environment
-			const apiKey = env.PERSPECTIVE_API_KEY || config.apiKey;
-			const perspectiveConfig = { ...config, apiKey };
-
-			const analysis = await analyzeContentWithPerspective(content, perspectiveConfig);
-			if (!analysis.valid) {
-				return errorResponse(analysis.error!, env, 400);
-			}
-
-			return null; // Continue to next middleware/handler
-		} catch (error) {
-			console.error('Error in Perspective validator:', error);
-			return errorResponse('Invalid request body', env, 400);
+		if (!content || typeof content !== 'string') {
+			return errorResponse('Content is required and must be a string', env, 400);
 		}
-	};
+
+		// Get API key from environment
+		const apiKey = env.PERSPECTIVE_API_KEY || config.apiKey;
+		const perspectiveConfig = { ...config, apiKey };
+
+		const analysis = await analyzeContentWithPerspective(content, perspectiveConfig);
+		if (!analysis.valid) {
+			return errorResponse(analysis.error!, env, 400);
+		}
+
+		return null; // Continue to next middleware/handler
+	} catch (error) {
+		console.error('Error in Perspective validator:', error);
+		return errorResponse('Invalid request body', env, 400);
+	}
 };
 
 // Predefined Perspective API configurations
@@ -195,4 +193,4 @@ export const perspectiveValidators = {
 		},
 		enabledAttributes: ['TOXICITY', 'SEVERE_TOXICITY', 'IDENTITY_ATTACK', 'INSULT', 'PROFANITY', 'THREAT', 'SPAM'],
 	}),
-}; 
+};

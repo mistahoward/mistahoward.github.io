@@ -42,9 +42,9 @@ router.get('/api/blog', async (request: Request, env: Env) => {
 
 				return {
 					...post,
-					tags: postTags.map(t => t.name)
+					tags: postTags.map((t) => t.name),
 				};
-			})
+			}),
 		);
 
 		return successResponse(postsWithTags, env, 200);
@@ -83,7 +83,7 @@ router.get('/api/blog/:slug', async (request: Request, env: Env, ctx: any) => {
 
 		const postWithTags = {
 			...post[0],
-			tags: postTags.map(t => t.name)
+			tags: postTags.map((t) => t.name),
 		};
 
 		return successResponse(postWithTags, env, 200);
@@ -148,7 +148,7 @@ router.post('/api/testimonials', async (request: Request, env: Env) => {
 			content,
 			rating,
 			relationship,
-			token
+			token,
 		} = body;
 
 		if (!clientName || !content || !relationship || !token) return errorResponse('Missing required fields', env, 400);
@@ -217,17 +217,17 @@ router.get('/api/tags', async (request: Request, env: Env) => {
 router.get('/api/testimonials/validate-token', async (request: Request, env: Env) => {
 	try {
 		const url = new URL(request.url);
-		const token = url.searchParams.get("token");
-		if (!token) return errorResponse("Token is required", env, 400);
+		const token = url.searchParams.get('token');
+		if (!token) return errorResponse('Token is required', env, 400);
 		const db = drizzle(env.DB);
 		const inviteRows = await db.select().from(testimonialInvites).where(eq(testimonialInvites.token, token));
 		const invite = inviteRows[0];
-		if (!invite) return successResponse({ valid: false, reason: "Invalid or expired invite token." }, env, 200);
-		if (invite.used) return successResponse({ valid: false, reason: "This invite link has already been used." }, env, 200);
-		if (invite.expiresAt && new Date(invite.expiresAt) < new Date()) return successResponse({ valid: false, reason: "This invite link has expired." }, env, 200);
+		if (!invite) return successResponse({ valid: false, reason: 'Invalid or expired invite token.' }, env, 200);
+		if (invite.used) return successResponse({ valid: false, reason: 'This invite link has already been used.' }, env, 200);
+		if (invite.expiresAt && new Date(invite.expiresAt) < new Date()) return successResponse({ valid: false, reason: 'This invite link has expired.' }, env, 200);
 		return successResponse({ valid: true }, env, 200);
 	} catch (error) {
-		return errorResponse("Failed to validate invite token", env, 500);
+		return errorResponse('Failed to validate invite token', env, 500);
 	}
 });
 
