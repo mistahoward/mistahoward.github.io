@@ -4,6 +4,35 @@
 	user-select: none;
 }
 
+// Allow text selection for content areas
+.blog-post-content,
+.blog-post-header,
+.comment-content,
+.comment-content *,
+.blog-card .card-title,
+.blog-card .card-text,
+.blog-card .card-body,
+.blog-excerpt,
+.blog-post-body,
+.blog-post-body *,
+.comment-form textarea,
+.comment-form input,
+.markdown-editor textarea,
+.markdown-editor .preview,
+.form-control,
+.form-select,
+textarea,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="search"],
+input[type="url"],
+code,
+pre,
+pre * {
+	user-select: text;
+}
+
 html {
 	transition: color 0.3s ease, background-color 0.3s ease;
 

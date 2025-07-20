@@ -1,13 +1,14 @@
 import { Router } from 'itty-router';
 import publicRoutes from './routes/public';
 import adminRoutes from './routes/admin';
+import commentsRoutes from './routes/comments';
 import { getCorsHeaders } from './middleware/auth';
 
 // Define environment interface
 interface Env {
-  DB: D1Database;
-  ADMIN_SECRET?: string;
-  CORS_ORIGIN?: string;
+	DB: D1Database;
+	ADMIN_SECRET?: string;
+	CORS_ORIGIN?: string;
 }
 
 // Create main router
@@ -17,6 +18,12 @@ const router = Router();
 router.all('/api/admin/*', async (request: Request, env: Env, ctx: ExecutionContext) => {
 	console.log('[MAIN] Routing to admin router');
 	return adminRoutes.handle(request, env, ctx);
+});
+
+// Mount comments routes
+router.all('/api/comments/*', async (request: Request, env: Env, ctx: ExecutionContext) => {
+	console.log('[MAIN] Routing to comments router');
+	return commentsRoutes.handle(request, env, ctx);
 });
 
 // Mount public routes

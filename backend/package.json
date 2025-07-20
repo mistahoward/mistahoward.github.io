@@ -9,7 +9,7 @@
     "deploy": "wrangler deploy src/index.ts",
     "build": "tsc",
     "db:generate": "drizzle-kit generate:sqlite",
-    "db:migrate": "wrangler d1 migrations apply portfolio-db", 
+    "db:migrate": "wrangler d1 migrations apply portfolio-db",
     "db:push": "wrangler d1 execute portfolio-db --local --file=./migrations/schema.sql",
     "db:studio": "drizzle-kit studio",
     "db:drop": "drizzle-kit drop",
@@ -32,7 +32,10 @@
     "wrangler": "^4.24.3"
   },
   "dependencies": {
+    "@types/uuid": "^10.0.0",
     "dotenv": "^17.2.0",
-    "drizzle-orm": "^0.29.0"
+    "drizzle-orm": "^0.29.0",
+    "firebase-admin": "^13.4.0",
+    "uuid": "^11.1.0"
   }
 }

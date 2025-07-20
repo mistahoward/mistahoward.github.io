@@ -151,6 +151,7 @@ export const users = sqliteTable('Users', {
 	displayName: text('display_name').notNull(),
 	photoUrl: text('photo_url'),
 	githubUsername: text('github_username'),
+	role: text('role').default('user'), // 'admin', 'author', 'user'
 	createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 });

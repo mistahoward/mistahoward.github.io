@@ -20,6 +20,7 @@ CREATE TABLE users (
   display_name TEXT NOT NULL,    -- User's display name
   photo_url TEXT,               -- Profile picture URL
   github_username TEXT,         -- GitHub username
+  role TEXT DEFAULT 'user',     -- 'admin', 'author', 'user'
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -72,6 +73,14 @@ CREATE TABLE votes (
 - `POST /api/comments/:id/vote` - Vote on comment (upvote/downvote)
 - `DELETE /api/comments/:id/vote` - Remove vote
 
+#### Admin Comment Endpoints
+- `GET /api/admin/comments` - Get all comments (with filtering/pagination)
+- `DELETE /api/admin/comments/:id` - Admin delete comment
+- `PUT /api/admin/comments/:id/status` - Update comment status (approved/flagged/deleted)
+- `POST /api/admin/comments/bulk-action` - Bulk moderation actions
+- `GET /api/admin/users/:id/comments` - Get all comments by user
+- `PUT /api/admin/users/:id/ban` - Ban/unban user from commenting
+
 ### 4. Frontend Components
 
 #### Authentication Components
@@ -86,6 +95,14 @@ CREATE TABLE votes (
 - `CommentItem` - Individual comment display
 - `CommentActions` - Edit, delete, reply, vote buttons
 - `ReplyForm` - Form for nested replies
+- `UserBadge` - Display user role badges (Admin, Author, User)
+
+#### Admin Comment Components
+- `CommentManager` - Admin panel for comment moderation
+- `CommentTable` - Data table with filtering and bulk actions
+- `CommentModerationModal` - Modal for individual comment moderation
+- `UserCommentHistory` - View all comments by a specific user
+- `BulkActionToolbar` - Toolbar for bulk moderation actions
 
 ### 5. Data Flow
 
@@ -147,6 +164,11 @@ CREATE TABLE votes (
 #### Moderation Features
 - Report inappropriate comments
 - Admin moderation tools
+  - View all comments across all blog posts
+  - Delete/archive comments
+  - Ban users from commenting
+  - Bulk moderation actions
+  - Comment approval workflow
 - Spam detection
 - Content filtering
 
@@ -163,6 +185,7 @@ CREATE TABLE votes (
 2. Nested replies
 3. Markdown support
 4. Edit/delete functionality
+5. Admin moderation panel
 
 #### Phase 3: Polish & Performance
 1. Pagination and optimization
@@ -204,4 +227,7 @@ CREATE TABLE votes (
 - Should we implement comment moderation features?
 - What rate limiting should we apply?
 - Which HTML sanitization library should we use (DOMPurify, sanitize-html, etc.)?
-- What markdown features should be allowed (links, images, code blocks, etc.)? 
+- What markdown features should be allowed (links, images, code blocks, etc.)?
+- What admin moderation features are most important for your use case?
+- Should we implement comment approval workflow or allow immediate posting?
+- How should we handle user bans and comment history? 

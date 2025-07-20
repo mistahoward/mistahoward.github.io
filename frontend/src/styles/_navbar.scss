@@ -1,5 +1,13 @@
 @import "./variables";
 
+// Hide any Bootstrap dropdown icons that might appear
+.custom-navbar .dropdown-toggle::after,
+.custom-navbar .navbar-toggler-icon:not(.navbar-toggler-icon),
+.custom-navbar .dropdown-toggle,
+.custom-navbar .navbar-nav .dropdown-toggle::after {
+	display: none !important;
+}
+
 .custom-navbar {
 	display: flex;
 	align-items: center;

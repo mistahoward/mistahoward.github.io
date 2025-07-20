@@ -25,6 +25,40 @@ export const requireAdmin = (request: Request, env: Env) => {
 	return null; // Continue to next handler
 };
 
+// Firebase authentication middleware for comments
+export const requireAuth = async (request: Request) => {
+	const authHeader = request.headers.get('Authorization');
+	if (!authHeader || !authHeader.startsWith('Bearer ')) {
+		return new Response(JSON.stringify({ error: 'Unauthorized - No token provided' }), {
+			status: 401,
+			headers: { 'Content-Type': 'application/json' },
+		});
+	}
+
+	const token = authHeader.substring(7);
+
+	try {
+		const { verifyIdToken } = await import('../utils/firebase-admin');
+		const decodedToken = await verifyIdToken(token);
+
+		// Add user info to request for downstream handlers
+		(request as any).user = {
+			uid: decodedToken.uid,
+			email: decodedToken.email,
+			displayName: decodedToken.name,
+			photoURL: decodedToken.picture,
+		};
+
+		return null; // Continue to next handler
+	} catch (error) {
+		console.error('Authentication error:', error);
+		return new Response(JSON.stringify({ error: 'Unauthorized - Invalid token' }), {
+			status: 401,
+			headers: { 'Content-Type': 'application/json' },
+		});
+	}
+};
+
 // CORS headers helper
 export const getCorsHeaders = (env: Env) => ({
 	'Content-Type': 'application/json',

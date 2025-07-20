@@ -6,6 +6,7 @@ import { route } from "preact-router";
 import { markdownToHtml } from "../utils/markdown";
 import { API_URL } from "../utils/api";
 import { updatePageTitle } from "../utils/title";
+import { CommentsSection } from "./comments/CommentsSection";
 
 const BlogPostPage = (props: { slug?: string }) => {
 	const { slug } = props;
@@ -53,32 +54,52 @@ const BlogPostPage = (props: { slug?: string }) => {
 	console.log("BlogPostPage: Rendering post:", post.title);
 
 	return (
-		<section className="blog-post-page min-vh-100 d-flex align-items-start justify-content-center" style={{ paddingTop: "6rem" }}>
-			<div className="container">
-				<div className="row justify-content-center">
-					<div className="col-lg-8 position-relative">
-						<button
-							className="btn btn-primary position-absolute"
-							style={{ left: "-12rem", top: "0" }}
-							onClick={() => {
-								console.log("Back button clicked!");
-								route("/blogs");
-							}}
-						>
-							← Back to Blogs
-						</button>
-						<h1 className="display-4 fw-bold mb-2">{post.title}</h1>
-						<div className="d-flex align-items-center gap-3 text-secondary mb-4">
-							<span className="fw-medium">Author: Alex Howard</span>
-							<span>•</span>
-							<span>{post.publishedAt ? format(new Date(post.publishedAt), "PPP") : ""}</span>
+		<div className="blog-post-layout" style={{ paddingTop: "6rem", minHeight: "100vh" }}>
+			<div className="container-fluid">
+				<div className="row">
+					{/* Blog Post Content - Left Column */}
+					<div className="col-lg-7 col-xl-8">
+						<div className="blog-post-content-wrapper">
+							<article className="blog-post">
+								<header className="blog-post-header mb-4">
+									<div className="d-flex align-items-center justify-content-between mb-3">
+										<button
+											className="btn btn-link text-decoration-none p-0"
+											onClick={() => {
+												console.log("Back button clicked!");
+												route("/blogs");
+											}}
+											style={{ fontSize: "0.9rem", color: "#6c757d" }}
+										>
+											← Back to Blogs
+										</button>
+									</div>
+									<h1 className="display-4 fw-bold mb-3">{post.title}</h1>
+									<div className="d-flex align-items-center gap-3 text-secondary">
+										<span className="fw-medium">Author: Alex Howard</span>
+										<span>•</span>
+										<span>{post.publishedAt ? format(new Date(post.publishedAt), "PPP") : ""}</span>
+									</div>
+								</header>
+
+								{post.excerpt && (
+									<div className="blog-excerpt mb-4">
+										<p className="lead text-muted">{post.excerpt}</p>
+									</div>
+								)}
+
+								<div className="blog-post-body" dangerouslySetInnerHTML={{ __html: markdownToHtml(post.content) }} />
+							</article>
 						</div>
-						{post.excerpt && <p className="lead text-muted mb-4">{post.excerpt}</p>}
-						<div className="blog-post-content mb-4" dangerouslySetInnerHTML={{ __html: markdownToHtml(post.content) }} />
+					</div>
+
+					{/* Comments Section - Right Column */}
+					<div className="col-lg-5 col-xl-4">
+						<div className="comments-sidebar">{slug && <CommentsSection blogSlug={slug} />}</div>
 					</div>
 				</div>
 			</div>
-		</section>
+		</div>
 	);
 };
 

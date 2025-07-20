@@ -36,6 +36,20 @@
       "when": 1752874077492,
       "tag": "0004_good_yellow_claw",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1752982876737,
+      "tag": "0005_fresh_shard",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1752985153322,
+      "tag": "0006_odd_hiroim",
+      "breakpoints": true
     }
   ]
 }
