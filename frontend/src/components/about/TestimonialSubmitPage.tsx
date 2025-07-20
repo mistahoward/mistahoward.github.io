@@ -13,7 +13,6 @@ export const TestimonialSubmitPage = () => {
 		title: "",
 		company: "",
 		content: "",
-		rating: 5,
 		relationship: "",
 	});
 	const [submitting, setSubmitting] = useState(false);
@@ -67,14 +66,13 @@ export const TestimonialSubmitPage = () => {
 					clientTitle: form.title,
 					clientCompany: form.company,
 					content: form.content,
-					rating: form.rating,
 					relationship: form.relationship,
 					token,
 				}),
 			});
 			if (res.ok) {
 				setSuccess("Thank you! Your testimonial has been submitted for review.");
-				setForm({ name: "", title: "", company: "", content: "", rating: 5, relationship: "" });
+				setForm({ name: "", title: "", company: "", content: "", relationship: "" });
 				setTimeout(() => {
 					window.location.assign("/");
 				}, 2000);
@@ -174,18 +172,7 @@ export const TestimonialSubmitPage = () => {
 									required
 								/>
 							</div>
-							<div className="mb-3">
-								<label className="form-label">Rating (1-5)</label>
-								<input
-									type="number"
-									className="form-control"
-									name="rating"
-									value={form.rating}
-									min="1"
-									max="5"
-									onInput={handleChange}
-								/>
-							</div>
+
 							<button
 								type="submit"
 								className="btn btn-primary w-100"

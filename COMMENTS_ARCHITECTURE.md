@@ -192,6 +192,7 @@ CREATE TABLE votes (
 2. Real-time updates
 3. Moderation tools
 4. Advanced UX features
+5. Mobile Responsiveness
 
 ### 10. Technical Stack
 

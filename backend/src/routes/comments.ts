@@ -1,8 +1,11 @@
 import { Router } from 'itty-router';
 import { drizzle } from 'drizzle-orm/d1';
-import { eq, and, desc, isNull, inArray, sum } from 'drizzle-orm';
+import { eq, and, desc, inArray, sum } from 'drizzle-orm';
 import { users, comments, votes } from '../schema';
 import { requireAuth, errorResponse, successResponse } from '../middleware/auth';
+import { rateLimits } from '../middleware/rate-limit';
+import { contentValidators } from '../middleware/content-validation';
+import { perspectiveValidators } from '../middleware/perspective-api';
 import { v4 as uuidv4 } from 'uuid';
 import { initializeFirebaseAdmin } from '../utils/firebase-admin';
 
@@ -25,15 +28,15 @@ router.get('/api/comments/:blogSlug', async (request: Request, env: Env, ctx: an
 		}
 
 		const { searchParams } = new URL(request.url);
-		const page = parseInt(searchParams.get('page') || '1');
-		const limit = parseInt(searchParams.get('limit') || '10');
+		const page = parseInt(searchParams.get('page') || '1', 10);
+		const limit = parseInt(searchParams.get('limit') || '10', 10);
 		const offset = (page - 1) * limit;
 		const userId = searchParams.get('userId'); // We'll pass this from frontend
 
 		const db = drizzle(env.DB);
 
-		// Get comments with user info
-		const commentsWithUsers = await db
+		// Get ALL comments with user info (including replies)
+		const allCommentsWithUsers = await db
 			.select({
 				id: comments.id,
 				blogSlug: comments.blogSlug,
@@ -57,42 +60,46 @@ router.get('/api/comments/:blogSlug', async (request: Request, env: Env, ctx: an
 			.where(
 				and(
 					eq(comments.blogSlug, blogSlug),
-					eq(comments.isDeleted, false),
-					isNull(comments.parentId) // Only top-level comments
+					eq(comments.isDeleted, false)
 				)
 			)
-			.orderBy(desc(comments.createdAt))
-			.limit(limit)
-			.offset(offset);
+			.orderBy(desc(comments.createdAt));
 
-		// Get vote counts for all comments
-		const commentIds = commentsWithUsers.map(comment => comment.id);
-		const voteCounts = commentIds.length > 0 ? await db
+		// Separate top-level comments and replies
+		const topLevelComments = allCommentsWithUsers.filter((comment) => !comment.parentId);
+		const replies = allCommentsWithUsers.filter((comment) => comment.parentId);
+
+		// Apply pagination to top-level comments only
+		const paginatedTopLevelComments = topLevelComments.slice(offset, offset + limit);
+
+		// Get vote counts for all comments (including replies)
+		const allCommentIds = allCommentsWithUsers.map(comment => comment.id);
+		const voteCounts = allCommentIds.length > 0 ? await db
 			.select({
 				commentId: votes.commentId,
 				voteCount: sum(votes.voteType),
 			})
 			.from(votes)
-			.where(inArray(votes.commentId, commentIds))
+			.where(inArray(votes.commentId, allCommentIds))
 			.groupBy(votes.commentId) : [];
 
 		// Get current user's votes for all comments
-		console.log('Fetching user votes for userId:', userId, 'commentIds:', commentIds);
-		const userVotes = userId && commentIds.length > 0 ? await db
+		console.log('Fetching user votes for userId:', userId, 'commentIds:', allCommentIds);
+		const userVotes = userId && allCommentIds.length > 0 ? await db
 			.select({
 				commentId: votes.commentId,
 				voteType: votes.voteType,
 			})
 			.from(votes)
 			.where(and(
-				inArray(votes.commentId, commentIds),
+				inArray(votes.commentId, allCommentIds),
 				eq(votes.userId, userId)
 			)) : [];
 
 		console.log('Found user votes:', userVotes);
 
-		// Combine comments with vote counts and user's current vote
-		const commentsWithVotes = commentsWithUsers.map(comment => {
+		// Combine all comments with vote counts and user's current vote
+		const allCommentsWithVotes = allCommentsWithUsers.map(comment => {
 			const voteData = voteCounts.find(v => v.commentId === comment.id);
 			const userVote = userVotes.find(v => v.commentId === comment.id);
 			return {
@@ -102,7 +109,19 @@ router.get('/api/comments/:blogSlug', async (request: Request, env: Env, ctx: an
 			};
 		});
 
-		return successResponse(commentsWithVotes, env);
+		// Build nested structure
+		const buildNestedComments = (parentId: string | null = null): any[] => {
+			const levelComments = allCommentsWithVotes.filter(comment => comment.parentId === parentId);
+			return levelComments.map(comment => ({
+				...comment,
+				replies: buildNestedComments(comment.id)
+			}));
+		};
+
+		// Get paginated top-level comments with their nested replies
+		const paginatedCommentsWithReplies = buildNestedComments().slice(offset, offset + limit);
+
+		return successResponse(paginatedCommentsWithReplies, env);
 	} catch (error) {
 		console.error('Error fetching comments:', error);
 		return errorResponse('Failed to fetch comments', env, 500);
@@ -115,9 +134,21 @@ router.post('/api/comments', async (request: Request, env: Env) => {
 	initializeFirebaseAdmin(env);
 
 	try {
+		// Apply rate limiting for comment creation
+		const rateLimitResult = await rateLimits.commentCreation(request, env);
+		if (rateLimitResult) return rateLimitResult;
+
 		// Check authentication
 		const authResult = await requireAuth(request);
 		if (authResult) return authResult;
+
+		// Apply basic content validation (length, URLs, etc.)
+		const contentValidationResult = await contentValidators.commentCreation(request, env);
+		if (contentValidationResult) return contentValidationResult;
+
+		// Apply Perspective API content moderation
+		const perspectiveValidationResult = await perspectiveValidators.commentCreation(request, env);
+		if (perspectiveValidationResult) return perspectiveValidationResult;
 
 		const user = (request as any).user;
 		const body = (await request.json()) as {
@@ -128,8 +159,8 @@ router.post('/api/comments', async (request: Request, env: Env) => {
 		};
 		const { blogSlug, content, parentId, githubUsername: providedGithubUsername } = body;
 
-		if (!blogSlug || !content) {
-			return errorResponse('Blog slug and content are required', env, 400);
+		if (!blogSlug) {
+			return errorResponse('Blog slug is required', env, 400);
 		}
 
 		const db = drizzle(env.DB);
@@ -269,6 +300,14 @@ router.put('/api/comments/:id', async (request: Request, env: Env, ctx: any) => 
 		const authResult = await requireAuth(request);
 		if (authResult) return authResult;
 
+		// Apply basic content validation (length, URLs, etc.)
+		const contentValidationResult = await contentValidators.commentUpdate(request, env);
+		if (contentValidationResult) return contentValidationResult;
+
+		// Apply Perspective API content moderation
+		const perspectiveValidationResult = await perspectiveValidators.commentUpdate(request, env);
+		if (perspectiveValidationResult) return perspectiveValidationResult;
+
 		const user = (request as any).user;
 		let id = ctx && ctx.params ? ctx.params.id : undefined;
 		if (!id) {
@@ -374,6 +413,10 @@ router.delete('/api/comments/:id', async (request: Request, env: Env, ctx: any) 
 // Vote on a comment
 router.post('/api/comments/:id/vote', async (request: Request, env: Env, ctx: any) => {
 	try {
+		// Apply rate limiting for voting
+		const rateLimitResult = await rateLimits.voting(request, env);
+		if (rateLimitResult) return rateLimitResult;
+
 		// Check authentication
 		const authResult = await requireAuth(request);
 		if (authResult) return authResult;

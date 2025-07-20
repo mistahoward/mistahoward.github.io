@@ -7,7 +7,7 @@ import { CommentItemProps } from "../../types/comment-item.types";
 import { FaThumbsUp, FaThumbsDown, FaReply, FaEllipsisH, FaEdit, FaTrash } from "react-icons/fa";
 import { LuGithub } from "react-icons/lu";
 
-export const CommentItem = ({ comment, onUpdate, onDelete, onVote, currentUserId }: CommentItemProps) => {
+export const CommentItem = ({ comment, onUpdate, onDelete, onVote, onAddComment, currentUserId, depth = 0 }: CommentItemProps) => {
 	const [isEditing, setIsEditing] = useState(false);
 	const [isReplying, setIsReplying] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
@@ -192,13 +192,35 @@ export const CommentItem = ({ comment, onUpdate, onDelete, onVote, currentUserId
 				<div className="reply-form">
 					<CommentForm
 						onSubmit={async content => {
-							// TODO: Implement reply functionality
-							console.log("Reply to comment:", comment.id, content);
-							setIsReplying(false);
+							try {
+								// Call the parent's addComment function with the parentId
+								await onAddComment(content, comment.id);
+								setIsReplying(false);
+							} catch (error) {
+								console.error("Error creating reply:", error);
+							}
 						}}
 						parentId={comment.id}
 						onCancel={() => setIsReplying(false)}
 					/>
+				</div>
+			)}
+
+			{/* Render nested replies */}
+			{comment.replies && comment.replies.length > 0 && (
+				<div className="comment-replies" style={{ marginLeft: `${Math.min(depth + 1, 3) * 1.5}rem` }}>
+					{comment.replies.map(reply => (
+						<CommentItem
+							key={reply.id}
+							comment={reply}
+							onUpdate={onUpdate}
+							onDelete={onDelete}
+							onVote={onVote}
+							onAddComment={onAddComment}
+							currentUserId={currentUserId}
+							depth={depth + 1}
+						/>
+					))}
 				</div>
 			)}
 		</div>

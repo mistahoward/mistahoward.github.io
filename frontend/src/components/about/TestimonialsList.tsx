@@ -2,15 +2,6 @@ import { useEffect, useState, useMemo } from "preact/hooks";
 import { fetchItems } from "../../utils/crud";
 import { Testimonial } from "../../types/testimonials-list.types";
 import { LoadingSpinner } from "../../utils/ui";
-import { AiFillStar, AiOutlineStar } from "react-icons/ai";
-
-const renderStars = (rating: number = 0) => (
-	<span>
-		{Array.from({ length: 5 }, (_, i) =>
-			i < rating ? <AiFillStar key={i} color="#f5c518" /> : <AiOutlineStar key={i} color="#ccc" />
-		)}
-	</span>
-);
 
 function formatDate(dateStr?: string) {
 	if (!dateStr) return "";

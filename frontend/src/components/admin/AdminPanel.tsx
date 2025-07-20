@@ -3,6 +3,7 @@ import { BlogManager } from "./managers/BlogManager";
 import { PetManager } from "./managers/PetManager";
 import { DataManager } from "./managers/DataManager";
 import { TagManager } from "./managers/TagManager";
+import { CommentManager } from "./managers/CommentManager";
 import { AdminPanelProps } from "../../types/admin-panel.types";
 import { Section } from "../../types/admin-panel.types";
 import { TestimonialInvitesManager } from "./managers/TestimonialInvitesManager";
@@ -174,6 +175,12 @@ export const AdminPanel = ({ isVisible, onClose }: AdminPanelProps) => {
 										>
 											Tags
 										</button>
+										<button
+											className={`nav-link ${activeSection === "comments" ? "active" : ""}`}
+											onClick={() => setActiveSection("comments")}
+										>
+											Comments
+										</button>
 										<div className="mt-auto p-3">
 											<button onClick={handleLogout} className="btn btn-outline-danger w-100">
 												Logout
@@ -189,6 +196,7 @@ export const AdminPanel = ({ isVisible, onClose }: AdminPanelProps) => {
 									)}
 									{activeSection === "testimonial-invites" && <TestimonialInvitesManager />}
 									{activeSection === "tags" && <TagManager />}
+									{activeSection === "comments" && <CommentManager />}
 								</div>
 							</div>
 						)}

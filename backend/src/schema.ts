@@ -3,6 +3,8 @@ import {
 	text,
 	integer,
 	primaryKey,
+	index,
+	uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 
@@ -154,7 +156,11 @@ export const users = sqliteTable('Users', {
 	role: text('role').default('user'), // 'admin', 'author', 'user'
 	createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
-});
+}, (table) => ({
+	// Indexes for better query performance
+	githubUsernameIdx: index('users_github_username_idx').on(table.githubUsername),
+	roleIdx: index('users_role_idx').on(table.role),
+}));
 
 export const comments = sqliteTable('Comments', {
 	id: text('id').primaryKey(), // UUID
@@ -166,7 +172,14 @@ export const comments = sqliteTable('Comments', {
 	updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 	isEdited: integer('is_edited', { mode: 'boolean' }).default(false),
 	isDeleted: integer('is_deleted', { mode: 'boolean' }).default(false),
-});
+}, (table) => ({
+	// Indexes for better query performance
+	blogSlugIdx: index('comments_blog_slug_idx').on(table.blogSlug),
+	userIdIdx: index('comments_user_id_idx').on(table.userId),
+	parentIdIdx: index('comments_parent_id_idx').on(table.parentId),
+	createdAtIdx: index('comments_created_at_idx').on(table.createdAt),
+	isDeletedIdx: index('comments_is_deleted_idx').on(table.isDeleted),
+}));
 
 export const votes = sqliteTable('Votes', {
 	id: text('id').primaryKey(), // UUID
@@ -175,7 +188,13 @@ export const votes = sqliteTable('Votes', {
 	voteType: integer('vote_type').notNull(), // 1 for upvote, -1 for downvote
 	createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
-});
+}, (table) => ({
+	// Indexes for better query performance
+	commentIdIdx: index('votes_comment_id_idx').on(table.commentId),
+	userIdIdx: index('votes_user_id_idx').on(table.userId),
+	// Unique constraint to prevent duplicate votes
+	uniqueVote: uniqueIndex('votes_comment_user_unique').on(table.commentId, table.userId),
+}));
 
 // Type exports for use in your application
 export type Project = typeof projects.$inferSelect;

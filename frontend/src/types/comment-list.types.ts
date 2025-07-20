@@ -10,6 +10,7 @@ export interface Comment {
 	isDeleted: boolean;
 	voteCount?: number;
 	userVote?: number; // 0 = no vote, 1 = upvote, -1 = downvote
+	replies?: Comment[]; // Nested replies
 	user: {
 		id: string;
 		displayName: string;
@@ -19,10 +20,24 @@ export interface Comment {
 	};
 }
 
+export interface PaginationInfo {
+	currentPage: number;
+	totalPages: number;
+	totalComments: number;
+	hasNextPage: boolean;
+	hasPrevPage: boolean;
+}
+
 export interface CommentListProps {
 	comments: Comment[];
 	onUpdate: (commentId: string, content: string) => Promise<void>;
 	onDelete: (commentId: string) => Promise<void>;
 	onVote: (commentId: string, voteType: number) => Promise<void>;
+	onAddComment: (content: string, parentId?: string) => Promise<void>;
 	currentUserId?: string;
+	pagination?: PaginationInfo;
+	onPageChange?: (page: number) => void;
+	loading?: boolean;
+	hasMore?: boolean;
+	onLoadMore?: (page: number) => void;
 } 

@@ -12,7 +12,8 @@ export type Section =
 	| "testimonials"
 	| "certifications"
 	| "testimonial-invites"
-	| "tags";
+	| "tags"
+	| "comments";
 
 export interface ManagerLayoutProps {
 	title: string;

@@ -157,6 +157,50 @@
 	}
 }
 
+
+
+// New Comments Flash Animation
+.new-comments-flash {
+	animation: newCommentsFlash 2s ease-out;
+}
+
+@keyframes newCommentsFlash {
+	0% {
+		background-color: rgba(var(--bs-primary-rgb), 0.1);
+	}
+	100% {
+		background-color: transparent;
+	}
+}
+
+// Comment List Container (Scroll Container)
+.comment-list-container {
+	max-height: 80vh;
+	overflow-y: auto;
+	border: 1px solid var(--bs-border-color);
+	border-radius: 0.75rem;
+	background: var(--bs-body-bg);
+	
+	// Custom scrollbar styling
+	&::-webkit-scrollbar {
+		width: 0.5rem;
+	}
+	
+	&::-webkit-scrollbar-track {
+		background: var(--bs-secondary-bg-subtle);
+		border-radius: 0.25rem;
+	}
+	
+	&::-webkit-scrollbar-thumb {
+		background: var(--bs-border-color);
+		border-radius: 0.25rem;
+		
+		&:hover {
+			background: var(--bs-secondary);
+		}
+	}
+}
+
 // Comment List Styles
 .comment-list {
 	.comment-item {
@@ -454,7 +498,29 @@
 	border-radius: 0.5rem;
 	border: 1px solid var(--bs-border-color-subtle);
 	border-left: 3px solid var(--bs-primary);
+}
+
+// Nested Replies Styles
+.comment-replies {
+	margin-top: 1rem;
 	
+	.comment-item {
+		border-left: 2px solid var(--bs-border-color-subtle);
+		padding-left: 1rem;
+		margin-bottom: 1rem;
+		
+		&:last-child {
+			margin-bottom: 0;
+		}
+		
+		// Limit nesting depth for visual clarity
+		&:nth-child(n+4) {
+			border-left-color: var(--bs-secondary);
+		}
+	}
+}
+
+.reply-form {
 	.comment-form-container {
 		padding: 0;
 		background: none;
@@ -538,8 +604,38 @@
 	}
 }
 
+// Infinite Scroll Styles
+.comment-list {
+	// Smooth scrolling for infinite scroll
+	scroll-behavior: smooth;
+	
+	// Loading indicator for infinite scroll
+	.text-center.py-4 {
+		transition: opacity 0.3s ease-in-out;
+		
+		.d-flex {
+			gap: 0.5rem;
+			
+			.yak-shaver-spinner {
+				transform: scale(0.8);
+			}
+		}
+		
+		.text-muted {
+			font-size: 0.85rem;
+			opacity: 0.7;
+		}
+	}
+}
+
 // Responsive Design
 @media (max-width: 767.98px) {
+	.comment-list-container {
+		max-height: 70vh; // Taller height on mobile too
+	}
+	
+
+	
 	.comment-form {
 		.comment-form-container {
 			padding: 1rem;
@@ -563,6 +659,20 @@
 				flex-direction: column;
 				align-items: flex-start;
 				gap: 0.5rem;
+			}
+		}
+		
+		// Mobile infinite scroll improvements
+		.text-center.py-4 {
+			padding: 1rem !important;
+			
+			.d-flex {
+				flex-direction: column;
+				gap: 0.75rem;
+				
+				.yak-shaver-spinner {
+					transform: scale(0.7);
+				}
 			}
 		}
 	}

@@ -1,6 +1,6 @@
 import { Router } from 'itty-router';
 import { drizzle } from 'drizzle-orm/d1';
-import { eq, desc, inArray } from 'drizzle-orm';
+import { eq, desc, inArray, and, sum } from 'drizzle-orm';
 import {
 	blogPosts,
 	pets,
@@ -12,6 +12,9 @@ import {
 	testimonialInvites,
 	tags,
 	blogPostTags,
+	comments,
+	users,
+	votes,
 } from '../schema';
 import {
 	requireAdmin,
@@ -1281,6 +1284,133 @@ router.post('/api/admin/upload-image', async (request: Request, env: Env) => {
 	} catch (error) {
 		console.error('[ADMIN] Image upload error:', error);
 		return errorResponse('Failed to upload image', env, 500);
+	}
+});
+
+// COMMENTS ADMIN ROUTES
+
+// GET /api/admin/comments - Get all comments with filtering
+router.get('/api/admin/comments', async (request: Request, env: Env) => {
+	const authCheck = requireAdmin(request, env);
+	if (authCheck) return authCheck;
+
+	try {
+		const { searchParams } = new URL(request.url);
+		const blogSlug = searchParams.get('blogSlug');
+		const page = parseInt(searchParams.get('page') || '1', 10);
+		const limit = parseInt(searchParams.get('limit') || '50', 10);
+		const offset = (page - 1) * limit;
+
+		const db = drizzle(env.DB);
+
+		// Build where clause
+		const whereClause = blogSlug
+			? and(eq(comments.isDeleted, false), eq(comments.blogSlug, blogSlug))
+			: eq(comments.isDeleted, false);
+
+		// Get comments with user info
+		const commentsWithUsers = await db
+			.select({
+				id: comments.id,
+				blogSlug: comments.blogSlug,
+				userId: comments.userId,
+				parentId: comments.parentId,
+				content: comments.content,
+				createdAt: comments.createdAt,
+				updatedAt: comments.updatedAt,
+				isEdited: comments.isEdited,
+				isDeleted: comments.isDeleted,
+				user: {
+					id: users.id,
+					displayName: users.displayName,
+					photoUrl: users.photoUrl,
+					githubUsername: users.githubUsername,
+					role: users.role,
+				},
+			})
+			.from(comments)
+			.leftJoin(users, eq(comments.userId, users.id))
+			.where(whereClause)
+			.orderBy(desc(comments.createdAt))
+			.limit(limit)
+			.offset(offset);
+
+		// Get vote counts for all comments
+		const commentIds = commentsWithUsers.map(comment => comment.id);
+		const voteCounts = commentIds.length > 0 ? await db
+			.select({
+				commentId: votes.commentId,
+				voteCount: sum(votes.voteType),
+			})
+			.from(votes)
+			.where(inArray(votes.commentId, commentIds))
+			.groupBy(votes.commentId) : [];
+
+		// Combine comments with vote counts
+		const commentsWithVotes = commentsWithUsers.map(comment => {
+			const voteData = voteCounts.find(v => v.commentId === comment.id);
+			return {
+				...comment,
+				voteCount: voteData?.voteCount || 0,
+			};
+		});
+
+		return successResponse(commentsWithVotes, env);
+	} catch (error) {
+		console.error('Error fetching admin comments:', error);
+		return errorResponse('Failed to fetch comments', env, 500);
+	}
+});
+
+// DELETE /api/admin/comments/:id - Admin delete comment
+router.delete('/api/admin/comments/:id', async (request: Request, env: Env, ctx: any) => {
+	const authCheck = requireAdmin(request, env);
+	if (authCheck) return authCheck;
+
+	try {
+		let id = ctx && ctx.params ? ctx.params.id : undefined;
+		if (!id) {
+			const url = new URL(request.url);
+			const pathParts = url.pathname.split('/');
+			id = pathParts[pathParts.length - 1];
+		}
+
+		const db = drizzle(env.DB);
+
+		// Soft delete the comment
+		await db
+			.update(comments)
+			.set({
+				isDeleted: true,
+				updatedAt: new Date().toISOString(),
+			})
+			.where(eq(comments.id, id));
+
+		return successResponse({ message: 'Comment deleted successfully' }, env);
+	} catch (error) {
+		console.error('Error deleting comment:', error);
+		return errorResponse('Failed to delete comment', env, 500);
+	}
+});
+
+// GET /api/admin/comments/blog-slugs - Get all unique blog slugs
+router.get('/api/admin/comments/blog-slugs', async (request: Request, env: Env) => {
+	const authCheck = requireAdmin(request, env);
+	if (authCheck) return authCheck;
+
+	try {
+		const db = drizzle(env.DB);
+
+		const blogSlugs = await db
+			.selectDistinct({ blogSlug: comments.blogSlug })
+			.from(comments)
+			.where(eq(comments.isDeleted, false))
+			.orderBy(comments.blogSlug);
+
+		return successResponse(blogSlugs.map(slug => slug.blogSlug), env);
+	} catch (error) {
+		console.error('Error fetching blog slugs:', error);
+		return errorResponse('Failed to fetch blog slugs', env, 500);
 	}
 });
 
