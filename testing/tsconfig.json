@@ -1,0 +1,43 @@
+{
+	"compilerOptions": {
+		"target": "ES2020",
+		"useDefineForClassFields": true,
+		"lib": ["ES2020", "DOM", "DOM.Iterable"],
+		"typeRoots": [
+			"./node_modules/@types",
+			"./types"
+		],
+		"types": [
+			"jest",
+			"node"
+		],
+		"module": "ESNext",
+		"skipLibCheck": true,
+		"moduleResolution": "bundler",
+		"allowImportingTsExtensions": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"noEmit": true,
+		"jsx": "react-jsx",
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		"baseUrl": ".",
+		"paths": {
+			"@frontend/*": ["../frontend/src/*"],
+			"@backend/*": ["../backend/src/*"],
+			"@testing/*": ["./*"]
+		}
+	},
+	"include": [
+		"**/*.ts",
+		"**/*.tsx",
+		"**/*.spec.ts"
+	],
+	"exclude": [
+		"node_modules",
+		"test-results",
+		"playwright-report"
+	]
+} 

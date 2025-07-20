@@ -145,6 +145,37 @@ export const blogPostTags = sqliteTable(
 	}),
 );
 
+// Comments system tables
+export const users = sqliteTable('Users', {
+	id: text('id').primaryKey(), // Firebase UID
+	displayName: text('display_name').notNull(),
+	photoUrl: text('photo_url'),
+	githubUsername: text('github_username'),
+	createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+	updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const comments = sqliteTable('Comments', {
+	id: text('id').primaryKey(), // UUID
+	blogSlug: text('blog_slug').notNull(),
+	userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	parentId: text('parent_id'), // Self-reference for nested comments
+	content: text('content').notNull(),
+	createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+	updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+	isEdited: integer('is_edited', { mode: 'boolean' }).default(false),
+	isDeleted: integer('is_deleted', { mode: 'boolean' }).default(false),
+});
+
+export const votes = sqliteTable('Votes', {
+	id: text('id').primaryKey(), // UUID
+	commentId: text('comment_id').notNull().references(() => comments.id, { onDelete: 'cascade' }),
+	userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+	voteType: integer('vote_type').notNull(), // 1 for upvote, -1 for downvote
+	createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+	updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
 // Type exports for use in your application
 export type Project = typeof projects.$inferSelect;
 export type NewProject = typeof projects.$inferInsert;
@@ -160,3 +191,9 @@ export type Certification = typeof certifications.$inferSelect;
 export type NewCertification = typeof certifications.$inferInsert;
 export type Pet = typeof pets.$inferSelect;
 export type NewPet = typeof pets.$inferInsert;
+export type User = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;
+export type Comment = typeof comments.$inferSelect;
+export type NewComment = typeof comments.$inferInsert;
+export type Vote = typeof votes.$inferSelect;
+export type NewVote = typeof votes.$inferInsert;

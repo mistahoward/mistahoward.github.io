@@ -13,8 +13,7 @@
     "db:push": "wrangler d1 execute portfolio-db --local --file=./migrations/schema.sql",
     "db:studio": "drizzle-kit studio",
     "db:drop": "drizzle-kit drop",
-    "db:workflow": "npm run db:generate && npm run db:migrate",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "db:workflow": "npm run db:generate && npm run db:migrate"
   },
   "keywords": [
     "cloudflare",
