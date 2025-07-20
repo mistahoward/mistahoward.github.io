@@ -79,6 +79,7 @@
 			margin-top: 1.5rem;
 			margin-bottom: 1rem;
 			font-weight: 600;
+			color: var(--bs-heading-color);
 		}
 		
 		h1 { font-size: 2rem; }
@@ -87,14 +88,15 @@
 		
 		p {
 			margin-bottom: 1rem;
+			color: var(--bs-body-color);
 		}
 		
 		img {
 			max-width: 100%;
 			height: auto;
 			margin: 1rem 0;
-			border-radius: 0.5rem;
-			box-shadow: 0 0.125rem 0.25rem rgb(0 0 0 / 7.5%);
+			border-radius: var(--bs-border-radius-lg);
+			box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 		}
 		
 		strong {
@@ -106,40 +108,42 @@
 		}
 		
 		a {
-			color: #007bff;
+			color: var(--bs-link-color);
 			text-decoration: none;
 			
 			&:hover {
 				text-decoration: underline;
+				color: var(--bs-link-hover-color);
 			}
 		}
 		
 		code {
-			background-color: #f8f9fa;
+			background: var(--bs-secondary-bg-subtle);
 			padding: 0.125rem 0.25rem;
-			border-radius: 0.25rem;
+			border-radius: var(--bs-border-radius-sm);
 			font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
 			font-size: 0.875em;
+			color: var(--bs-code-color);
 		}
 		
 		pre {
-			background-color: #f8f9fa;
+			background: var(--bs-secondary-bg-subtle);
 			padding: 1rem;
-			border-radius: 0.5rem;
+			border-radius: var(--bs-border-radius-lg);
 			overflow-x: auto;
 			margin: 1rem 0;
 			
 			code {
-				background-color: transparent;
+				background: transparent;
 				padding: 0;
 			}
 		}
 		
 		blockquote {
-			border-left: 0.25rem solid #dee2e6;
+			border-left: 0.25rem solid var(--bs-border-color);
 			padding-left: 1rem;
 			margin: 1rem 0;
-			color: #6c757d;
+			color: var(--bs-secondary);
 		}
 		
 		ul, ol {
@@ -154,7 +158,7 @@
 		hr {
 			border: none;
 			height: 0.125rem;
-			background: linear-gradient(to right, transparent, #dee2e6, transparent);
+			background: linear-gradient(to right, transparent, var(--bs-border-color), transparent);
 			margin: 1.5rem 0;
 			border-radius: 0.0625rem;
 		}
@@ -162,8 +166,8 @@
 	
 	.form-control {
 		&:focus {
-			border-color: #80bdff;
-			box-shadow: 0 0 0 0.2rem rgb(0 123 255 / 25%);
+			border-color: var(--bs-primary);
+			box-shadow: 0 0 0 0.125rem rgba(var(--bs-primary-rgb), 0.25);
 		}
 	}
 	

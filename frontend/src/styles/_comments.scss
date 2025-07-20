@@ -18,12 +18,12 @@
 	padding: 2rem;
 	background: var(--bs-secondary-bg-subtle);
 	border: 2px dashed var(--bs-border-color);
-	border-radius: 0.75rem;
+	border-radius: var(--bs-border-radius-xl);
 	
 	.btn {
 		font-size: 1rem;
 		padding: 0.75rem 1.5rem;
-		border-radius: 0.5rem;
+		border-radius: var(--bs-border-radius-lg);
 		font-weight: 500;
 	}
 }
@@ -50,7 +50,7 @@
 .comment-form {
 	.comment-form-container {
 		background: var(--bs-secondary-bg-subtle);
-		border-radius: 0.75rem;
+		border-radius: var(--bs-border-radius-xl);
 		padding: 2rem;
 		
 		.user-avatar {
@@ -64,7 +64,7 @@
 		
 		.comment-textarea {
 			border: 1px solid var(--bs-border-color);
-			border-radius: 0.5rem;
+			border-radius: var(--bs-border-radius-lg);
 			padding: 1rem;
 			background: var(--bs-body-bg);
 			color: var(--bs-body-color);
@@ -105,7 +105,7 @@
 			.btn {
 				font-size: 0.9rem;
 				padding: 0.5rem 1rem;
-				border-radius: 0.375rem;
+				border-radius: var(--bs-border-radius);
 				transition: all 0.15s ease-in-out;
 				background: transparent;
 				border: 1px solid var(--bs-border-color);
@@ -157,8 +157,6 @@
 	}
 }
 
-
-
 // New Comments Flash Animation
 .new-comments-flash {
 	animation: newCommentsFlash 2s ease-out;
@@ -177,7 +175,7 @@
 .comment-list-container {
 	max-height: 80vh;
 	overflow-y: auto;
-	border-radius: 0.75rem;
+	border-radius: var(--bs-border-radius-xl);
 	background: var(--bs-body-bg);
 	
 	// Custom scrollbar styling
@@ -187,12 +185,12 @@
 	
 	&::-webkit-scrollbar-track {
 		background: var(--bs-secondary-bg-subtle);
-		border-radius: 0.25rem;
+		border-radius: var(--bs-border-radius-sm);
 	}
 	
 	&::-webkit-scrollbar-thumb {
 		background: var(--bs-border-color);
-		border-radius: 0.25rem;
+		border-radius: var(--bs-border-radius-sm);
 		
 		&:hover {
 			background: var(--bs-secondary);
@@ -205,7 +203,7 @@
 	.comment-item {
 		background: var(--bs-body-bg);
 		border: 1px solid var(--bs-border-color);
-		border-radius: 0.75rem;
+		border-radius: var(--bs-border-radius-xl);
 		padding: 1.5rem;
 		margin-bottom: 1.5rem;
 		transition: box-shadow 0.15s ease-in-out;
@@ -288,7 +286,7 @@
 					border: none;
 					color: var(--bs-secondary);
 					padding: 0.25rem;
-					border-radius: 0.25rem;
+					border-radius: var(--bs-border-radius-sm);
 					transition: background-color 0.15s ease-in-out;
 					
 					&:hover {
@@ -322,7 +320,7 @@
 						background-color: var(--bs-body-bg);
 						background-clip: padding-box;
 						border: 1px solid var(--bs-border-color);
-						border-radius: 0.375rem;
+						border-radius: var(--bs-border-radius);
 						box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.175);
 						display: block !important;
 						
@@ -379,7 +377,7 @@
 				code {
 					background: var(--bs-secondary-bg-subtle);
 					padding: 0.125rem 0.25rem;
-					border-radius: 0.25rem;
+					border-radius: var(--bs-border-radius-sm);
 					font-size: 0.875em;
 					color: var(--bs-code-color);
 				}
@@ -387,7 +385,7 @@
 				pre {
 					background: var(--bs-secondary-bg-subtle);
 					padding: 0.75rem;
-					border-radius: 0.5rem;
+					border-radius: var(--bs-border-radius-lg);
 					overflow-x: auto;
 					margin: 0.75rem 0;
 					font-size: 0.875em;
@@ -409,7 +407,7 @@
 					.vote-button {
 						background: none;
 						border: 1px solid var(--bs-border-color);
-						border-radius: 0.375rem;
+						border-radius: var(--bs-border-radius);
 						padding: 0.25rem 0.5rem;
 						color: var(--bs-secondary);
 						font-size: 0.8rem;
@@ -443,8 +441,6 @@
 			}
 		}
 		
-
-		
 		&.edited {
 			.comment-content::after {
 				content: " (edited)";
@@ -461,7 +457,7 @@
 	display: inline-flex;
 	align-items: center;
 	padding: 0.25rem 0.5rem;
-	border-radius: 0.375rem;
+	border-radius: var(--bs-border-radius);
 	font-size: 0.7rem;
 	font-weight: 600;
 	text-transform: uppercase;
@@ -494,32 +490,10 @@
 	margin-left: 1rem;
 	padding: 1rem;
 	background: var(--bs-secondary-bg-subtle);
-	border-radius: 0.5rem;
+	border-radius: var(--bs-border-radius-lg);
 	border: 1px solid var(--bs-border-color-subtle);
 	border-left: 3px solid var(--bs-primary);
-}
-
-// Nested Replies Styles
-.comment-replies {
-	margin-top: 1rem;
 	
-	.comment-item {
-		border-left: 2px solid var(--bs-border-color-subtle);
-		padding-left: 1rem;
-		margin-bottom: 1rem;
-		
-		&:last-child {
-			margin-bottom: 0;
-		}
-		
-		// Limit nesting depth for visual clarity
-		&:nth-child(n+4) {
-			border-left-color: var(--bs-secondary);
-		}
-	}
-}
-
-.reply-form {
 	.comment-form-container {
 		padding: 0;
 		background: none;
@@ -536,7 +510,7 @@
 			font-size: 0.9rem;
 			padding: 0.5rem;
 			border: 1px solid var(--bs-border-color);
-			border-radius: 0.375rem;
+			border-radius: var(--bs-border-radius);
 			background: var(--bs-body-bg);
 			width: 100%;
 			
@@ -571,6 +545,26 @@
 					white-space: nowrap;
 				}
 			}
+		}
+	}
+}
+
+// Nested Replies Styles
+.comment-replies {
+	margin-top: 1rem;
+	
+	.comment-item {
+		border-left: 2px solid var(--bs-border-color-subtle);
+		padding-left: 1rem;
+		margin-bottom: 1rem;
+		
+		&:last-child {
+			margin-bottom: 0;
+		}
+		
+		// Limit nesting depth for visual clarity
+		&:nth-child(n+4) {
+			border-left-color: var(--bs-secondary);
 		}
 	}
 }
@@ -630,10 +624,8 @@
 // Responsive Design
 @media (max-width: 767.98px) {
 	.comment-list-container {
-		max-height: 70vh; // Taller height on mobile too
+		max-height: 70vh;
 	}
-	
-
 	
 	.comment-form {
 		.comment-form-container {

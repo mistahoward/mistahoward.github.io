@@ -19,7 +19,7 @@
 	
 	.blog-post {
 		background: var(--bs-body-bg);
-		border-radius: 0.75rem;
+		border-radius: var(--bs-border-radius-xl);
 		padding: 2rem;
 		box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 		
@@ -36,7 +36,7 @@
 		.blog-excerpt {
 			background: var(--bs-secondary-bg-subtle);
 			padding: 1.25rem;
-			border-radius: 0.5rem;
+			border-radius: var(--bs-border-radius-lg);
 			border-left: 4px solid var(--bs-primary);
 		}
 		
@@ -57,14 +57,14 @@
 			img {
 				max-width: 100%;
 				height: auto;
-				border-radius: 0.5rem;
+				border-radius: var(--bs-border-radius-lg);
 				margin: 1.5rem 0;
 			}
 			
 			code {
 				background: var(--bs-secondary-bg-subtle);
 				padding: 0.125rem 0.25rem;
-				border-radius: 0.25rem;
+				border-radius: var(--bs-border-radius-sm);
 				font-size: 0.875em;
 				color: var(--bs-code-color);
 			}
@@ -72,7 +72,7 @@
 			pre {
 				background: var(--bs-secondary-bg-subtle);
 				padding: 1rem;
-				border-radius: 0.5rem;
+				border-radius: var(--bs-border-radius-lg);
 				overflow-x: auto;
 				margin: 1.5rem 0;
 			}
@@ -88,7 +88,7 @@
 	
 	.comments-section {
 		background: var(--bs-body-bg);
-		border-radius: 0.75rem;
+		border-radius: var(--bs-border-radius-xl);
 		padding: 2rem;
 		box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 		
@@ -109,7 +109,7 @@
 			text-align: center;
 			padding: 2.5rem 0;
 			border: 2px dashed var(--bs-border-color);
-			border-radius: 0.5rem;
+			border-radius: var(--bs-border-radius-lg);
 			margin-bottom: 2rem;
 		}
 		
@@ -123,7 +123,7 @@
 				padding: 1rem;
 				background: var(--bs-danger-bg-subtle);
 				border: 1px solid var(--bs-danger);
-				border-radius: 0.5rem;
+				border-radius: var(--bs-border-radius-lg);
 				margin-bottom: 1rem;
 				color: var(--bs-danger);
 			}

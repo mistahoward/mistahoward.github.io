@@ -20,7 +20,8 @@ import {
 	SiLangchain,
 	SiFastapi,
 	SiMysql,
-	SiGatsby
+	SiGatsby,
+	SiFirebase
 } from "react-icons/si";
 import {
 	FaRecycle,
@@ -80,7 +81,8 @@ export const iconMap: Record<string, any> = {
 	MdDataArray,
 	DiMsqlServer,
 	PiWindowsLogo,
-	SiGatsby
+	SiGatsby,
+	SiFirebase
 };
 
 export const iconNameToLabel: Record<string, string> = {
@@ -121,7 +123,8 @@ export const iconNameToLabel: Record<string, string> = {
 	MdDataArray: "Vertex Database",
 	DiMsqlServer: "Microsoft SQL Server",
 	PiWindowsLogo: "Windows Forms",
-	SiGatsby: "Gatsby"
+	SiGatsby: "Gatsby",
+	SiFirebase: "Firebase"
 };
 
 export const renderIcon = (iconName: string, size = 24, className = "me-2") => {
