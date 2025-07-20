@@ -81,7 +81,7 @@ const BlogPostPage = (props: { slug?: string }) => {
 											← Back to Blogs
 										</button>
 										<button
-											className="btn btn-link text-decoration-none p-0 jump-to-comments-btn"
+											className="btn btn-link text-decoration-none p-0 jump-to-comments-btn d-lg-none"
 											onClick={scrollToComments}
 											style={{ fontSize: "0.9rem", color: "#6c757d" }}
 										>
