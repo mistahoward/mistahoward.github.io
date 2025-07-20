@@ -212,7 +212,9 @@ export const DataManager = ({ lastFocusTime = 0, initialTab = "projects" }: Data
 	};
 
 	const handleDelete = async (id: number) => {
-		if (!confirmDelete("this item")) return;
+		const confirmed = await confirmDelete("this item");
+		if (!confirmed) return;
+
 		const endpoint = `/api/admin/${activeTab}`;
 		await deleteItem(
 			endpoint,

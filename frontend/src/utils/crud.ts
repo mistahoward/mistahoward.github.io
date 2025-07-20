@@ -1,4 +1,5 @@
 import { apiRequest } from "./api";
+import { showDeleteConfirm } from "./sweetalert";
 
 export interface CrudOptions<T> {
 	endpoint: string;
@@ -136,6 +137,7 @@ export const deleteItem = async (
 	}
 };
 
-export const confirmDelete = (itemName: string = "this item"): boolean => {
-	return confirm(`Are you sure you want to delete ${itemName}?`);
+export const confirmDelete = async (itemName: string = "this item"): Promise<boolean> => {
+	const result = await showDeleteConfirm(itemName);
+	return result.isConfirmed;
 };

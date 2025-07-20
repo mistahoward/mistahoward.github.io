@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "preact/hooks";
 import { format } from "date-fns";
 import { markdownToHtml } from "../../utils/markdown";
+import { showDeleteConfirm } from "../../utils/sweetalert";
 import { CommentForm } from "./CommentForm";
 import { UserBadge } from "./UserBadge";
 import { CommentItemProps } from "../../types/comment-item.types";
@@ -51,7 +52,8 @@ export const CommentItem = ({ comment, onUpdate, onDelete, onVote, onAddComment,
 	};
 
 	const handleDelete = async () => {
-		if (!confirm("Are you sure you want to delete this comment?")) return;
+		const result = await showDeleteConfirm("this comment");
+		if (!result.isConfirmed) return;
 
 		try {
 			setIsDeleting(true);

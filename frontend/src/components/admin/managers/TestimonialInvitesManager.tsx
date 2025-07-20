@@ -1,4 +1,5 @@
 import { useEffect, useState } from "preact/hooks";
+import { showDeleteConfirm } from "../../../utils/sweetalert";
 
 const API_URL = import.meta.env.VITE_API_URL || "";
 
@@ -71,7 +72,9 @@ export const TestimonialInvitesManager = () => {
 	};
 
 	const handleDelete = async (id: number) => {
-		if (!window.confirm("Delete this invite?")) return;
+		const result = await showDeleteConfirm("this invite");
+		if (!result.isConfirmed) return;
+
 		setError("");
 		try {
 			const token = localStorage.getItem("adminToken");

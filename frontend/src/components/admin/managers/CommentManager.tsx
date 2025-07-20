@@ -1,6 +1,7 @@
 import { useState, useEffect } from "preact/hooks";
 import { useAuth } from "../../../contexts/AuthContext";
 import { API_URL } from "../../../utils/api";
+import { showDeleteConfirm } from "../../../utils/sweetalert";
 import { Comment } from "../../../types/comment-list.types";
 import { LoadingSpinner } from "../../../utils/ui";
 
@@ -77,27 +78,26 @@ export const CommentManager = () => {
 	};
 
 	const handleDeleteClick = async (comment: CommentWithBlog) => {
-		const confirmMessage = `Are you sure you want to delete this comment?\n\nComment by: ${comment.user.displayName}\nBlog Post: ${comment.blogSlug}\nContent: ${comment.content.substring(0, 100)}${comment.content.length > 100 ? "..." : ""}\n\nThis action cannot be undone.`;
+		const result = await showDeleteConfirm("this comment");
+		if (!result.isConfirmed) return;
 
-		if (confirm(confirmMessage)) {
-			try {
-				const adminToken = localStorage.getItem("adminToken");
-				if (!adminToken) throw new Error("Not authenticated");
+		try {
+			const adminToken = localStorage.getItem("adminToken");
+			if (!adminToken) throw new Error("Not authenticated");
 
-				const response = await fetch(`${API_URL}/api/admin/comments/${comment.id}`, {
-					method: "DELETE",
-					headers: {
-						Authorization: `Bearer ${adminToken}`,
-					},
-				});
+			const response = await fetch(`${API_URL}/api/admin/comments/${comment.id}`, {
+				method: "DELETE",
+				headers: {
+					Authorization: `Bearer ${adminToken}`,
+				},
+			});
 
-				if (!response.ok) throw new Error("Failed to delete comment");
+			if (!response.ok) throw new Error("Failed to delete comment");
 
-				setComments(prev => prev.filter(c => c.id !== comment.id));
-			} catch (err) {
-				console.error("Error deleting comment:", err);
-				setError("Failed to delete comment");
-			}
+			setComments(prev => prev.filter(c => c.id !== comment.id));
+		} catch (err) {
+			console.error("Error deleting comment:", err);
+			setError("Failed to delete comment");
 		}
 	};
 
@@ -184,12 +184,7 @@ export const CommentManager = () => {
 												height="24"
 											/>
 										) : (
-											<div
-												className="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-white"
-												style={{ width: "24px", height: "24px", fontSize: "0.75rem" }}
-											>
-												{comment.user.displayName?.charAt(0) || "U"}
-											</div>
+											<div className="user-avatar-placeholder">{comment.user.displayName?.charAt(0) || "U"}</div>
 										)}
 										<span className="small">{comment.user.displayName}</span>
 									</div>

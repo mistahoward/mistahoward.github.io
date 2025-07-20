@@ -242,7 +242,8 @@ export const PetManager = () => {
 	};
 
 	const handleDelete = async (id: number) => {
-		if (!confirmDelete("this pet")) return;
+		const confirmed = await confirmDelete("this pet");
+		if (!confirmed) return;
 
 		await deleteItem(
 			"/api/admin/pets",

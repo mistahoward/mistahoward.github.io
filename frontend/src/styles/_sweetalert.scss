@@ -1,0 +1,211 @@
+// SweetAlert2 Custom Styling
+
+// Prevent layout shift when modal opens
+body.swal2-shown {
+	overflow: hidden !important;
+	padding-right: 0 !important;
+}
+
+// Ensure the modal itself doesn't have scrollbars
+.swal2-popup {
+	overflow: visible !important;
+}
+
+.swal2-popup {
+	font-family: var(--bs-font-sans-serif);
+	border-radius: var(--bs-border-radius-lg);
+	box-shadow: var(--gba-shadow);
+	
+	&.swal2-custom {
+		// Custom styling for our themed alerts
+		background: var(--bs-body-bg);
+		color: var(--bs-body-color);
+		border: 1px solid var(--bs-border-color);
+	}
+}
+
+// Ensure animations work properly
+.animate__animated {
+	animation-duration: 0.3s;
+	animation-fill-mode: both;
+}
+
+.animate__fadeInDown {
+	animation-name: fadeInDown;
+}
+
+.animate__fadeOutUp {
+	animation-name: fadeOutUp;
+}
+
+@keyframes fadeInDown {
+	from {
+		opacity: 0;
+		transform: translate3d(0, -100%, 0);
+	}
+	to {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+@keyframes fadeOutUp {
+	from {
+		opacity: 1;
+		transform: translate3d(0, 0, 0);
+	}
+	to {
+		opacity: 0;
+		transform: translate3d(0, -100%, 0);
+	}
+}
+
+.swal2-title {
+	font-size: 1.5rem;
+	font-weight: 600;
+	color: var(--bs-heading-color);
+	margin-bottom: 1rem;
+}
+
+.swal2-content {
+	font-size: 1rem;
+	line-height: var(--bs-line-height-base);
+	color: var(--bs-body-color);
+}
+
+.swal2-actions {
+	gap: 0.5rem;
+	margin-top: 1.5rem;
+}
+
+.swal2-confirm {
+	background: var(--bs-primary) !important;
+	border-color: var(--bs-primary) !important;
+	color: white !important;
+	font-weight: 500;
+	padding: 0.5rem 1.5rem;
+	border-radius: var(--bs-border-radius);
+	transition: all 0.2s ease;
+	
+	&:hover {
+		background: var(--bs-link-hover-color) !important;
+		border-color: var(--bs-link-hover-color) !important;
+		transform: translateY(-1px);
+	}
+}
+
+.swal2-cancel {
+	background: var(--bs-danger) !important;
+	border-color: var(--bs-danger) !important;
+	color: white !important;
+	font-weight: 500;
+	padding: 0.5rem 1.5rem;
+	border-radius: var(--bs-border-radius);
+	transition: all 0.2s ease;
+	
+	&:hover {
+		background: var(--bs-danger-bg-subtle) !important;
+		border-color: var(--bs-danger-bg-subtle) !important;
+		transform: translateY(-1px);
+	}
+}
+
+.swal2-input {
+	border: 1px solid var(--bs-border-color);
+	border-radius: var(--bs-border-radius);
+	padding: 0.5rem 0.75rem;
+	font-size: 1rem;
+	background: var(--bs-body-bg);
+	color: var(--bs-body-color);
+	
+	&:focus {
+		border-color: var(--bs-primary);
+		box-shadow: 0 0 0 0.2rem rgba(var(--bs-primary-rgb), 0.25);
+		outline: none;
+	}
+}
+
+.swal2-icon {
+	border-width: 0.25rem;
+	
+	&.swal2-success {
+		border-color: var(--bs-success);
+		color: var(--bs-success);
+	}
+	
+	&.swal2-error {
+		border-color: var(--bs-danger);
+		color: var(--bs-danger);
+	}
+	
+	&.swal2-warning {
+		border-color: var(--bs-warning);
+		color: var(--bs-warning);
+	}
+	
+	&.swal2-info {
+		border-color: var(--bs-info);
+		color: var(--bs-info);
+	}
+	
+	&.swal2-question {
+		border-color: var(--bs-primary);
+		color: var(--bs-primary);
+	}
+}
+
+// Toast styling
+.swal2-toast {
+	background: var(--bs-body-bg);
+	color: var(--bs-body-color);
+	border: 1px solid var(--bs-border-color);
+	border-radius: var(--bs-border-radius);
+	box-shadow: var(--gba-shadow);
+	
+	.swal2-title {
+		font-size: 1rem;
+		margin-bottom: 0.5rem;
+	}
+	
+	.swal2-icon {
+		width: 1.5rem;
+		height: 1.5rem;
+		border-width: 0.125rem;
+	}
+}
+
+// Loading spinner
+.swal2-loading {
+	border-color: var(--bs-primary);
+	border-top-color: transparent;
+}
+
+// Progress bar for toasts
+.swal2-timer-progress-bar {
+	background: var(--bs-primary);
+}
+
+// Dark theme adjustments
+[data-bs-theme="dark"] {
+	.swal2-popup {
+		background: var(--bs-body-bg);
+		color: var(--bs-body-color);
+		border-color: var(--bs-border-color);
+	}
+	
+	.swal2-input {
+		background: var(--bs-body-bg);
+		color: var(--bs-body-color);
+		border-color: var(--bs-border-color);
+		
+		&:focus {
+			border-color: var(--bs-primary);
+		}
+	}
+	
+	.swal2-toast {
+		background: var(--bs-body-bg);
+		color: var(--bs-body-color);
+		border-color: var(--bs-border-color);
+	}
+} 

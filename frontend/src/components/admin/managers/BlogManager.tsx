@@ -106,7 +106,8 @@ export const BlogManager = () => {
 	};
 
 	const handleDelete = async (id: number) => {
-		if (!confirmDelete("this post")) return;
+		const confirmed = await confirmDelete("this post");
+		if (!confirmed) return;
 
 		// Clear any auto-saved data for this post
 		const autoSaveKey = `blog_edit_${id}`;

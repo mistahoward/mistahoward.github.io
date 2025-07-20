@@ -26,7 +26,8 @@ export const TagManager = () => {
 	}, []);
 
 	const handleDelete = async (id: number) => {
-		if (!confirmDelete("this tag")) return;
+		const confirmed = await confirmDelete("this tag");
+		if (!confirmed) return;
 
 		await deleteItem(
 			"/api/admin/tags",
