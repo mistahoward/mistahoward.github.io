@@ -68,9 +68,14 @@ export const validateContent = (content: string, config: Partial<ContentValidati
 	return { valid: true };
 };
 
-export const createContentValidator = (config: Partial<ContentValidationConfig> = {}) => async (request: Request, env: any): Promise<Response | null> => {
+export const createContentValidator = (config: Partial<ContentValidationConfig> = {}) => async (
+	request: Request,
+	env: any,
+): Promise<Response | null> => {
 	try {
-		const body = await request.json();
+		// Clone the request body so it can be read multiple times
+		const clonedRequest = request.clone();
+		const body = await clonedRequest.json() as { content?: string };
 		const { content } = body;
 
 		if (!content || typeof content !== 'string') {

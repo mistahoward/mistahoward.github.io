@@ -72,7 +72,7 @@ export const analyzeContentWithPerspective = async (
 					requestedAttributes: finalConfig.enabledAttributes.reduce((acc, attr) => {
 						acc[attr] = {};
 						return acc;
-					}, {} as Record<string, {}>),
+					}, {} as Record<string, Record<string, never>>),
 				}),
 			},
 		);
@@ -89,35 +89,43 @@ export const analyzeContentWithPerspective = async (
 		// Check each enabled attribute against its threshold
 		const violations: string[] = [];
 
-		if (scores.TOXICITY && scores.TOXICITY.summaryScore.value > finalConfig.thresholds.toxicity) {
+		if (scores.TOXICITY
+			&& scores.TOXICITY.summaryScore.value > finalConfig.thresholds.toxicity) {
 			violations.push('toxic content');
 		}
 
-		if (scores.SEVERE_TOXICITY && scores.SEVERE_TOXICITY.summaryScore.value > finalConfig.thresholds.severeToxicity) {
+		if (scores.SEVERE_TOXICITY
+			&& scores.SEVERE_TOXICITY.summaryScore.value > finalConfig.thresholds.severeToxicity) {
 			violations.push('severely toxic content');
 		}
 
-		if (scores.IDENTITY_ATTACK && scores.IDENTITY_ATTACK.summaryScore.value > finalConfig.thresholds.identityAttack) {
+		if (scores.IDENTITY_ATTACK
+			&& scores.IDENTITY_ATTACK.summaryScore.value > finalConfig.thresholds.identityAttack) {
 			violations.push('identity attack');
 		}
 
-		if (scores.INSULT && scores.INSULT.summaryScore.value > finalConfig.thresholds.insult) {
+		if (scores.INSULT
+			&& scores.INSULT.summaryScore.value > finalConfig.thresholds.insult) {
 			violations.push('insulting content');
 		}
 
-		if (scores.PROFANITY && scores.PROFANITY.summaryScore.value > finalConfig.thresholds.profanity) {
+		if (scores.PROFANITY
+			&& scores.PROFANITY.summaryScore.value > finalConfig.thresholds.profanity) {
 			violations.push('profanity');
 		}
 
-		if (scores.THREAT && scores.THREAT.summaryScore.value > finalConfig.thresholds.threat) {
+		if (scores.THREAT
+			&& scores.THREAT.summaryScore.value > finalConfig.thresholds.threat) {
 			violations.push('threatening content');
 		}
 
-		if (scores.SPAM && scores.SPAM.summaryScore.value > finalConfig.thresholds.spam) {
+		if (scores.SPAM
+			&& scores.SPAM.summaryScore.value > finalConfig.thresholds.spam) {
 			violations.push('spam content');
 		}
 
-		if (scores.FLIRTATION && scores.FLIRTATION.summaryScore.value > finalConfig.thresholds.flirtation) {
+		if (scores.FLIRTATION
+			&& scores.FLIRTATION.summaryScore.value > finalConfig.thresholds.flirtation) {
 			violations.push('inappropriate content');
 		}
 
@@ -139,7 +147,9 @@ export const analyzeContentWithPerspective = async (
 
 export const createPerspectiveValidator = (config: Partial<PerspectiveConfig> = {}) => async (request: Request, env: any): Promise<Response | null> => {
 	try {
-		const body = await request.json();
+		// Clone the request body so it can be read multiple times
+		const clonedRequest = request.clone();
+		const body = await clonedRequest.json() as { content?: string };
 		const { content } = body;
 
 		if (!content || typeof content !== 'string') {
