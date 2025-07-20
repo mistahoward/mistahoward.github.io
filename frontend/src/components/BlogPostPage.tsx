@@ -47,6 +47,13 @@ const BlogPostPage = (props: { slug?: string }) => {
 		};
 	}, []);
 
+	const scrollToComments = () => {
+		const commentsSection = document.getElementById("comments-section");
+		if (commentsSection) {
+			commentsSection.scrollIntoView({ behavior: "smooth" });
+		}
+	};
+
 	if (loading) return <YakShaverSpinner />;
 	if (error) return <div className="container my-5 text-center text-danger">{error}</div>;
 	if (!post) return null;
@@ -73,6 +80,13 @@ const BlogPostPage = (props: { slug?: string }) => {
 										>
 											← Back to Blogs
 										</button>
+										<button
+											className="btn btn-link text-decoration-none p-0 jump-to-comments-btn"
+											onClick={scrollToComments}
+											style={{ fontSize: "0.9rem", color: "#6c757d" }}
+										>
+											Jump to Comments ↓
+										</button>
 									</div>
 									<h1 className="display-4 fw-bold mb-3">{post.title}</h1>
 									<div className="d-flex align-items-center gap-3 text-secondary">
@@ -95,7 +109,9 @@ const BlogPostPage = (props: { slug?: string }) => {
 
 					{/* Comments Section - Right Column */}
 					<div className="col-lg-5 col-xl-4">
-						<div className="comments-sidebar">{slug && <CommentsSection blogSlug={slug} />}</div>
+						<div className="comments-sidebar" id="comments-section">
+							{slug && <CommentsSection blogSlug={slug} />}
+						</div>
 					</div>
 				</div>
 			</div>

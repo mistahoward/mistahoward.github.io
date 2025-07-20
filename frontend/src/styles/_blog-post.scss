@@ -175,4 +175,15 @@
 			padding: 1.5rem;
 		}
 	}
+}
+
+// Ensure comments are full width on mobile
+@media (max-width: 991.98px) {
+	.blog-post-layout .row {
+		.col-lg-5.col-xl-4 {
+			width: 100%;
+			max-width: 100%;
+			flex: 0 0 100%;
+		}
+	}
 } 
