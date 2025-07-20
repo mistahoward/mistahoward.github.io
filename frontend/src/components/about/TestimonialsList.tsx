@@ -91,7 +91,6 @@ export const TestimonialsList = () => {
 								</span>
 							</div>
 							{t.relationship && <span className="badge bg-light text-dark border ms-2">{t.relationship}</span>}
-							{t.rating && <span className="ms-2">{renderStars(t.rating)}</span>}
 							<span className="ms-auto" style={{ fontSize: "0.95rem" }}>
 								{formatDate(t.createdAt)}
 							</span>

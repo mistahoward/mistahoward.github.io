@@ -46,28 +46,15 @@ export const TestimonialForm = ({ formData, setFormData, onSubmit, onCancel, edi
 					rows={4}
 				/>
 			</div>
-			<div className="row">
-				<div className="col-md-6 mb-3">
-					<label className="form-label">Rating (1-5)</label>
-					<input
-						type="number"
-						className="form-control"
-						value={formData.rating}
-						onChange={e => setFormData({ ...formData, rating: parseInt((e.target as HTMLInputElement).value) })}
-						min="1"
-						max="5"
-					/>
-				</div>
-				<div className="col-md-6 mb-3">
-					<label className="form-label">Relationship *</label>
-					<input
-						type="text"
-						className="form-control"
-						value={formData.relationship}
-						onChange={e => setFormData({ ...formData, relationship: (e.target as HTMLInputElement).value })}
-						placeholder="How do you know Alex?"
-					/>
-				</div>
+			<div className="mb-3">
+				<label className="form-label">Relationship *</label>
+				<input
+					type="text"
+					className="form-control"
+					value={formData.relationship}
+					onChange={e => setFormData({ ...formData, relationship: (e.target as HTMLInputElement).value })}
+					placeholder="How do you know Alex?"
+				/>
 			</div>
 			<div className="d-flex gap-2">
 				<button onClick={onSubmit} className="btn btn-primary">
