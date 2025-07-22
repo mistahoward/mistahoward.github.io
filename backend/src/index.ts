@@ -9,6 +9,7 @@ interface Env {
 	DB: D1Database;
 	ADMIN_SECRET?: string;
 	CORS_ORIGIN?: string;
+	PRERENDER_SERVER?: string; // Added for Prerender server URL
 }
 
 // Create main router
@@ -53,10 +54,23 @@ router.all('*', (request: Request, env: Env) => new Response(JSON.stringify({ er
 	headers: getCorsHeaders(env),
 }));
 
+// Bot detection utility
+const BOT_USER_AGENTS = [
+	/googlebot/i, /bingbot/i, /yandex/i, /baiduspider/i, /facebookexternalhit/i,
+	/twitterbot/i, /rogerbot/i, /linkedinbot/i, /embedly/i, /quora link preview/i,
+	/showyoubot/i, /outbrain/i, /pinterest/i, /slackbot/i, /vkShare/i, /W3C_Validator/i,
+	/redditbot/i, /applebot/i, /WhatsApp/i, /flipboard/i, /tumblr/i, /bitlybot/i,
+	/SkypeUriPreview/i, /nuzzel/i, /Discordbot/i, /Google Page Speed/i, /Qwantify/i, /pinterestbot/i,
+];
+function isBot(userAgent: string) {
+	return BOT_USER_AGENTS.some((re) => re.test(userAgent));
+}
+
 // Main fetch handler
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
 		const url = new URL(request.url);
+		const userAgent = request.headers.get('user-agent') || '';
 		console.log(`[MAIN] ${request.method} ${url.pathname}`);
 
 		// Handle CORS preflight requests
@@ -67,16 +81,33 @@ export default {
 			});
 		}
 
-		try {
-			const response = await router.handle(request, env, ctx);
-			console.log(`[MAIN] ${request.method} ${url.pathname} -> ${response.status}`);
-			return response;
-		} catch (error) {
-			console.error(`[MAIN] Error handling request for ${url.pathname}:`, error);
-			return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
-				status: 500,
-				headers: getCorsHeaders(env),
+		// 1. API routes: handle as usual
+		if (url.pathname.startsWith('/api/')) {
+			return router.handle(request, env, ctx);
+		}
+
+		// 2. Asset requests: serve as usual (skip prerender for .js, .css, images, etc.)
+		if (url.pathname.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|json|txt|woff|woff2|ttf|eot)$/)) {
+			return fetch(request);
+		}
+
+		// 3. Bot/crawler detection for HTML routes
+		if (
+			isBot(userAgent)
+			&& request.method === 'GET'
+		) {
+			const prerenderUrl = `${env.PRERENDER_SERVER}/${url.origin}${url.pathname}${url.search}`;
+			console.log(`[MAIN] Proxying to Prerender: ${prerenderUrl}`);
+			const prerenderResp = await fetch(prerenderUrl, {
+				headers: { 'User-Agent': userAgent },
+			});
+			return new Response(await prerenderResp.text(), {
+				status: prerenderResp.status,
+				headers: { 'content-type': 'text/html' },
 			});
 		}
+
+		// 4. Fallback: serve SPA (index.html) or static asset
+		return fetch(request);
 	},
 };
