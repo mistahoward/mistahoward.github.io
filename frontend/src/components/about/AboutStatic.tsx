@@ -1,6 +1,6 @@
 export const AboutStatic = () => {
 	return (
-		<div>
+		<div className="about-content">
 			<h2 className="display-4 fw-bold mb-4">About Me</h2>
 			<p className="fs-5 text-muted">
 				By title, I&apos;m a <strong>Full Stack Software Engineer II - Front End Subject Matter Expert</strong>

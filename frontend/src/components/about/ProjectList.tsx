@@ -137,11 +137,11 @@ export const ProjectList = () => {
 												/>
 											)}
 											<div className="card-body">
-												<h6 className="card-title text-primary fw-bold mb-3">{project.name}</h6>
+												<h6 className="project-title card-title text-primary fw-bold mb-3">{project.name}</h6>
 												<div className="row">
 													<div className="col-md-8">
 														{project.description && (
-															<div className="card-text small">{project.description}</div>
+															<div className="card-text small project-description">{project.description}</div>
 														)}
 													</div>
 													<div className="col-md-4">

@@ -54,16 +54,18 @@ export const ExperienceList = () => {
 						<ul className="list-group list-group-flush">
 							{roles.map(exp => (
 								<li className="list-group-item" key={exp.id}>
-									<span className="text-primary fw-bold">{exp.position}</span>
+									<span className="experience-title text-primary fw-bold">{exp.position}</span>
 									<br />
-									<span className="text-muted small">
+									<span className="experience-date text-muted small">
 										{formatMonthYear(exp.startDate)} - {exp.current ? "Present" : formatMonthYear(exp.endDate) || ""}
 									</span>
 									{exp.description &&
 										(exp.description.includes("|") ? (
 											<ul className="mt-1">
 												{exp.description.split("|").map((point: string, idx: number) => (
-													<li key={idx}>{point.trim()}</li>
+													<li className="experience-desc-item" key={idx}>
+														{point.trim()}
+													</li>
 												))}
 											</ul>
 										) : (

@@ -5,7 +5,7 @@
 }
 
 .blog-post-content,
-.blog-post-header,
+.blog-post-header .fw-bold,
 .comment-content,
 .comment-content *,
 .blog-card .card-title,
@@ -28,7 +28,18 @@ input[type="search"],
 input[type="url"],
 code,
 pre,
-pre * {
+pre *,
+.testimonial-content,
+.testimonial-name,
+.experience-title,
+.experience-date,
+.experience-desc-item,
+.about-content *,
+.project-title,
+.project-description,
+.gba-pet-description,
+.gba-pet-origin,
+.gba-pet-name {
 	user-select: text;
 }
 

@@ -1,14 +1,7 @@
 import { useEffect, useState, useMemo } from "preact/hooks";
 import { fetchItems } from "../../utils/crud";
 import { Testimonial } from "../../types/testimonials-list.types";
-import { LoadingSpinner } from "../../utils/ui";
-
-function formatDate(dateStr?: string) {
-	if (!dateStr) return "";
-	const date = new Date(dateStr);
-	if (isNaN(date.getTime())) return dateStr;
-	return date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
-}
+import { formatDate, LoadingSpinner } from "../../utils/ui";
 
 export const TestimonialsList = () => {
 	const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
@@ -72,7 +65,7 @@ export const TestimonialsList = () => {
 			<ul className="list-group">
 				{filteredTestimonials.map(t => (
 					<li className="list-group-item" key={t.id} style={{ marginBottom: "1.2rem", borderRadius: "0.5rem" }}>
-						<div className="mb-1" style={{ fontSize: "1.1rem", fontWeight: 500 }}>
+						<div className="mb-1 testimonial-content" style={{ fontSize: "1.1rem", fontWeight: 500 }}>
 							{t.content}
 						</div>
 						<div className="text-muted small d-flex flex-wrap align-items-center gap-2">
@@ -84,7 +77,7 @@ export const TestimonialsList = () => {
 									height={36}
 									style={{ borderRadius: "50%", objectFit: "cover", background: "#eee" }}
 								/>
-								<span>
+								<span className="testimonial-name">
 									— {t.clientName}
 									{t.clientTitle && `, ${t.clientTitle}`}
 									{t.clientCompany && ` (${t.clientCompany})`}
