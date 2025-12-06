@@ -82,7 +82,9 @@ export const ProjectBadges = ({ githubUrl, nugetPackageId }: ProjectBadgesProps)
 			{/* GitHub Stars Badge - next to GitHub button */}
 			{githubInfo && githubInfo.stars > 0 && (
 				<span className="badge bg-dark d-flex align-items-center gap-1" style={badgeStyle} title="GitHub Stars">
-					<FaStar style={{ color: "#ffc107" }} />
+					<span style={{ color: "#ffc107" }}>
+						<FaStar />
+					</span>
 					{githubInfo.stars.toLocaleString()}
 				</span>
 			)}
