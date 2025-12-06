@@ -4,6 +4,7 @@ import { Project } from "../../types/data-manager.types";
 import { renderIcon, iconNameToLabel } from "../../utils/iconMap";
 import { FaGithub, FaExternalLinkAlt } from "react-icons/fa";
 import { LoadingSpinner } from "../../utils/ui";
+import { ProjectBadges } from "./ProjectBadges";
 
 const projectTypes = ["All", "Personal", "Professional", "Academic"];
 
@@ -165,7 +166,8 @@ export const ProjectList = () => {
 														)}
 													</div>
 												</div>
-												<div className="d-flex gap-2 mt-3 justify-content-end">
+												<div className="d-flex flex-wrap gap-2 mt-3 align-items-center justify-content-end">
+													<ProjectBadges githubUrl={project.githubUrl} nugetPackageId={project.nugetPackageId} />
 													{project.githubUrl && (
 														<a
 															href={project.githubUrl}

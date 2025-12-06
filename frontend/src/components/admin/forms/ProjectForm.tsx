@@ -85,6 +85,21 @@ export const ProjectForm = ({ formData, setFormData, onSubmit, onCancel, editing
 					/>
 				</div>
 			</div>
+			<div className="row">
+				<div className="col-md-6 mb-3">
+					<label className="form-label">
+						NuGet Package ID <span className="text-muted">(optional)</span>
+					</label>
+					<input
+						type="text"
+						className="form-control"
+						value={formData.nugetPackageId}
+						onChange={e => setFormData({ ...formData, nugetPackageId: (e.target as HTMLInputElement).value })}
+						placeholder="e.g. Newtonsoft.Json"
+					/>
+					<div className="form-text">If set, displays NuGet version and download count on the project card</div>
+				</div>
+			</div>
 			<div className="d-flex gap-2">
 				<button onClick={onSubmit} className="btn btn-primary">
 					{editingItem ? "Update" : "Create"}

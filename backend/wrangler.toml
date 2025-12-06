@@ -17,4 +17,8 @@ preview_bucket_name = "pet-images-preview"
 
 # Development settings
 [dev]
-port = 8787 
+port = 8787
+
+# Local development environment variables (override production secrets)
+[vars]
+CORS_ORIGIN = "http://localhost:5173"

@@ -6,6 +6,7 @@ export const getInitialProjectForm = () => ({
 	githubUrl: "",
 	liveUrl: "",
 	imageUrl: "",
+	nugetPackageId: "",
 });
 
 export const getInitialSkillForm = () => ({

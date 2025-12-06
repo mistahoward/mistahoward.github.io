@@ -563,6 +563,7 @@ router.post('/api/admin/projects', async (request: Request, env: Env) => {
 			githubUrl: string;
 			liveUrl?: string;
 			imageUrl?: string;
+			nugetPackageId?: string;
 		};
 		const db = drizzle(env.DB);
 
@@ -574,6 +575,7 @@ router.post('/api/admin/projects', async (request: Request, env: Env) => {
 			githubUrl: body.githubUrl,
 			liveUrl: body.liveUrl,
 			imageUrl: body.imageUrl,
+			nugetPackageId: body.nugetPackageId,
 		}).returning();
 
 		return successResponse(newProject[0], env, 201);
@@ -600,6 +602,7 @@ router.put('/api/admin/projects/:id', async (request: Request, env: Env, ctx: an
 			githubUrl: string;
 			liveUrl?: string;
 			imageUrl?: string;
+			nugetPackageId?: string;
 		};
 		const db = drizzle(env.DB);
 
@@ -612,6 +615,7 @@ router.put('/api/admin/projects/:id', async (request: Request, env: Env, ctx: an
 				githubUrl: body.githubUrl,
 				liveUrl: body.liveUrl,
 				imageUrl: body.imageUrl,
+				nugetPackageId: body.nugetPackageId,
 				updatedAt: new Date().toISOString(),
 			})
 			.where(eq(projects.id, id))

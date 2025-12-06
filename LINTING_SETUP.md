@@ -126,5 +126,3 @@ The ESLint configuration uses `eslint-plugin-preact` which provides:
 - Proper component detection
 - Hook rules compatibility
 - Import/export optimization
-
-This ensures your Preact code follows best practices while maintaining compatibility with the React ecosystem. 

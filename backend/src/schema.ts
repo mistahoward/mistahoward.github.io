@@ -23,6 +23,7 @@ export const projects = sqliteTable('Projects', {
 	githubUrl: text('github_url').notNull(),
 	liveUrl: text('live_url'),
 	imageUrl: text('image_url'),
+	nugetPackageId: text('nuget_package_id'), // Optional NuGet package ID for displaying version/downloads
 	createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 });

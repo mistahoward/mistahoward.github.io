@@ -100,6 +100,7 @@ export const DataManager = ({ lastFocusTime = 0, initialTab = "projects" }: Data
 					githubUrl: item.githubUrl || "",
 					liveUrl: item.liveUrl || "",
 					imageUrl: item.imageUrl || "",
+					nugetPackageId: item.nugetPackageId || "",
 				});
 				break;
 			case "skills":

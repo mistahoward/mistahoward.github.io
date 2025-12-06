@@ -7,6 +7,7 @@ export interface Project {
 	githubUrl: string;
 	liveUrl?: string;
 	imageUrl?: string;
+	nugetPackageId?: string;
 	createdAt: string;
 	updatedAt: string;
 }
@@ -115,6 +116,7 @@ export type ProjectFormState = {
 	githubUrl: string;
 	liveUrl: string;
 	imageUrl: string;
+	nugetPackageId: string;
 };
 
 export type SkillFormState = {
