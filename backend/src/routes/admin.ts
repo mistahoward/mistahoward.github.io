@@ -45,11 +45,11 @@ router.post('/api/admin/auth', async (request: Request, env: Env) => {
 			return successResponse({
 				token: env.ADMIN_SECRET,
 				message: 'Authentication successful',
-			}, env, 200);
+			}, env, 200, request);
 		}
-		return errorResponse('Invalid password', env, 401);
+		return errorResponse('Invalid password', env, 401, request);
 	} catch (error) {
-		return errorResponse('Authentication failed', env, 500);
+		return errorResponse('Authentication failed', env, 500, request);
 	}
 });
 
@@ -57,7 +57,7 @@ router.post('/api/admin/auth', async (request: Request, env: Env) => {
 router.get('/api/admin/verify', async (request: Request, env: Env) => {
 	const authCheck = requireAdmin(request, env);
 	if (authCheck) return authCheck;
-	return successResponse({ message: 'Token valid' }, env, 200);
+	return successResponse({ message: 'Token valid' }, env, 200, request);
 });
 
 // BLOG ADMIN ROUTES
@@ -103,9 +103,9 @@ router.post('/api/admin/blog', async (request: Request, env: Env) => {
 			}
 		}
 
-		return successResponse(newPost, env, 201);
+		return successResponse(newPost, env, 201, request);
 	} catch (error) {
-		return errorResponse('Failed to create blog post', env, 500);
+		return errorResponse('Failed to create blog post', env, 500, request);
 	}
 });
 
@@ -143,7 +143,7 @@ router.put('/api/admin/blog/:id', async (request: Request, env: Env, ctx: any) =
 			.returning();
 
 		if (!updatedPostArr.length) {
-			return errorResponse('Blog post not found', env, 404);
+			return errorResponse('Blog post not found', env, 404, request);
 		}
 		const updatedPost = updatedPostArr[0];
 
@@ -165,9 +165,9 @@ router.put('/api/admin/blog/:id', async (request: Request, env: Env, ctx: any) =
 			}
 		}
 
-		return successResponse(updatedPost, env, 200);
+		return successResponse(updatedPost, env, 200, request);
 	} catch (error) {
-		return errorResponse('Failed to update blog post', env, 500);
+		return errorResponse('Failed to update blog post', env, 500, request);
 	}
 });
 
@@ -184,7 +184,7 @@ router.delete('/api/admin/blog/:id', async (request: Request, env: Env, ctx: any
 
 		if (Number.isNaN(id)) {
 			console.error('[ADMIN] Invalid blog post ID provided:', ctx.params?.id);
-			return errorResponse('Invalid blog post ID', env, 400);
+			return errorResponse('Invalid blog post ID', env, 400, request);
 		}
 
 		const db = drizzle(env.DB);
@@ -193,13 +193,13 @@ router.delete('/api/admin/blog/:id', async (request: Request, env: Env, ctx: any
 
 		if (result.meta.changes === 0) {
 			console.warn(`[ADMIN] No blog post found with ID: ${id}`);
-			return errorResponse('Blog post not found', env, 404);
+			return errorResponse('Blog post not found', env, 404, request);
 		}
 
-		return successResponse({ message: 'Blog post deleted' }, env, 200);
+		return successResponse({ message: 'Blog post deleted' }, env, 200, request);
 	} catch (error) {
 		console.error('[ADMIN] Blog post delete error:', error);
-		return errorResponse('Failed to delete blog post', env, 500);
+		return errorResponse('Failed to delete blog post', env, 500, request);
 	}
 });
 
@@ -233,10 +233,10 @@ router.get('/api/admin/blog', async (request: Request, env: Env) => {
 			tags: tagsByPostId[post.id] || [],
 		}));
 
-		return successResponse(postsWithTags, env, 200);
+		return successResponse(postsWithTags, env, 200, request);
 	} catch (error) {
 		console.error('[ADMIN] Database error:', error);
-		return errorResponse('Failed to fetch blog posts', env, 500);
+		return errorResponse('Failed to fetch blog posts', env, 500, request);
 	}
 });
 
@@ -248,9 +248,9 @@ router.get('/api/admin/tags', async (request: Request, env: Env) => {
 	try {
 		const db = drizzle(env.DB);
 		const allTags = await db.select().from(tags).orderBy(tags.name);
-		return successResponse(allTags, env, 200);
+		return successResponse(allTags, env, 200, request);
 	} catch (error) {
-		return errorResponse('Failed to fetch tags', env, 500);
+		return errorResponse('Failed to fetch tags', env, 500, request);
 	}
 });
 
@@ -267,7 +267,7 @@ router.delete('/api/admin/tags/:id', async (request: Request, env: Env, ctx: any
 
 		if (Number.isNaN(id)) {
 			console.error('[ADMIN] Invalid tag ID provided:', ctx.params?.id);
-			return errorResponse('Invalid tag ID', env, 400);
+			return errorResponse('Invalid tag ID', env, 400, request);
 		}
 
 		const db = drizzle(env.DB);
@@ -280,13 +280,13 @@ router.delete('/api/admin/tags/:id', async (request: Request, env: Env, ctx: any
 
 		if (result.meta.changes === 0) {
 			console.warn(`[ADMIN] No tag found with ID: ${id}`);
-			return errorResponse('Tag not found', env, 404);
+			return errorResponse('Tag not found', env, 404, request);
 		}
 
-		return successResponse({ message: 'Tag deleted' }, env, 200);
+		return successResponse({ message: 'Tag deleted' }, env, 200, request);
 	} catch (error) {
 		console.error('[ADMIN] Tag delete error:', error);
-		return errorResponse('Failed to delete tag', env, 500);
+		return errorResponse('Failed to delete tag', env, 500, request);
 	}
 });
 
@@ -317,6 +317,7 @@ router.post('/api/admin/pets', async (request: Request, env: Env) => {
 			nickname?: string;
 			adoptedDate?: string;
 			isActive?: boolean;
+			isMemorial?: boolean;
 		};
 		const db = drizzle(env.DB);
 
@@ -339,11 +340,12 @@ router.post('/api/admin/pets', async (request: Request, env: Env) => {
 			nickname: body.nickname,
 			adoptedDate: body.adoptedDate,
 			isActive: body.isActive !== undefined ? body.isActive : true,
+			isMemorial: body.isMemorial !== undefined ? body.isMemorial : false,
 		}).returning();
 
-		return successResponse(newPet[0], env, 201);
+		return successResponse(newPet[0], env, 201, request);
 	} catch (error) {
-		return errorResponse('Failed to create pet', env, 500);
+		return errorResponse('Failed to create pet', env, 500, request);
 	}
 });
 
@@ -376,6 +378,7 @@ router.put('/api/admin/pets/:id', async (request: Request, env: Env, ctx: any) =
 			nickname?: string;
 			adoptedDate?: string;
 			isActive?: boolean;
+			isMemorial?: boolean;
 		};
 		const db = drizzle(env.DB);
 
@@ -399,18 +402,19 @@ router.put('/api/admin/pets/:id', async (request: Request, env: Env, ctx: any) =
 				nickname: body.nickname,
 				adoptedDate: body.adoptedDate,
 				isActive: body.isActive,
+				isMemorial: body.isMemorial,
 				updatedAt: new Date().toISOString(),
 			})
 			.where(eq(pets.id, id))
 			.returning();
 
 		if (!updatedPet.length) {
-			return errorResponse('Pet not found', env, 404);
+			return errorResponse('Pet not found', env, 404, request);
 		}
 
-		return successResponse(updatedPet[0], env, 200);
+		return successResponse(updatedPet[0], env, 200, request);
 	} catch (error) {
-		return errorResponse('Failed to update pet', env, 500);
+		return errorResponse('Failed to update pet', env, 500, request);
 	}
 });
 
@@ -427,7 +431,7 @@ router.delete('/api/admin/pets/:id', async (request: Request, env: Env, ctx: any
 
 		if (Number.isNaN(id)) {
 			console.error('[ADMIN] Invalid pet ID provided:', ctx.params?.id);
-			return errorResponse('Invalid pet ID', env, 400);
+			return errorResponse('Invalid pet ID', env, 400, request);
 		}
 
 		const db = drizzle(env.DB);
@@ -436,13 +440,13 @@ router.delete('/api/admin/pets/:id', async (request: Request, env: Env, ctx: any
 
 		if (result.meta.changes === 0) {
 			console.warn(`[ADMIN] No pet found with ID: ${id}`);
-			return errorResponse('Pet not found', env, 404);
+			return errorResponse('Pet not found', env, 404, request);
 		}
 
-		return successResponse({ message: 'Pet deleted' }, env, 200);
+		return successResponse({ message: 'Pet deleted' }, env, 200, request);
 	} catch (error) {
 		console.error('[ADMIN] Pet delete error:', error);
-		return errorResponse('Failed to delete pet', env, 500);
+		return errorResponse('Failed to delete pet', env, 500, request);
 	}
 });
 
@@ -462,10 +466,10 @@ router.get('/api/admin/pets', async (request: Request, env: Env) => {
 		console.log(`[ADMIN] Found ${allPets.length} pets`);
 		console.log('[ADMIN] Pet IDs:', allPets.map((pet) => pet.id));
 
-		return successResponse(allPets, env, 200);
+		return successResponse(allPets, env, 200, request);
 	} catch (error) {
 		console.error('[ADMIN] Pets database error:', error);
-		return errorResponse('Failed to fetch pets', env, 500);
+		return errorResponse('Failed to fetch pets', env, 500, request);
 	}
 });
 
@@ -491,21 +495,21 @@ router.post('/api/admin/pets/upload-image', async (request: Request, env: Env) =
 
 		if (!file || typeof file !== 'object' || !('type' in file) || !('size' in file) || !('name' in file)) {
 			console.log('[ADMIN] Invalid file object:', file);
-			return errorResponse('No valid image file provided', env, 400);
+			return errorResponse('No valid image file provided', env, 400, request);
 		}
 
 		// Validate file type
 		const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 		console.log('[ADMIN] File type:', file.type, 'Allowed types:', allowedTypes);
 		if (!allowedTypes.includes(file.type)) {
-			return errorResponse('Invalid file type. Only JPEG, PNG, and WebP are allowed.', env, 400);
+			return errorResponse('Invalid file type. Only JPEG, PNG, and WebP are allowed.', env, 400, request);
 		}
 
 		// Validate file size (max 10MB)
 		const maxSize = 10 * 1024 * 1024; // 10MB
 		console.log('[ADMIN] File size:', file.size, 'Max size:', maxSize);
 		if (file.size > maxSize) {
-			return errorResponse('File too large. Maximum size is 10MB.', env, 400);
+			return errorResponse('File too large. Maximum size is 10MB.', env, 400, request);
 		}
 
 		// Generate unique filename
@@ -528,7 +532,7 @@ router.post('/api/admin/pets/upload-image', async (request: Request, env: Env) =
 			console.log('[ADMIN] R2 upload successful:', filename);
 		} catch (uploadError) {
 			console.error('[ADMIN] R2 upload failed:', uploadError);
-			return errorResponse('Failed to upload image to R2', env, 500);
+			return errorResponse('Failed to upload image to R2', env, 500, request);
 		}
 
 		// Generate public URL using environment variable or fallback
@@ -540,10 +544,10 @@ router.post('/api/admin/pets/upload-image', async (request: Request, env: Env) =
 			imageUrl,
 			filename,
 			message: 'Image uploaded successfully',
-		}, env, 200);
+		}, env, 200, request);
 	} catch (error) {
 		console.error('[ADMIN] Image upload error:', error);
-		return errorResponse('Failed to upload image', env, 500);
+		return errorResponse('Failed to upload image', env, 500, request);
 	}
 });
 
@@ -578,9 +582,9 @@ router.post('/api/admin/projects', async (request: Request, env: Env) => {
 			nugetPackageId: body.nugetPackageId,
 		}).returning();
 
-		return successResponse(newProject[0], env, 201);
+		return successResponse(newProject[0], env, 201, request);
 	} catch (error) {
-		return errorResponse('Failed to create project', env, 500);
+		return errorResponse('Failed to create project', env, 500, request);
 	}
 });
 
@@ -622,12 +626,12 @@ router.put('/api/admin/projects/:id', async (request: Request, env: Env, ctx: an
 			.returning();
 
 		if (!updatedProject.length) {
-			return errorResponse('Project not found', env, 404);
+			return errorResponse('Project not found', env, 404, request);
 		}
 
-		return successResponse(updatedProject[0], env, 200);
+		return successResponse(updatedProject[0], env, 200, request);
 	} catch (error) {
-		return errorResponse('Failed to update project', env, 500);
+		return errorResponse('Failed to update project', env, 500, request);
 	}
 });
 
@@ -644,7 +648,7 @@ router.delete('/api/admin/projects/:id', async (request: Request, env: Env, ctx:
 
 		if (Number.isNaN(id)) {
 			console.error('[ADMIN] Invalid project ID provided:', ctx.params?.id);
-			return errorResponse('Invalid project ID', env, 400);
+			return errorResponse('Invalid project ID', env, 400, request);
 		}
 
 		const db = drizzle(env.DB);
@@ -654,13 +658,13 @@ router.delete('/api/admin/projects/:id', async (request: Request, env: Env, ctx:
 
 		if (result.meta.changes === 0) {
 			console.warn(`[ADMIN] No project found with ID: ${id}`);
-			return errorResponse('Project not found', env, 404);
+			return errorResponse('Project not found', env, 404, request);
 		}
 
-		return successResponse({ message: 'Project deleted' }, env, 200);
+		return successResponse({ message: 'Project deleted' }, env, 200, request);
 	} catch (error) {
 		console.error('[ADMIN] Project delete error:', error);
-		return errorResponse('Failed to delete project', env, 500);
+		return errorResponse('Failed to delete project', env, 500, request);
 	}
 });
 
@@ -673,9 +677,9 @@ router.get('/api/admin/projects', async (request: Request, env: Env) => {
 		const db = drizzle(env.DB);
 		const allProjects = await db.select().from(projects).orderBy(desc(projects.createdAt));
 
-		return successResponse(allProjects, env, 200);
+		return successResponse(allProjects, env, 200, request);
 	} catch (error) {
-		return errorResponse('Failed to fetch projects', env, 500);
+		return errorResponse('Failed to fetch projects', env, 500, request);
 	}
 });
 
@@ -702,9 +706,9 @@ router.post('/api/admin/skills', async (request: Request, env: Env) => {
 			icon: body.icon,
 		}).returning();
 
-		return successResponse(newSkill[0], env, 201);
+		return successResponse(newSkill[0], env, 201, request);
 	} catch (error) {
-		return errorResponse('Failed to create skill', env, 500);
+		return errorResponse('Failed to create skill', env, 500, request);
 	}
 });
 
@@ -742,13 +746,13 @@ router.put('/api/admin/skills/:id', async (request: Request, env: Env, ctx: any)
 
 		if (!updatedSkill.length) {
 			console.warn('[ADMIN] Skill not found for update, id:', id);
-			return errorResponse('Skill not found', env, 404);
+			return errorResponse('Skill not found', env, 404, request);
 		}
 
-		return successResponse(updatedSkill[0], env, 200);
+		return successResponse(updatedSkill[0], env, 200, request);
 	} catch (error) {
 		console.error('[ADMIN] Failed to update skill:', error);
-		return errorResponse('Failed to update skill', env, 500);
+		return errorResponse('Failed to update skill', env, 500, request);
 	}
 });
 
@@ -765,7 +769,7 @@ router.delete('/api/admin/skills/:id', async (request: Request, env: Env, ctx: a
 
 		if (Number.isNaN(id)) {
 			console.error('[ADMIN] Invalid skill ID provided:', ctx.params?.id);
-			return errorResponse('Invalid skill ID', env, 400);
+			return errorResponse('Invalid skill ID', env, 400, request);
 		}
 
 		const db = drizzle(env.DB);
@@ -774,13 +778,13 @@ router.delete('/api/admin/skills/:id', async (request: Request, env: Env, ctx: a
 
 		if (result.meta.changes === 0) {
 			console.warn(`[ADMIN] No skill found with ID: ${id}`);
-			return errorResponse('Skill not found', env, 404);
+			return errorResponse('Skill not found', env, 404, request);
 		}
 
-		return successResponse({ message: 'Skill deleted' }, env, 200);
+		return successResponse({ message: 'Skill deleted' }, env, 200, request);
 	} catch (error) {
 		console.error('[ADMIN] Skill delete error:', error);
-		return errorResponse('Failed to delete skill', env, 500);
+		return errorResponse('Failed to delete skill', env, 500, request);
 	}
 });
 
@@ -793,9 +797,9 @@ router.get('/api/admin/skills', async (request: Request, env: Env) => {
 		const db = drizzle(env.DB);
 		const allSkills = await db.select().from(skills).orderBy(desc(skills.createdAt));
 
-		return successResponse(allSkills, env, 200);
+		return successResponse(allSkills, env, 200, request);
 	} catch (error) {
-		return errorResponse('Failed to fetch skills', env, 500);
+		return errorResponse('Failed to fetch skills', env, 500, request);
 	}
 });
 
@@ -828,9 +832,9 @@ router.post('/api/admin/experience', async (request: Request, env: Env) => {
 			technologies: body.technologies,
 		}).returning();
 
-		return successResponse(newExperience[0], env, 201);
+		return successResponse(newExperience[0], env, 201, request);
 	} catch (error) {
-		return errorResponse('Failed to create experience', env, 500);
+		return errorResponse('Failed to create experience', env, 500, request);
 	}
 });
 
@@ -869,12 +873,12 @@ router.put('/api/admin/experience/:id', async (request: Request, env: Env, ctx: 
 			.returning();
 
 		if (!updatedExperience.length) {
-			return errorResponse('Experience not found', env, 404);
+			return errorResponse('Experience not found', env, 404, request);
 		}
 
-		return successResponse(updatedExperience[0], env, 200);
+		return successResponse(updatedExperience[0], env, 200, request);
 	} catch (error) {
-		return errorResponse('Failed to update experience', env, 500);
+		return errorResponse('Failed to update experience', env, 500, request);
 	}
 });
 
@@ -891,7 +895,7 @@ router.delete('/api/admin/experience/:id', async (request: Request, env: Env, ct
 
 		if (Number.isNaN(id)) {
 			console.error('[ADMIN] Invalid experience ID provided:', ctx.params?.id);
-			return errorResponse('Invalid experience ID', env, 400);
+			return errorResponse('Invalid experience ID', env, 400, request);
 		}
 
 		const db = drizzle(env.DB);
@@ -900,13 +904,13 @@ router.delete('/api/admin/experience/:id', async (request: Request, env: Env, ct
 
 		if (result.meta.changes === 0) {
 			console.warn(`[ADMIN] No experience found with ID: ${id}`);
-			return errorResponse('Experience not found', env, 404);
+			return errorResponse('Experience not found', env, 404, request);
 		}
 
-		return successResponse({ message: 'Experience deleted' }, env, 200);
+		return successResponse({ message: 'Experience deleted' }, env, 200, request);
 	} catch (error) {
 		console.error('[ADMIN] Experience delete error:', error);
-		return errorResponse('Failed to delete experience', env, 500);
+		return errorResponse('Failed to delete experience', env, 500, request);
 	}
 });
 
@@ -919,9 +923,9 @@ router.get('/api/admin/experience', async (request: Request, env: Env) => {
 		const db = drizzle(env.DB);
 		const allExperience = await db.select().from(experience).orderBy(desc(experience.createdAt));
 
-		return successResponse(allExperience, env, 200);
+		return successResponse(allExperience, env, 200, request);
 	} catch (error) {
-		return errorResponse('Failed to fetch experience', env, 500);
+		return errorResponse('Failed to fetch experience', env, 500, request);
 	}
 });
 
@@ -954,9 +958,9 @@ router.post('/api/admin/testimonials', async (request: Request, env: Env) => {
 			status: body.status || 'needs_review',
 		}).returning();
 
-		return successResponse(newTestimonial[0], env, 201);
+		return successResponse(newTestimonial[0], env, 201, request);
 	} catch (error) {
-		return errorResponse('Failed to create testimonial', env, 500);
+		return errorResponse('Failed to create testimonial', env, 500, request);
 	}
 });
 
@@ -995,12 +999,12 @@ router.put('/api/admin/testimonials/:id', async (request: Request, env: Env, ctx
 			.returning();
 
 		if (!updatedTestimonial.length) {
-			return errorResponse('Testimonial not found', env, 404);
+			return errorResponse('Testimonial not found', env, 404, request);
 		}
 
-		return successResponse(updatedTestimonial[0], env, 200);
+		return successResponse(updatedTestimonial[0], env, 200, request);
 	} catch (error) {
-		return errorResponse('Failed to update testimonial', env, 500);
+		return errorResponse('Failed to update testimonial', env, 500, request);
 	}
 });
 
@@ -1017,7 +1021,7 @@ router.delete('/api/admin/testimonials/:id', async (request: Request, env: Env, 
 
 		if (Number.isNaN(id)) {
 			console.error('[ADMIN] Invalid testimonial ID provided:', ctx.params?.id);
-			return errorResponse('Invalid testimonial ID', env, 400);
+			return errorResponse('Invalid testimonial ID', env, 400, request);
 		}
 
 		const db = drizzle(env.DB);
@@ -1026,13 +1030,13 @@ router.delete('/api/admin/testimonials/:id', async (request: Request, env: Env, 
 
 		if (result.meta.changes === 0) {
 			console.warn(`[ADMIN] No testimonial found with ID: ${id}`);
-			return errorResponse('Testimonial not found', env, 404);
+			return errorResponse('Testimonial not found', env, 404, request);
 		}
 
-		return successResponse({ message: 'Testimonial deleted' }, env, 200);
+		return successResponse({ message: 'Testimonial deleted' }, env, 200, request);
 	} catch (error) {
 		console.error('[ADMIN] Testimonial delete error:', error);
-		return errorResponse('Failed to delete testimonial', env, 500);
+		return errorResponse('Failed to delete testimonial', env, 500, request);
 	}
 });
 
@@ -1047,9 +1051,9 @@ router.get('/api/admin/testimonials', async (request: Request, env: Env) => {
 			.from(testimonials)
 			.orderBy(desc(testimonials.createdAt));
 
-		return successResponse(allTestimonials, env, 200);
+		return successResponse(allTestimonials, env, 200, request);
 	} catch (error) {
-		return errorResponse('Failed to fetch testimonials', env, 500);
+		return errorResponse('Failed to fetch testimonials', env, 500, request);
 	}
 });
 
@@ -1086,9 +1090,9 @@ router.post('/api/admin/certifications', async (request: Request, env: Env) => {
 			imageUrl: body.imageUrl,
 		}).returning();
 
-		return successResponse(newCertification[0], env, 201);
+		return successResponse(newCertification[0], env, 201, request);
 	} catch (error) {
-		return errorResponse('Failed to create certification', env, 500);
+		return errorResponse('Failed to create certification', env, 500, request);
 	}
 });
 
@@ -1132,12 +1136,12 @@ router.put('/api/admin/certifications/:id', async (request: Request, env: Env, c
 			.returning();
 
 		if (!updatedCertification.length) {
-			return errorResponse('Certification not found', env, 404);
+			return errorResponse('Certification not found', env, 404, request);
 		}
 
-		return successResponse(updatedCertification[0], env, 200);
+		return successResponse(updatedCertification[0], env, 200, request);
 	} catch (error) {
-		return errorResponse('Failed to update certification', env, 500);
+		return errorResponse('Failed to update certification', env, 500, request);
 	}
 });
 
@@ -1154,7 +1158,7 @@ router.delete('/api/admin/certifications/:id', async (request: Request, env: Env
 
 		if (Number.isNaN(id)) {
 			console.error('[ADMIN] Invalid certification ID provided:', ctx.params?.id);
-			return errorResponse('Invalid certification ID', env, 400);
+			return errorResponse('Invalid certification ID', env, 400, request);
 		}
 
 		const db = drizzle(env.DB);
@@ -1163,13 +1167,13 @@ router.delete('/api/admin/certifications/:id', async (request: Request, env: Env
 
 		if (result.meta.changes === 0) {
 			console.warn(`[ADMIN] No certification found with ID: ${id}`);
-			return errorResponse('Certification not found', env, 404);
+			return errorResponse('Certification not found', env, 404, request);
 		}
 
-		return successResponse({ message: 'Certification deleted' }, env, 200);
+		return successResponse({ message: 'Certification deleted' }, env, 200, request);
 	} catch (error) {
 		console.error('[ADMIN] Certification delete error:', error);
-		return errorResponse('Failed to delete certification', env, 500);
+		return errorResponse('Failed to delete certification', env, 500, request);
 	}
 });
 
@@ -1184,9 +1188,9 @@ router.get('/api/admin/certifications', async (request: Request, env: Env) => {
 			.from(certifications)
 			.orderBy(desc(certifications.createdAt));
 
-		return successResponse(allCertifications, env, 200);
+		return successResponse(allCertifications, env, 200, request);
 	} catch (error) {
-		return errorResponse('Failed to fetch certifications', env, 500);
+		return errorResponse('Failed to fetch certifications', env, 500, request);
 	}
 });
 
@@ -1206,9 +1210,9 @@ router.post('/api/admin/testimonial-invites', async (request: Request, env: Env)
 			email: body.email,
 			expiresAt: body.expiresAt,
 		}).returning();
-		return successResponse(invite[0], env, 201);
+		return successResponse(invite[0], env, 201, request);
 	} catch (error) {
-		return errorResponse('Failed to create testimonial invite', env, 500);
+		return errorResponse('Failed to create testimonial invite', env, 500, request);
 	}
 });
 
@@ -1220,9 +1224,9 @@ router.get('/api/admin/testimonial-invites', async (request: Request, env: Env) 
 	try {
 		const db = drizzle(env.DB);
 		const invites = await db.select().from(testimonialInvites);
-		return successResponse(invites, env, 200);
+		return successResponse(invites, env, 200, request);
 	} catch (error) {
-		return errorResponse('Failed to fetch testimonial invites', env, 500);
+		return errorResponse('Failed to fetch testimonial invites', env, 500, request);
 	}
 });
 
@@ -1236,13 +1240,13 @@ router.delete('/api/admin/testimonial-invites/:id', async (request: Request, env
 		const pathParts = url.pathname.split('/');
 		const idFromPath = pathParts[pathParts.length - 1];
 		const id = parseInt(ctx.params?.id || idFromPath, 10);
-		if (Number.isNaN(id)) return errorResponse('Invalid invite ID', env, 400);
+		if (Number.isNaN(id)) return errorResponse('Invalid invite ID', env, 400, request);
 		const db = drizzle(env.DB);
 		const result = await db.delete(testimonialInvites).where(eq(testimonialInvites.id, id));
-		if (result.meta.changes === 0) return errorResponse('Invite not found', env, 404);
-		return successResponse({ message: 'Invite deleted' }, env, 200);
+		if (result.meta.changes === 0) return errorResponse('Invite not found', env, 404, request);
+		return successResponse({ message: 'Invite deleted' }, env, 200, request);
 	} catch (error) {
-		return errorResponse('Failed to delete testimonial invite', env, 500);
+		return errorResponse('Failed to delete testimonial invite', env, 500, request);
 	}
 });
 
@@ -1258,17 +1262,17 @@ router.post('/api/admin/upload-image', async (request: Request, env: Env) => {
 		const imageFile = formData.get('image') as unknown as File;
 
 		if (!imageFile) {
-			return errorResponse('No image file provided', env, 400);
+			return errorResponse('No image file provided', env, 400, request);
 		}
 
 		// Validate file type
 		if (!imageFile.type.startsWith('image/')) {
-			return errorResponse('File must be an image', env, 400);
+			return errorResponse('File must be an image', env, 400, request);
 		}
 
 		// Validate file size (5MB limit)
 		if (imageFile.size > 5 * 1024 * 1024) {
-			return errorResponse('Image file too large (max 5MB)', env, 400);
+			return errorResponse('Image file too large (max 5MB)', env, 400, request);
 		}
 
 		// Generate unique filename
@@ -1286,10 +1290,10 @@ router.post('/api/admin/upload-image', async (request: Request, env: Env) => {
 		// Generate public URL
 		const imageUrl = env.R2_DOMAIN ? `${env.R2_DOMAIN}/${filename}` : `/api/images/${filename}`;
 
-		return successResponse({ url: imageUrl }, env, 200);
+		return successResponse({ url: imageUrl }, env, 200, request);
 	} catch (error) {
 		console.error('[ADMIN] Image upload error:', error);
-		return errorResponse('Failed to upload image', env, 500);
+		return errorResponse('Failed to upload image', env, 500, request);
 	}
 });
 
@@ -1364,7 +1368,7 @@ router.get('/api/admin/comments', async (request: Request, env: Env) => {
 		return successResponse(commentsWithVotes, env);
 	} catch (error) {
 		console.error('Error fetching admin comments:', error);
-		return errorResponse('Failed to fetch comments', env, 500);
+		return errorResponse('Failed to fetch comments', env, 500, request);
 	}
 });
 
@@ -1395,7 +1399,7 @@ router.delete('/api/admin/comments/:id', async (request: Request, env: Env, ctx:
 		return successResponse({ message: 'Comment deleted successfully' }, env);
 	} catch (error) {
 		console.error('Error deleting comment:', error);
-		return errorResponse('Failed to delete comment', env, 500);
+		return errorResponse('Failed to delete comment', env, 500, request);
 	}
 });
 
@@ -1416,14 +1420,14 @@ router.get('/api/admin/comments/blog-slugs', async (request: Request, env: Env) 
 		return successResponse(blogSlugs.map((slug) => slug.blogSlug), env);
 	} catch (error) {
 		console.error('Error fetching blog slugs:', error);
-		return errorResponse('Failed to fetch blog slugs', env, 500);
+		return errorResponse('Failed to fetch blog slugs', env, 500, request);
 	}
 });
 
 // Add a 404 handler as the last route
-router.all('*', (_: Request, env: Env) => new Response(JSON.stringify({ error: 'Not Found' }), {
+router.all('*', (request: Request, env: Env) => new Response(JSON.stringify({ error: 'Not Found' }), {
 	status: 404,
-	headers: env ? getCorsHeaders(env) : { 'Content-Type': 'application/json' },
+	headers: env ? getCorsHeaders(env, request) : { 'Content-Type': 'application/json' },
 }));
 
 export default router;

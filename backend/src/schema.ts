@@ -114,6 +114,7 @@ export const pets = sqliteTable('Pets', {
 	nickname: text('nickname'),
 	adoptedDate: text('adopted_date'),
 	isActive: integer('is_active', { mode: 'boolean' }).default(true), // for pets that have passed
+	isMemorial: integer('is_memorial', { mode: 'boolean' }).default(false), // for memorial/rainbow bridge
 	createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 	updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
 });

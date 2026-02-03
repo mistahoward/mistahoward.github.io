@@ -31,6 +31,7 @@ export const PetManager = () => {
 		nickname: "",
 		adoptedDate: "",
 		isActive: true,
+		isMemorial: false,
 	});
 
 	const [imageFile, setImageFile] = useState<File | null>(null);
@@ -73,6 +74,7 @@ export const PetManager = () => {
 			nickname: "",
 			adoptedDate: "",
 			isActive: true,
+			isMemorial: false,
 		});
 		setImageFile(null);
 		setImagePreview("");
@@ -102,6 +104,7 @@ export const PetManager = () => {
 			nickname: pet.nickname || "",
 			adoptedDate: pet.adoptedDate || "",
 			isActive: pet.isActive,
+			isMemorial: pet.isMemorial || false,
 		});
 		setImageFile(null);
 		setImagePreview(pet.imageUrl || "");
@@ -131,6 +134,7 @@ export const PetManager = () => {
 			nickname: "",
 			adoptedDate: "",
 			isActive: true,
+			isMemorial: false,
 		});
 		setImageFile(null);
 		setImagePreview("");
@@ -309,6 +313,11 @@ export const PetManager = () => {
 										<span className={`badge ${pet.isActive ? "bg-success" : "bg-secondary"}`}>
 											{pet.isActive ? "Active" : "Inactive"}
 										</span>
+										{pet.isMemorial && (
+											<span className="badge bg-info">
+												Memorial
+											</span>
+										)}
 									</div>
 									<p className="text-muted small mb-1">
 										{pet.species} • {pet.breed || "Unknown breed"} • {pet.age ? ` ${pet.age} years old` : ""}

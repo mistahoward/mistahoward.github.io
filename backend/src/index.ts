@@ -44,13 +44,13 @@ router.get('/api/debug/env', (request: Request, env: Env) => new Response(JSON.s
 	corsOrigin: env.CORS_ORIGIN,
 }), {
 	status: 200,
-	headers: getCorsHeaders(env),
+	headers: getCorsHeaders(env, request),
 }));
 
 // Catch-all route for 404 errors
 router.all('*', (request: Request, env: Env) => new Response(JSON.stringify({ error: 'Not Found' }), {
 	status: 404,
-	headers: getCorsHeaders(env),
+	headers: getCorsHeaders(env, request),
 }));
 
 // Main fetch handler
@@ -63,7 +63,7 @@ export default {
 		if (request.method === 'OPTIONS') {
 			console.log(`[MAIN] Handling OPTIONS for ${url.pathname}`);
 			return new Response(null, {
-				headers: getCorsHeaders(env),
+				headers: getCorsHeaders(env, request),
 			});
 		}
 
@@ -75,7 +75,7 @@ export default {
 			console.error(`[MAIN] Error handling request for ${url.pathname}:`, error);
 			return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
 				status: 500,
-				headers: getCorsHeaders(env),
+				headers: getCorsHeaders(env, request),
 			});
 		}
 	},

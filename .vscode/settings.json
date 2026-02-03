@@ -21,7 +21,9 @@
 		"Langchain",
 		"Laravel",
 		"Msql",
+		"petdex",
 		"pokedex",
+		"sweetalert",
 		"Unapprove"
 	],
   }

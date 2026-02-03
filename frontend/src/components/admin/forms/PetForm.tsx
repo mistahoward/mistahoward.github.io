@@ -252,17 +252,31 @@ export const PetForm = ({
 					/>
 				</div>
 				<div className="col-md-6 mb-3 d-flex align-items-end">
-					<div className="form-check">
-						<input
-							type="checkbox"
-							className="form-check-input"
-							checked={formData.isActive}
-							onChange={e => setFormData({ ...formData, isActive: (e.target as HTMLInputElement).checked })}
-							id="active-check"
-						/>
-						<label className="form-check-label" htmlFor="active-check">
-							Active (currently with you)
-						</label>
+					<div className="d-flex flex-column gap-2">
+						<div className="form-check">
+							<input
+								type="checkbox"
+								className="form-check-input"
+								checked={formData.isActive}
+								onChange={e => setFormData({ ...formData, isActive: (e.target as HTMLInputElement).checked })}
+								id="active-check"
+							/>
+							<label className="form-check-label" htmlFor="active-check">
+								Active (currently with you)
+							</label>
+						</div>
+						<div className="form-check">
+							<input
+								type="checkbox"
+								className="form-check-input"
+								checked={formData.isMemorial}
+								onChange={e => setFormData({ ...formData, isMemorial: (e.target as HTMLInputElement).checked })}
+								id="memorial-check"
+							/>
+							<label className="form-check-label" htmlFor="memorial-check">
+								Memorial (Rainbow Bridge)
+							</label>
+						</div>
 					</div>
 				</div>
 			</div>

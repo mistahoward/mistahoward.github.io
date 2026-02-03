@@ -5,6 +5,11 @@
 	min-height: 100vh;
 	padding: 2rem 0;
 	font-family: Inter, 'Segoe UI', Arial, sans-serif;
+	transition: background 0.5s ease;
+	
+	&.memorial-bg {
+		background: linear-gradient(135deg, $memorial-bg-color 0%, #fff 100%);
+	}
 }
 
 .gba-pokedex-container {
@@ -14,6 +19,41 @@
 	border: 4px solid $gba-border;
 	padding: 2rem 1rem;
 	max-width: 87.5rem;
+	transition: all 0.5s ease;
+	
+	&.memorial-mode {
+		background: $memorial-container;
+		border-color: #5e35b1;
+		
+		.gba-pokedex-list-title {
+			color: $memorial-accent;
+			text-shadow: 0 1px 2px rgb(0 0 0 / 20%);
+		}
+		
+		.gba-toggle-btn.active {
+			background: $memorial-accent;
+			color: $memorial-text-dark;
+			border-color: #b39ddb;
+		}
+		
+		.gba-pet-image {
+			border-color: $memorial-accent;
+			box-shadow: 0 0 0.9375rem rgb(255 215 0 / 40%);
+		}
+		
+		.gba-pet-list-item.selected {
+			background: #ede7f6;
+			border-color: $memorial-accent;
+		}
+		
+		.gba-pet-name {
+			color: $memorial-text-dark;
+		}
+		
+		.gba-pet-dexid {
+			color: $memorial-container;
+		}
+	}
 }
 
 .gba-pokedex-row {
@@ -258,6 +298,46 @@
 }
 .gba-pet-ability-item { border-left: 3px solid $gba-orange; }
 
+// Memorial indicators
+.memorial-halo {
+	position: absolute;
+	top: -0.5rem;
+	right: -0.9375rem;
+	font-size: 2.5rem;
+	color: $memorial-accent;
+	filter: drop-shadow(0 0 0.25rem rgb(255 215 0 / 60%));
+	animation: float 3s ease-in-out infinite;
+	z-index: 10;
+}
+
+.mini-halo {
+	position: absolute;
+	top: -0.3125rem;
+	right: -0.3125rem;
+	color: $memorial-accent;
+	background: rgb(255 255 255 / 80%);
+	border-radius: 50%;
+	width: 1.2rem;
+	height: 1.2rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 5;
+	box-shadow: 0 0.0625rem 0.1875rem rgb(0 0 0 / 10%);
+}
+
+@keyframes float {
+	0% {
+		transform: translateY(0);
+	}
+	50% {
+		transform: translateY(-0.3125rem);
+	}
+	100% {
+		transform: translateY(0);
+	}
+}
+
 // Responsive tweaks
 @media (width <= 991px) {
 	.gba-pokedex-row {
@@ -299,11 +379,52 @@
 [data-bs-theme="dark"] {
 	.gba-pokedex-section {
 		background: linear-gradient(135deg, #23272e 0%, #181a20 100%);
+		
+		&.memorial-bg {
+			background: linear-gradient(135deg, #2d1b3d 0%, #181a20 100%);
+		}
 	}
 
 	.gba-pokedex-container {
 		background: $gba-red-dark;
 		border-color: $gba-border-dark;
+		
+		&.memorial-mode {
+			background: #5e35b1;
+			border-color: #7e57c2;
+			
+			.gba-pokedex-list-title {
+				color: $memorial-accent;
+			}
+			
+			.gba-toggle-btn.active {
+				background: $memorial-accent;
+				color: $memorial-text-dark;
+			}
+			
+			.gba-pet-image {
+				border-color: $memorial-accent;
+				box-shadow: 0 0 0.9375rem rgb(255 215 0 / 60%);
+			}
+			
+			.gba-pet-list-item.selected {
+				background: #7e57c2;
+				border-color: $memorial-accent;
+				color: #fff;
+				
+				.gba-pet-list-dexid {
+					color: $memorial-accent;
+				}
+			}
+			
+			.gba-pet-name {
+				color: $memorial-accent;
+			}
+			
+			.gba-pet-dexid {
+				color: #b39ddb;
+			}
+		}
 	}
 
 	.gba-pokedex-info-panel,
@@ -418,6 +539,11 @@
 	.gba-pet-list-item.selected .gba-pet-list-dexid {
 		color: $gba-bg-dark;
 		font-weight: 700;
+	}
+	
+	.mini-halo {
+		background: rgb(94 53 177 / 80%);
+		color: $memorial-accent;
 	}
 } 
 

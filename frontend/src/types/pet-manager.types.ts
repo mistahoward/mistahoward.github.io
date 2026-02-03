@@ -18,6 +18,7 @@ export interface Pet {
 	nickname?: string;
 	adoptedDate?: string;
 	isActive: boolean;
+	isMemorial?: boolean;
 	createdAt: string;
 	updatedAt: string;
 }
@@ -45,6 +46,7 @@ export interface PetFormState {
 	nickname: string;
 	adoptedDate: string;
 	isActive: boolean;
+	isMemorial: boolean;
 }
 
 export type PetFormProps = {
