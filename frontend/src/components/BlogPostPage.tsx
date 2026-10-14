@@ -90,7 +90,7 @@ const BlogPostPage = (props: { slug?: string }) => {
 									</div>
 									<h1 className="display-4 fw-bold mb-3">{post.title}</h1>
 									<div className="d-flex align-items-center gap-3 text-secondary">
-										<span className="fw-medium">Author: Alex Howard</span>
+										<span className="fw-medium">Author: Jay Howard</span>
 										<span>•</span>
 										<span>{post.publishedAt ? format(new Date(post.publishedAt), "PPP") : ""}</span>
 									</div>

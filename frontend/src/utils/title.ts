@@ -1,4 +1,4 @@
-const BASE_TITLE = "Alex Howard | Portfolio";
+const BASE_TITLE = "Jay Howard | Portfolio";
 
 export const updatePageTitle = (section?: string, blogTitle?: string) => {
 	if (blogTitle) {

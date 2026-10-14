@@ -23,7 +23,7 @@ export const ContactInfo = () => {
 				>
 					<LuLinkedin />
 				</a>
-				<a href="mailto:me@alexhoward.dev" aria-label="Email" className="text-primary">
+				<a href="mailto:me@jayhoward.dev" aria-label="Email" className="text-primary">
 					<FaRegEnvelope />
 				</a>
 			</div>

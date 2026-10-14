@@ -72,7 +72,7 @@ export const testimonials = sqliteTable('Testimonials', {
 	clientCompany: text('client_company'),
 	content: text('content').notNull(),
 	rating: integer('rating'), // 1-5 stars
-	relationship: text('relationship').notNull(), // How you know Alex
+	relationship: text('relationship').notNull(), // How you know Jay
 	status: text('status').notNull().default('needs_review'), // 'needs_review', 'approved', 'denied'
 	createdAt: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 });
