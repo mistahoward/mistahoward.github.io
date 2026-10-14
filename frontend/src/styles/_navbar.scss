@@ -263,19 +263,20 @@
 			content: "";
 			display: block;
 			position: absolute;
-			left: 50%;
-			right: 50%;
+			left: 0;
+			right: 0;
 			bottom: -0.4rem;
 			height: 0.12rem;
 			background: var(--bs-primary);
 			border-radius: 0.1rem;
-			transition: left 0.25s cubic-bezier(0.4,0,0.2,1), right 0.25s cubic-bezier(0.4,0,0.2,1), width 0.25s cubic-bezier(0.4,0,0.2,1);
+			// scale instead of collapsing left/right to 50% — a "zero-width" bar can round to a visible 1px dot
+			transform: scaleX(0);
+			transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
 			pointer-events: none;
 		}
 
 		&.active::after {
-			left: 0;
-			right: 0;
+			transform: scaleX(1);
 		}
 	}
 }
