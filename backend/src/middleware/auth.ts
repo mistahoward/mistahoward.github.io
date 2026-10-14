@@ -62,9 +62,15 @@ export const requireAuth = async (request: Request) => {
 // CORS headers helper
 export const getCorsHeaders = (env: Env, request?: Request) => {
 	const origin = request?.headers.get('Origin');
-	const allowedOrigin = origin && (origin.includes('localhost') || origin.includes('127.0.0.1'))
+	// CORS_ORIGIN may be a comma-separated list of allowed origins
+	const allowedOrigins = (env.CORS_ORIGIN || 'http://localhost:5173')
+		.split(',')
+		.map((o) => o.trim())
+		.filter(Boolean);
+	const isLocal = origin && (origin.includes('localhost') || origin.includes('127.0.0.1'));
+	const allowedOrigin = origin && (isLocal || allowedOrigins.includes(origin))
 		? origin
-		: (env.CORS_ORIGIN || 'http://localhost:5173');
+		: allowedOrigins[0];
 
 	return {
 		'Content-Type': 'application/json',

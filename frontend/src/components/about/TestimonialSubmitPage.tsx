@@ -115,11 +115,11 @@ export const TestimonialSubmitPage = () => {
 						Hi!
 					</h2>
 					<p className="lead mb-4" style={{ fontSize: "1.2rem" }}>
-						Alex likes you enough that he wants to hear your thoughts about working with him. Please fill out the form to leave
+						Jay likes you enough that he wants to hear your thoughts about working with him. Please fill out the form to leave
 						your testimonial.
 					</p>
 					<ul className="list-unstyled text-muted small" style={{ fontSize: "1rem" }}>
-						<li>• Your testimonial may be featured on Alex&apos;s site.</li>
+						<li>• Your testimonial may be featured on Jay&apos;s site.</li>
 						<li>• Only your name, title, and company will be shown publicly.</li>
 						<li>• Thank you for your time!</li>
 					</ul>
@@ -151,7 +151,7 @@ export const TestimonialSubmitPage = () => {
 								<input type="text" className="form-control" name="company" value={form.company} onInput={handleChange} />
 							</div>
 							<div className="mb-3">
-								<label className="form-label">How do you know Alex? *</label>
+								<label className="form-label">How do you know Jay? *</label>
 								<input
 									type="text"
 									className="form-control"

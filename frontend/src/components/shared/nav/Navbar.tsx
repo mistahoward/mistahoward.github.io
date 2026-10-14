@@ -8,7 +8,7 @@ const leftNavItems: NavItem[] = [
 	{ id: "about", label: "About" },
 	{ id: "projects", label: "Projects" },
 ];
-const centerNavItem: NavItem = { id: "name", label: "A.H" };
+const centerNavItem: NavItem = { id: "name", label: "J.H" };
 const rightNavItems: NavItem[] = [
 	{ id: "pet-dex", label: "Pet-Dex" },
 	{ id: "blogs", label: "Blogs" },

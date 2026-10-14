@@ -53,7 +53,7 @@ export const TestimonialForm = ({ formData, setFormData, onSubmit, onCancel, edi
 					className="form-control"
 					value={formData.relationship}
 					onChange={e => setFormData({ ...formData, relationship: (e.target as HTMLInputElement).value })}
-					placeholder="How do you know Alex?"
+					placeholder="How do you know Jay?"
 				/>
 			</div>
 			<div className="d-flex gap-2">
