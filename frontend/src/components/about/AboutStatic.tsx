@@ -15,8 +15,8 @@ export const AboutStatic = () => {
 			</p>
 			<p className="fs-5 text-muted">
 				Away from the keyboard, I&apos;m spending time with my family (read: wife and animals). Video games have taken a back
-				seat lately, and I wouldn&apos;t trade that time for anything. Or... Programming. I genuinely love it. I&apos;m always
-				looking for the next challenge.
+				seat lately, and I wouldn&apos;t trade that time for anything. Well, that and programming. I genuinely love it.
+				I&apos;m always looking for the next challenge.
 			</p>
 		</div>
 	);
