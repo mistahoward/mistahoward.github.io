@@ -94,7 +94,7 @@ export const ExperienceList = () => {
 				<hr />
 				<div className="footer-left-align">
 					Want more info?&nbsp;
-					<a href="/resume.pdf" download>
+					<a href="/resume.pdf" download="Jay-Howard-Resume.pdf">
 						Download my resume
 					</a>
 					.
