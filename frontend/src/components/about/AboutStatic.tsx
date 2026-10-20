@@ -4,11 +4,7 @@ export const AboutStatic = () => {
 			<h2 className="display-4 fw-bold mb-4">About Me</h2>
 			<p className="fs-5 text-muted">
 				By title, I&apos;m a <strong>Lead Software Engineer - Front End Subject Matter Expert</strong>
-				&nbsp;at&nbsp;
-				<a href="https://compyl.com/" target="_blank" rel="noopener noreferrer">
-					Compyl
-				</a>
-				, which really just means I&apos;m a full stack engineer who is also a perfectionist about the front end.
+				&nbsp;at Compyl, which really just means I&apos;m a full stack engineer who is also a perfectionist about the front end.
 			</p>
 			<p className="fs-5 text-muted">
 				Full disclosure: I&apos;m a <em>yak shaver.</em> It means I sometimes start on one task and find myself three layers deep
@@ -18,9 +14,9 @@ export const AboutStatic = () => {
 				It&apos;s a superpower and my kryptonite, and I&apos;ve learned to embrace it. Did you peep the loading animation?
 			</p>
 			<p className="fs-5 text-muted">
-				Away from the keyboard, I&apos;m usually spending time with my family (read: wife and animals) , playing video games
-				(currently engrained in Pokemon Go), or diving into a new video game. Or... Programming. I genuinely love it. I&apos;m
-				always looking for the next challenge.
+				Away from the keyboard, I&apos;m spending time with my family (read: wife and animals). Video games have taken a back
+				seat lately, and I wouldn&apos;t trade that time for anything. Or... Programming. I genuinely love it. I&apos;m always
+				looking for the next challenge.
 			</p>
 		</div>
 	);
