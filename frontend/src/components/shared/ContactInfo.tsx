@@ -1,5 +1,5 @@
 import { FaRegEnvelope } from "react-icons/fa";
-import { LuGithub, LuLinkedin } from "react-icons/lu";
+import { LuFileUser, LuGithub, LuLinkedin } from "react-icons/lu";
 
 export const ContactInfo = () => {
 	return (
@@ -25,6 +25,9 @@ export const ContactInfo = () => {
 				</a>
 				<a href="mailto:me@jayhoward.dev" aria-label="Email" className="text-primary">
 					<FaRegEnvelope />
+				</a>
+				<a href="/resume.pdf" download="Jay-Howard-Resume.pdf" aria-label="Resume" title="Download resume" className="text-primary">
+					<LuFileUser />
 				</a>
 			</div>
 		</div>
