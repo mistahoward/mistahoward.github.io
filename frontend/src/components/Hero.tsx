@@ -6,7 +6,7 @@ export const Hero = () => (
 			<div className="hero-portrait-ring ring4"></div>
 			<div className="hero-portrait-ring ring5"></div>
 			<div className="hero-portrait-ring ring6"></div>
-			<img src="/portrait.jpg" alt="Hand-drawn portrait of Jay" loading="lazy" />
+			<img src="/portrait.jpg" alt="Photo of Jay Howard" loading="lazy" />
 		</div>
 	</section>
 );
