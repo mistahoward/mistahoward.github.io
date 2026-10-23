@@ -34,7 +34,14 @@
 	max-height: 31.25rem;
 	overflow-y: auto;
 	padding-right: 0.5rem;
-} 
+
+	// Stacked layouts: let content flow with the page instead of trapping scroll
+	@media (width <= 991.98px) {
+		max-height: none;
+		overflow-y: visible;
+		padding-right: 0;
+	}
+}
 
 // Auto-save toast animations
 @keyframes slide-in-right {

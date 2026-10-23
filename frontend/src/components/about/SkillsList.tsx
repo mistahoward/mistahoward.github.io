@@ -117,7 +117,7 @@ export const SkillsList = () => {
 					{sortOrder === "asc" ? <FaSortAmountUp size={20} /> : <FaSortAmountDownAlt size={20} />}
 				</button>
 			</div>
-			<div style={{ maxHeight: 350, overflowY: "auto", width: "100%" }}>
+			<div className="skills-scroll-area w-100">
 				<ul className="list-group w-100">
 					{filteredSkills.length === 0 && <li className="list-group-item">No skills found.</li>}
 					{filteredSkills.map((skill: Skill) => (
