@@ -27,6 +27,17 @@ export const capitalizeFirst = (str: string): string => {
 	return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
+export const getNavbarHeight = (): number => {
+	const navbar = document.querySelector<HTMLElement>(".custom-navbar");
+	return navbar ? navbar.offsetHeight : 0;
+};
+
+// Smooth-scrolls so the element's top sits just below the fixed navbar
+export const scrollToElement = (element: HTMLElement) => {
+	const top = element.getBoundingClientRect().top + window.scrollY - getNavbarHeight() - 8;
+	window.scrollTo({ top, behavior: "smooth" });
+};
+
 export const truncateText = (text: string, maxLength: number): string => {
 	if (text.length <= maxLength) return text;
 	return text.substring(0, maxLength) + "...";

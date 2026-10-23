@@ -7,12 +7,16 @@ import { LuSword } from "react-icons/lu";
 import { FaShieldDog, FaShieldCat } from "react-icons/fa6";
 import { HiLightningBolt } from "react-icons/hi";
 import { ShutterOverlay } from "./shared/ShutterOverlay";
+import { getNavbarHeight, scrollToElement } from "../utils/ui";
 
 const GBA_CATEGORIES = [
 	{ key: "canine", label: "Canine" },
 	{ key: "feline", label: "Feline" },
 	{ key: "memorial", label: "Rainbow Bridge" },
 ];
+
+// Matches the breakpoint where the list and info panels stack (see _petdex.scss)
+const STACKED_LAYOUT_QUERY = "(max-width: 991.98px)";
 
 export const PetDex = () => {
 	const [pets, setPets] = useState<Pet[]>([]);
@@ -24,6 +28,7 @@ export const PetDex = () => {
 	const [pendingCategory, setPendingCategory] = useState<"canine" | "feline" | "memorial" | null>(null);
 	const shutterCategoryTimeout = useRef<number | null>(null);
 	const shutterEndTimeout = useRef<number | null>(null);
+	const infoPanelRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		fetchItems<Pet>({
@@ -67,6 +72,14 @@ export const PetDex = () => {
 			setSelectedPetId(null);
 		}
 	}, [category, filteredPets, selectedPetId]);
+
+	// On stacked layouts the details sit below the pet strip; bring them into view if they're off-screen
+	useEffect(() => {
+		const panel = infoPanelRef.current;
+		if (!selectedPetId || !panel || !window.matchMedia(STACKED_LAYOUT_QUERY).matches) return;
+		const { top } = panel.getBoundingClientRect();
+		if (top > window.innerHeight * 0.6 || top < getNavbarHeight()) scrollToElement(panel);
+	}, [selectedPetId]);
 
 	const parseQuotedList = (val?: string) => {
 		if (!val) return [];
@@ -150,7 +163,7 @@ export const PetDex = () => {
 			<div className={`gba-pokedex-container container${isMemorialMode ? " memorial-mode" : ""}`} style={{ position: "relative" }}>
 				<ShutterOverlay show={shutterActive} onAnimationEnd={handleShutterEnd} />
 				<div className="row gba-pokedex-row justify-content-center">
-					<div className="col-lg-6 col-md-7 col-12 gba-pokedex-info-panel order-2 order-md-1">
+					<div className="col-lg-6 col-md-7 col-12 gba-pokedex-info-panel order-2 order-lg-1" ref={infoPanelRef}>
 						<div className="gba-pokedex-info card">
 							<div className="petdex-info-scroll">
 								{selectedPet ? (
@@ -290,7 +303,7 @@ export const PetDex = () => {
 							</div>
 						</div>
 					</div>
-					<div className="col-lg-5 col-md-5 col-12 gba-pokedex-list-panel order-1 order-md-2" style={{ position: "relative" }}>
+					<div className="col-lg-5 col-md-5 col-12 gba-pokedex-list-panel order-1 order-lg-2" style={{ position: "relative" }}>
 						<div className="d-flex justify-content-between align-items-center mb-2">
 							<h4 className="gba-pokedex-list-title mt-2 mb-0">{isMemorialMode ? "Memorial" : "Pet Dex"}</h4>
 							<div className="gba-pokedex-toggle btn-group">
@@ -329,7 +342,7 @@ export const PetDex = () => {
 												aria-pressed={selectedPetId === pet.id}
 											>
 												<div className="position-relative">
-													<img src={pet.iconUrl} alt={pet.name + " icon"} className="gba-pet-list-icon me-2" />
+													<img src={pet.iconUrl} alt={pet.name + " icon"} className="gba-pet-list-icon" />
 													{isMemorialMode && (
 														<div className="mini-halo">
 															<GiHeartWings size={18} />

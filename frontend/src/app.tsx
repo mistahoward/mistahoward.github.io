@@ -10,6 +10,7 @@ import { Blogs } from "./components/Blogs";
 import Router, { Route } from "preact-router";
 import { TestimonialSubmitPage } from "./components/about/TestimonialSubmitPage";
 import BlogPostPage from "./components/BlogPostPage";
+import { scrollToElement } from "./utils/ui";
 
 // Component to handle scrolling to sections based on route
 const SectionScroller = () => {
@@ -57,16 +58,10 @@ const SectionScroller = () => {
 			// Wait longer for components to render, especially if they're loading data
 			const scrollToSection = () => {
 				const element = document.getElementById(sectionId);
-				const navbar = document.querySelector<HTMLElement>(".custom-navbar");
 
 				if (element) {
 					console.log(`SectionScroller: Found element, scrolling to ${sectionId}`);
-					const navbarHeight = navbar ? navbar.offsetHeight : 0;
-					const offset = navbarHeight + 8;
-					const rect = element.getBoundingClientRect();
-					const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-					const top = rect.top + scrollTop - offset;
-					window.scrollTo({ top, behavior: "smooth" });
+					scrollToElement(element);
 				} else {
 					console.log("SectionScroller: Element not found, retrying...");
 					// Retry after a longer delay
