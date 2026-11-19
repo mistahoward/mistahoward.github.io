@@ -921,7 +921,8 @@ router.get('/api/admin/experience', async (request: Request, env: Env) => {
 
 	try {
 		const db = drizzle(env.DB);
-		const allExperience = await db.select().from(experience).orderBy(desc(experience.createdAt));
+		// Same order as the site (routes/public.ts): newest start date first.
+		const allExperience = await db.select().from(experience).orderBy(desc(experience.startDate));
 
 		return successResponse(allExperience, env, 200, request);
 	} catch (error) {
@@ -1184,9 +1185,10 @@ router.get('/api/admin/certifications', async (request: Request, env: Env) => {
 
 	try {
 		const db = drizzle(env.DB);
+		// Same order as the site (routes/public.ts): newest issue date first.
 		const allCertifications = await db.select()
 			.from(certifications)
-			.orderBy(desc(certifications.createdAt));
+			.orderBy(desc(certifications.issueDate));
 
 		return successResponse(allCertifications, env, 200, request);
 	} catch (error) {

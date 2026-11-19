@@ -81,6 +81,10 @@ export const DataManager = ({ lastFocusTime = 0, initialTab = "projects" }: Data
 		setActiveTab(initialTab);
 	}, [initialTab]);
 
+	// The item open in the form above is left out of the list below it.
+	const listed = <T extends { id: number }>(items: T[]): T[] =>
+		editingItem ? items.filter(item => item.id !== editingItem.id) : items;
+
 	const handleCreate = () => {
 		setIsCreating(true);
 		setEditingItem(null);
@@ -317,7 +321,7 @@ export const DataManager = ({ lastFocusTime = 0, initialTab = "projects" }: Data
 							return (
 								<div>
 									<div className="d-flex flex-column gap-2">
-										{projects.map(project => (
+										{listed(projects).map(project => (
 											<div key={project.id} className="card">
 												<div className="card-body">
 													<div className="d-flex justify-content-between align-items-start">
@@ -389,7 +393,7 @@ export const DataManager = ({ lastFocusTime = 0, initialTab = "projects" }: Data
 							return (
 								<div>
 									<div className="d-flex flex-column gap-2">
-										{skills.map(skill => (
+										{listed(skills).map(skill => (
 											<div key={skill.id} className="card">
 												<div className="card-body">
 													<div className="d-flex justify-content-between align-items-start">
@@ -422,7 +426,7 @@ export const DataManager = ({ lastFocusTime = 0, initialTab = "projects" }: Data
 							return (
 								<div>
 									<div className="d-flex flex-column gap-2">
-										{experience.map(exp => (
+										{listed(experience).map(exp => (
 											<div key={exp.id} className="card">
 												<div className="card-body">
 													<div className="d-flex justify-content-between align-items-start">
@@ -498,7 +502,7 @@ export const DataManager = ({ lastFocusTime = 0, initialTab = "projects" }: Data
 										</li>
 									</ul>
 									<div className="d-flex flex-column gap-2">
-										{testimonials
+										{listed(testimonials)
 											.filter(t => t.status === testimonialTab)
 											.map(testimonial => (
 												<div key={testimonial.id} className="card">
@@ -590,7 +594,7 @@ export const DataManager = ({ lastFocusTime = 0, initialTab = "projects" }: Data
 							return (
 								<div>
 									<div className="d-flex flex-column gap-2">
-										{certifications.map(cert => (
+										{listed(certifications).map(cert => (
 											<div key={cert.id} className="card">
 												<div className="card-body">
 													<div className="d-flex justify-content-between align-items-start">
