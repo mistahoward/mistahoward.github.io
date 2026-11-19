@@ -9,7 +9,7 @@ export const Home = () => {
 					<div className="col-lg-8">
 						<Hero />
 						<h1 className="display-2 fw-bold mb-3">Hey, I&apos;m Jay.</h1>
-						<p className="display-5 lead text-primary mb-4">Lead Software Engineer</p>
+						<p className="display-5 lead text-primary mb-4">Lead Front-End Engineer</p>
 						<h2 className="text-muted">Front End Subject Matter Expert</h2>
 						<p className="fs-3 text-muted">
 							I&apos;m the engineer who makes sure the front end is beautiful and the backend fuels it.
