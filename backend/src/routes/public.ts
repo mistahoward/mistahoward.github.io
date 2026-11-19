@@ -3,6 +3,7 @@ import { drizzle } from 'drizzle-orm/d1';
 import { eq, desc, sql } from 'drizzle-orm';
 import {
 	projects, blogPosts, skills, experience, testimonials, certifications, pets, testimonialInvites, tags, blogPostTags,
+	siteContent,
 } from '../schema';
 import { errorResponse, successResponse } from '../middleware/auth';
 
@@ -228,6 +229,20 @@ router.get('/api/testimonials/validate-token', async (request: Request, env: Env
 		return successResponse({ valid: true }, env, 200, request);
 	} catch (error) {
 		return errorResponse('Failed to validate invite token', env, 500, request);
+	}
+});
+
+// GET /content/:key - A block of site copy, as Markdown (e.g. "about")
+router.get('/api/content/:key', async (request: Request, env: Env, ctx: any) => {
+	try {
+		const key = ctx?.params?.key ?? new URL(request.url).pathname.split('/').pop();
+		if (!key) return errorResponse('Not Found', env, 404, request);
+		const db = drizzle(env.DB);
+		const [row] = await db.select().from(siteContent).where(eq(siteContent.key, key)).limit(1);
+		if (!row) return errorResponse('Not Found', env, 404, request);
+		return successResponse(row, env, 200, request);
+	} catch (error) {
+		return errorResponse('Failed to fetch content', env, 500, request);
 	}
 });
 
