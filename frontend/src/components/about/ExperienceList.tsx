@@ -3,7 +3,7 @@ import { fetchItems } from "../../utils/crud";
 import { Experience } from "../../types/experience-list.types";
 import { renderIcon, iconNameToLabel } from "../../utils/iconMap";
 import { FaLinkedin } from "react-icons/fa";
-import { LoadingSpinner } from "../../utils/ui";
+import { LoadingSpinner, parseDate } from "../../utils/ui";
 
 export const ExperienceList = () => {
 	const [experience, setExperience] = useState<Experience[]>([]);
@@ -31,7 +31,7 @@ export const ExperienceList = () => {
 
 	const formatMonthYear = (dateStr?: string) => {
 		if (!dateStr) return "";
-		const date = new Date(dateStr);
+		const date = parseDate(dateStr);
 		if (isNaN(date.getTime())) return dateStr;
 		return date.toLocaleString("default", { month: "short", year: "numeric" });
 	};
