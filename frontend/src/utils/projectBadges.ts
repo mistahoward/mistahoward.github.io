@@ -42,11 +42,29 @@ export function parseGitHubUrl(url: string): { owner: string; repo: string } | n
 	}
 }
 
+// One lookup per repo or package for the life of the page. Filtering remounts the project cards,
+// and unauthenticated GitHub API calls are limited to 60 an hour.
+const gitHubStarsCache = new Map<string, Promise<GitHubRepoInfo | null>>();
+const nuGetInfoCache = new Map<string, Promise<NuGetPackageInfo | null>>();
+
+const cached = <T>(cache: Map<string, Promise<T>>, key: string, load: (key: string) => Promise<T>): Promise<T> => {
+	let request = cache.get(key);
+	if (!request) {
+		request = load(key);
+		cache.set(key, request);
+	}
+	return request;
+};
+
 /**
  * Fetch GitHub repository star count
  * Returns null if the repo has 0 stars or on error (to hide the badge)
  */
-export async function fetchGitHubStars(githubUrl: string): Promise<GitHubRepoInfo | null> {
+export function fetchGitHubStars(githubUrl: string): Promise<GitHubRepoInfo | null> {
+	return cached(gitHubStarsCache, githubUrl, requestGitHubStars);
+}
+
+async function requestGitHubStars(githubUrl: string): Promise<GitHubRepoInfo | null> {
 	const parsed = parseGitHubUrl(githubUrl);
 	if (!parsed) return null;
 
@@ -77,8 +95,12 @@ export async function fetchGitHubStars(githubUrl: string): Promise<GitHubRepoInf
 /**
  * Fetch NuGet package info (version and downloads)
  */
-export async function fetchNuGetInfo(packageId: string): Promise<NuGetPackageInfo | null> {
-	if (!packageId) return null;
+export function fetchNuGetInfo(packageId: string): Promise<NuGetPackageInfo | null> {
+	if (!packageId) return Promise.resolve(null);
+	return cached(nuGetInfoCache, packageId, requestNuGetInfo);
+}
+
+async function requestNuGetInfo(packageId: string): Promise<NuGetPackageInfo | null> {
 
 	try {
 		// Use the NuGet search API to get package info
