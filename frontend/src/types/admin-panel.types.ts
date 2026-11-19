@@ -6,6 +6,7 @@ export interface AdminPanelProps {
 export type Section =
 	| "blog"
 	| "pets"
+	| "about"
 	| "projects"
 	| "skills"
 	| "experience"

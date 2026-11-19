@@ -198,6 +198,17 @@ export const votes = sqliteTable('Votes', {
 	uniqueVote: uniqueIndex('votes_comment_user_unique').on(table.commentId, table.userId),
 }));
 
+// Site copy edited in the admin panel, one Markdown block per key (only "about" for now).
+// A new key has to be added to SITE_CONTENT_KEYS before the admin route will save it.
+export const SITE_CONTENT_KEYS = ['about'] as const;
+export type SiteContentKey = typeof SITE_CONTENT_KEYS[number];
+
+export const siteContent = sqliteTable('SiteContent', {
+	key: text('key').primaryKey(),
+	content: text('content').notNull(),
+	updatedAt: text('updated_at').default(sql`CURRENT_TIMESTAMP`),
+});
+
 // Type exports for use in your application
 export type Project = typeof projects.$inferSelect;
 export type NewProject = typeof projects.$inferInsert;

@@ -21,7 +21,11 @@ import {
 	SiFastapi,
 	SiMysql,
 	SiGatsby,
-	SiFirebase
+	SiFirebase,
+	SiClaude,
+	SiOllama,
+	SiNodedotjs,
+	SiForgejo
 } from "react-icons/si";
 import {
 	FaRecycle,
@@ -82,7 +86,11 @@ export const iconMap: Record<string, any> = {
 	DiMsqlServer,
 	PiWindowsLogo,
 	SiGatsby,
-	SiFirebase
+	SiFirebase,
+	SiClaude,
+	SiOllama,
+	SiNodedotjs,
+	SiForgejo
 };
 
 export const iconNameToLabel: Record<string, string> = {
@@ -124,11 +132,23 @@ export const iconNameToLabel: Record<string, string> = {
 	DiMsqlServer: "Microsoft SQL Server",
 	PiWindowsLogo: "Windows Forms",
 	SiGatsby: "Gatsby",
-	SiFirebase: "Firebase"
+	SiFirebase: "Firebase",
+	SiClaude: "Claude Code",
+	SiOllama: "Ollama",
+	SiNodedotjs: "Node.js",
+	SiForgejo: "Forgejo Actions"
 };
 
+// Labels without spaces or case ("claudecode", "node.js"), mapped back to their icon keys.
+const normalize = (name: string) => name.replace(/\s+/g, "").toLowerCase();
+const iconNameByLabel: Record<string, string> = Object.fromEntries(
+	Object.entries(iconNameToLabel).map(([iconName, label]) => [normalize(label), iconName])
+);
+
+// Takes an icon key ("SiReact") or a label ("React", "Claude Code"), so a technology typed
+// by its plain name still gets its icon.
 export const renderIcon = (iconName: string, size = 24, className = "me-2") => {
-	const IconComponent = iconMap[iconName];
+	const IconComponent = iconMap[iconName] ?? iconMap[iconNameByLabel[normalize(iconName)]];
 	if (IconComponent) return h(IconComponent, { size, className });
 	return null;
-}; 
+};

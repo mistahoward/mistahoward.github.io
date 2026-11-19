@@ -7,6 +7,7 @@ import { CommentManager } from "./managers/CommentManager";
 import { AdminPanelProps } from "../../types/admin-panel.types";
 import { Section } from "../../types/admin-panel.types";
 import { TestimonialInvitesManager } from "./managers/TestimonialInvitesManager";
+import { AboutManager } from "./managers/AboutManager";
 
 console.log("AdminPanel rendered");
 
@@ -134,6 +135,12 @@ export const AdminPanel = ({ isVisible, onClose }: AdminPanelProps) => {
 											Pets
 										</button>
 										<button
+											className={`nav-link ${activeSection === "about" ? "active" : ""}`}
+											onClick={() => setActiveSection("about")}
+										>
+											About Me
+										</button>
+										<button
 											className={`nav-link ${activeSection === "projects" ? "active" : ""}`}
 											onClick={() => setActiveSection("projects")}
 										>
@@ -191,6 +198,7 @@ export const AdminPanel = ({ isVisible, onClose }: AdminPanelProps) => {
 								<div className="col-md-9 p-3 admin-modal-main">
 									{activeSection === "blog" && <BlogManager />}
 									{activeSection === "pets" && <PetManager />}
+									{activeSection === "about" && <AboutManager />}
 									{["projects", "skills", "experience", "testimonials", "certifications"].includes(activeSection) && (
 										<DataManager lastFocusTime={lastFocusTime} initialTab={activeSection as any} />
 									)}

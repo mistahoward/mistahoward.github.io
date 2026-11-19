@@ -15,8 +15,18 @@ export const InfoAlert = ({ message }: { message: string }) =>
 export const WarningAlert = ({ message }: { message: string }) =>
 	h("div", { className: "alert alert-warning" }, message);
 
+// A plain "YYYY-MM-DD" date is a calendar day, not a moment. `new Date("2026-06-01")` reads it as
+// midnight UTC, which is still May 31 in US time zones, so read it as local midnight instead.
+// Anything else (a full timestamp) parses as usual.
+export const parseDate = (dateString: string): Date => {
+	const day = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateString.trim());
+	if (day) return new Date(Number(day[1]), Number(day[2]) - 1, Number(day[3]));
+	return new Date(dateString);
+};
+
 export const formatDate = (dateString: string): string => {
-	return new Date(dateString).toLocaleDateString();
+	if (!dateString) return "";
+	return parseDate(dateString).toLocaleDateString();
 };
 
 export const formatDateTime = (dateString: string): string => {
