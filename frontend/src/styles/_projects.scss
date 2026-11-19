@@ -1,0 +1,417 @@
+// Projects pane: search and the type filter on the left, the project list on the right.
+// Below 992px everything stacks, the filter becomes wrapping pills, and the list flows with the page.
+
+.projects-pane {
+	// Bootstrap's --bs-body-color-rgb is comma-separated, so these need the legacy rgba() form.
+	--project-border: rgba(var(--bs-body-color-rgb), 0.12);
+	--project-accent-text: #c2410c;
+
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: 1rem;
+	max-width: 68rem;
+	margin: 0 auto;
+	text-align: left;
+
+	[data-bs-theme="dark"] & {
+		--project-accent-text: var(--bs-primary);
+	}
+
+	@media (width >= 992px) {
+		grid-template-columns: 13rem minmax(0, 1fr);
+		gap: 2.5rem;
+		align-items: start;
+	}
+}
+
+.projects-sidebar {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	min-width: 0;
+
+	@media (width >= 992px) {
+		gap: 1.25rem;
+	}
+}
+
+.projects-search {
+	min-height: 2.75rem;
+
+	@media (width >= 992px) {
+		min-height: 2.5rem;
+	}
+}
+
+// Type filter
+
+.project-type-filter {
+	min-width: 0;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+.project-type-filter-legend {
+	float: none;
+	width: auto;
+	margin-bottom: 0.375rem;
+	padding: 0 0.75rem;
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	line-height: 1.5;
+	text-transform: uppercase;
+	color: var(--bs-secondary-color);
+
+	// The pills speak for themselves on phones; screen readers still get the label.
+	@media (width <= 991.98px) {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		margin: -1px;
+		padding: 0;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
+	}
+}
+
+.project-type-options {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+
+	@media (width >= 992px) {
+		flex-direction: column;
+		gap: 0.125rem;
+	}
+}
+
+.project-type-option {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 0.375rem;
+	min-height: 2.5rem;
+	padding: 0.375rem 0.875rem;
+	border: 1px solid var(--project-border);
+	border-radius: 999px;
+	background: var(--bs-body-bg);
+	color: var(--bs-body-color);
+	font-size: 0.875rem;
+	cursor: pointer;
+
+	&.active {
+		border-color: var(--bs-primary);
+		background: var(--bs-primary-bg-subtle);
+		color: var(--bs-heading-color);
+		font-weight: 600;
+	}
+
+	&:has(.project-type-input:focus-visible) {
+		outline: 2px solid var(--project-accent-text);
+		outline-offset: 2px;
+	}
+
+	@media (width >= 992px) {
+		justify-content: space-between;
+		min-height: 0;
+		padding: 0.5rem 0.75rem;
+		border: 0;
+		border-radius: 0.5rem;
+		background: transparent;
+		font-size: 0.9375rem;
+
+		&:hover {
+			background: rgba(var(--bs-body-color-rgb), 0.05);
+		}
+
+		&.active {
+			background: var(--bs-body-bg);
+			box-shadow:
+				inset 3px 0 0 var(--bs-primary),
+				0 0 0 1px var(--project-border);
+		}
+	}
+}
+
+// Visually hidden, but still focusable and announced as a radio button.
+.project-type-input {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 1px;
+	height: 1px;
+	margin: 0;
+	opacity: 0;
+}
+
+.project-type-count {
+	padding: 0.0625rem 0.5rem;
+	border-radius: 999px;
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: var(--bs-secondary-color);
+
+	.active & {
+		color: var(--bs-primary-text-emphasis);
+	}
+
+	@media (width >= 992px) {
+		.active & {
+			background: var(--bs-primary-bg-subtle);
+		}
+	}
+}
+
+// Results
+
+.projects-results {
+	min-width: 0;
+
+	// Desktop only: the list scrolls in its own box so the section stays one screen tall.
+	// The section centers in the full viewport under a fixed navbar, so leave a navbar's height
+	// of room on both sides, plus the heading. A fixed height (not max-height) keeps the pane,
+	// search box included, from jumping as a search narrows the list.
+	// Phones keep normal page scrolling (no scroll trap).
+	@media (width >= 992px) {
+		height: min(40rem, calc(100vh - 2 * var(--navbar-height) - 9rem));
+		padding-right: 0.5rem;
+		overflow-y: auto;
+		scrollbar-gutter: stable;
+	}
+}
+
+.project-group + .project-group {
+	margin-top: 1.75rem;
+}
+
+.project-group-heading {
+	margin: 0 0 0.625rem;
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	line-height: 1.5;
+	text-transform: uppercase;
+	color: var(--bs-secondary-color);
+}
+
+.project-group-list {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+
+.project-empty {
+	padding: 1.5rem;
+	border: 1px solid var(--project-border);
+	border-radius: 0.625rem;
+	background: var(--bs-body-bg);
+	text-align: center;
+	color: var(--bs-secondary-color);
+}
+
+// Card
+
+.project-card {
+	display: flex;
+	flex-direction: column;
+	gap: 0.625rem;
+	padding: 0.875rem 1rem;
+	border: 1px solid var(--project-border);
+	border-radius: 0.625rem;
+	background: var(--bs-body-bg);
+
+	@media (width >= 992px) {
+		padding: 1rem 1.25rem;
+	}
+}
+
+.project-card-header {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 0.25rem 1rem;
+}
+
+.project-card .project-title {
+	margin: 0;
+	font-size: 1.0625rem;
+	font-weight: 600;
+	line-height: 1.35;
+	color: var(--bs-heading-color);
+}
+
+.project-meta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.25rem 0.875rem;
+	font-size: 0.8125rem;
+	color: var(--bs-secondary-color);
+
+	&:empty {
+		display: none;
+	}
+}
+
+.project-meta-item,
+.project-meta-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+}
+
+.project-meta-link {
+	font-weight: 500;
+	text-decoration: none;
+	color: var(--project-accent-text);
+
+	&:hover {
+		text-decoration: underline;
+		color: var(--project-accent-text);
+	}
+}
+
+.project-meta-icon {
+	display: inline-flex;
+	flex: none;
+	font-size: 0.75em;
+}
+
+.project-card-body {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+
+	&:empty {
+		display: none;
+	}
+}
+
+.project-image {
+	width: 100%;
+	max-height: 12.5rem;
+	border-radius: 0.5rem;
+	object-fit: cover;
+}
+
+.project-card .project-description {
+	font-size: 0.9375rem;
+	line-height: 1.6;
+	color: var(--bs-body-color);
+
+	p {
+		margin: 0;
+	}
+
+	p + p {
+		margin-top: 0.75rem;
+	}
+}
+
+.project-summary {
+	display: -webkit-box;
+	overflow: hidden;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 3;
+
+	@media (width >= 992px) {
+		-webkit-line-clamp: 2;
+	}
+}
+
+.project-tech-heading {
+	margin: 0 0 0.5rem;
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--bs-secondary-color);
+}
+
+.project-tech-list {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.375rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.project-tech-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.3125rem;
+	padding: 0.125rem 0.625rem;
+	border: 1px solid var(--project-border);
+	border-radius: 999px;
+	background: var(--bs-tertiary-bg);
+	font-size: 0.8125rem;
+	line-height: 1.5;
+	color: rgba(var(--bs-body-color-rgb), 0.8);
+}
+
+.project-tech-icon {
+	display: inline-flex;
+}
+
+.project-tech-more {
+	padding: 0 0.125rem;
+	font-size: 0.8125rem;
+	color: var(--bs-secondary-color);
+}
+
+.project-card-footer {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.5rem 0.75rem;
+}
+
+.project-toggle {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.25rem;
+	min-height: 2.75rem;
+	margin-left: auto;
+	padding: 0 0.125rem;
+	border: 0;
+	background: none;
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: var(--project-accent-text);
+
+	&:hover {
+		text-decoration: underline;
+	}
+
+	&:focus-visible {
+		border-radius: 0.25rem;
+		outline: 2px solid var(--project-accent-text);
+		outline-offset: 2px;
+	}
+
+	@media (width >= 992px) {
+		min-height: 2rem;
+	}
+}
+
+.project-toggle-icon {
+	display: inline-flex;
+	font-size: 0.75em;
+	transition: transform 0.2s ease;
+
+	[aria-expanded="true"] > & {
+		transform: rotate(180deg);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+	}
+}
