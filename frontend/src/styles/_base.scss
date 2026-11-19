@@ -155,6 +155,11 @@ main {
 	}
 }
 
+// Keep the line breaks typed in the admin form, so a blank line starts a new paragraph.
+.project-description {
+	white-space: pre-line;
+}
+
 .project-description.clamped {
 	display: -webkit-box;
 	-webkit-line-clamp: 4;
