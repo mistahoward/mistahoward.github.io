@@ -1,7 +1,7 @@
 import { Router } from 'itty-router';
 import { drizzle } from 'drizzle-orm/d1';
 import {
-	eq, desc, inArray, and, sum,
+	eq, desc, inArray, and, sum, sql,
 } from 'drizzle-orm';
 import {
 	blogPosts,
@@ -17,6 +17,9 @@ import {
 	comments,
 	users,
 	votes,
+	siteContent,
+	SITE_CONTENT_KEYS,
+	type SiteContentKey,
 } from '../schema';
 import {
 	requireAdmin,
@@ -927,6 +930,47 @@ router.get('/api/admin/experience', async (request: Request, env: Env) => {
 		return successResponse(allExperience, env, 200, request);
 	} catch (error) {
 		return errorResponse('Failed to fetch experience', env, 500, request);
+	}
+});
+
+// SITE CONTENT ADMIN ROUTES
+
+const MAX_SITE_CONTENT_LENGTH = 20000;
+
+// PUT /admin/content/:key - Save a block of site copy (Markdown), creating it if it's new.
+// The site reads it back from GET /api/content/:key.
+router.put('/api/admin/content/:key', async (request: Request, env: Env) => {
+	const authCheck = requireAdmin(request, env);
+	if (authCheck) return authCheck;
+
+	try {
+		const key = (request as Request & { params?: { key?: string } }).params?.key
+			?? new URL(request.url).pathname.split('/').pop()
+			?? '';
+		if (!SITE_CONTENT_KEYS.includes(key as SiteContentKey)) {
+			return errorResponse('Unknown content key', env, 400, request);
+		}
+
+		const body = await request.json() as { content?: unknown };
+		if (typeof body.content !== 'string' || !body.content.trim()) {
+			return errorResponse('Content is required', env, 400, request);
+		}
+		if (body.content.length > MAX_SITE_CONTENT_LENGTH) {
+			return errorResponse(`Content is longer than ${MAX_SITE_CONTENT_LENGTH} characters`, env, 400, request);
+		}
+
+		const db = drizzle(env.DB);
+		const [saved] = await db.insert(siteContent)
+			.values({ key, content: body.content })
+			.onConflictDoUpdate({
+				target: siteContent.key,
+				set: { content: body.content, updatedAt: sql`CURRENT_TIMESTAMP` },
+			})
+			.returning();
+
+		return successResponse(saved, env, 200, request);
+	} catch (error) {
+		return errorResponse('Failed to save content', env, 500, request);
 	}
 });
 

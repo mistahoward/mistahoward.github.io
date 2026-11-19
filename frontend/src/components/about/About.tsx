@@ -1,4 +1,4 @@
-import { AboutStatic } from "./AboutStatic";
+import { AboutMe } from "./AboutMe";
 import { SkillsList } from "./SkillsList";
 import { ExperienceList } from "./ExperienceList";
 import { TestimonialsList } from "./TestimonialsList";
@@ -13,7 +13,7 @@ export const About = () => {
 			<div className="container">
 				<div className="row justify-content-center align-items-start">
 					<div className="col-lg-5 mb-4 mb-lg-0">
-						<AboutStatic />
+						<AboutMe />
 					</div>
 					<div className="col-lg-7">
 						<div className="about-tabs-dropdown d-lg-none mb-3">
