@@ -2,8 +2,11 @@ import { useEffect, useState, useMemo, useRef } from "preact/hooks";
 import { fetchItems } from "../../utils/crud";
 import { Project } from "../../types/data-manager.types";
 import { LoadingSpinner } from "../../utils/ui";
-import { ProjectCard, splitTechnologies, techLabel } from "./ProjectCard";
-import { ProjectTypeFilter } from "./ProjectTypeFilter";
+import { splitTechnologies, techLabel } from "../../utils/technologies";
+import { useAnnouncement } from "../../utils/useAnnouncement";
+import { FilterGroup } from "../shared/FilterGroup";
+import { ShowAllToggle, phoneExtraClass } from "../shared/ShowAllToggle";
+import { ProjectCard } from "./ProjectCard";
 
 const TYPE_FILTERS = [
 	{ value: "all", label: "All" },
@@ -15,6 +18,9 @@ const TYPE_FILTERS = [
 // "All" lists professional work first. Any other type goes last, alphabetically.
 const GROUP_ORDER = ["professional", "personal", "academic"];
 const GROUP_LABELS: Record<string, string> = { professional: "Professional", personal: "Personal", academic: "Academic" };
+
+// Phones show this many cards, then "Show all".
+const PHONE_PREVIEW = 6;
 
 const groupRank = (type: string) => {
 	const rank = GROUP_ORDER.indexOf(type);
@@ -46,9 +52,8 @@ export const ProjectList = () => {
 	const [search, setSearch] = useState("");
 	const [selectedType, setSelectedType] = useState("all");
 	const [expandedIds, setExpandedIds] = useState<Set<number>>(new Set());
-	const [announcement, setAnnouncement] = useState("");
+	const [showAll, setShowAll] = useState(false);
 	const resultsRef = useRef<HTMLDivElement>(null);
-	const hasInteracted = useRef(false);
 
 	useEffect(() => {
 		fetchItems<Project>({
@@ -72,6 +77,7 @@ export const ProjectList = () => {
 		[matches]
 	);
 
+	// Each group also records where its first card falls in the whole list, for the phone preview.
 	const groups = useMemo(() => {
 		const byType = new Map<string, Project[]>();
 		matches.forEach(project => {
@@ -79,29 +85,29 @@ export const ProjectList = () => {
 			if (selectedType !== "all" && type !== selectedType) return;
 			byType.set(type, [...(byType.get(type) ?? []), project]);
 		});
+		let start = 0;
 		return [...byType.entries()]
 			.sort(([a], [b]) => groupRank(a) - groupRank(b) || a.localeCompare(b))
-			.map(([type, items]) => ({ type, items }));
+			.map(([type, items]) => {
+				const group = { type, items, start };
+				start += items.length;
+				return group;
+			});
 	}, [matches, selectedType]);
 
 	const shownCount = groups.reduce((sum, group) => sum + group.items.length, 0);
 	const status = describeResults(shownCount, selectedType, query);
-
-	// Tell screen readers what a filter or search change did, once typing pauses. Nothing on first load.
-	useEffect(() => {
-		if (!hasInteracted.current) return undefined;
-		const timer = window.setTimeout(() => setAnnouncement(status), 400);
-		return () => window.clearTimeout(timer);
-	}, [status]);
+	const { announcement, markInteracted } = useAnnouncement(status);
 
 	const selectType = (type: string) => {
-		hasInteracted.current = true;
+		markInteracted();
 		setSelectedType(type);
+		setShowAll(false);
 		if (resultsRef.current) resultsRef.current.scrollTop = 0;
 	};
 
 	const updateSearch = (value: string) => {
-		hasInteracted.current = true;
+		markInteracted();
 		setSearch(value);
 	};
 
@@ -138,31 +144,54 @@ export const ProjectList = () => {
 					value={search}
 					onInput={e => updateSearch((e.target as HTMLInputElement).value)}
 				/>
-				<ProjectTypeFilter options={typeOptions} selected={selectedType} onSelect={selectType} />
+				<FilterGroup
+					name="project-type"
+					legend="Type"
+					noun={["project", "projects"]}
+					options={typeOptions}
+					selected={selectedType}
+					onSelect={selectType}
+					variant="sidebar"
+				/>
 			</div>
 
-			<div className="projects-results" ref={resultsRef}>
+			<div id="project-results" className="projects-results" ref={resultsRef}>
 				<p className="visually-hidden" role="status" aria-live="polite">
 					{announcement}
 				</p>
 				{groups.map(group => (
-					<section key={group.type} className="project-group" aria-labelledby={`project-group-${group.type}`}>
+					<section
+						key={group.type}
+						className={`project-group${phoneExtraClass(group.start, PHONE_PREVIEW, showAll)}`}
+						aria-labelledby={`project-group-${group.type}`}
+					>
 						<h3 id={`project-group-${group.type}`} className="project-group-heading">
 							{groupLabel(group.type)}
 							<span aria-hidden="true"> · {group.items.length}</span>
 						</h3>
 						<div className="project-group-list">
-							{group.items.map(project => (
+							{group.items.map((project, index) => (
 								<ProjectCard
 									key={project.id}
 									project={project}
 									expanded={expandedIds.has(project.id)}
 									onToggle={toggleExpanded}
+									className={phoneExtraClass(group.start + index, PHONE_PREVIEW, showAll)}
 								/>
 							))}
 						</div>
 					</section>
 				))}
+				{shownCount > PHONE_PREVIEW && (
+					<ShowAllToggle
+						phoneOnly
+						expanded={showAll}
+						total={shownCount}
+						noun="projects"
+						controls="project-results"
+						onToggle={() => setShowAll(!showAll)}
+					/>
+				)}
 				{shownCount === 0 && (
 					<div className="project-empty">
 						<p className="mb-2">{status}.</p>
