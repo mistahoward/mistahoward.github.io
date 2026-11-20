@@ -145,10 +145,20 @@ const iconNameByLabel: Record<string, string> = Object.fromEntries(
 	Object.entries(iconNameToLabel).map(([iconName, label]) => [normalize(label), iconName])
 );
 
+// Icon keys without case ("siredux"), so a key typed with the wrong case still finds its icon.
+const iconNameByLowerKey: Record<string, string> = Object.fromEntries(Object.keys(iconMap).map(key => [key.toLowerCase(), key]));
+
+// The icon key for an icon key in any case ("SiReact", "Sireact") or a label ("React", "Claude Code").
+export const resolveIconName = (name: string): string | undefined => {
+	if (iconMap[name]) return name;
+	return iconNameByLowerKey[name.toLowerCase()] ?? iconNameByLabel[normalize(name)];
+};
+
 // Takes an icon key ("SiReact") or a label ("React", "Claude Code"), so a technology typed
 // by its plain name still gets its icon.
 export const renderIcon = (iconName: string, size = 24, className = "me-2") => {
-	const IconComponent = iconMap[iconName] ?? iconMap[iconNameByLabel[normalize(iconName)]];
+	const resolved = resolveIconName(iconName);
+	const IconComponent = resolved ? iconMap[resolved] : undefined;
 	if (IconComponent) return h(IconComponent, { size, className });
 	return null;
 };

@@ -29,6 +29,14 @@ export const formatDate = (dateString: string): string => {
 	return parseDate(dateString).toLocaleDateString();
 };
 
+// "Jun 2025". D1 timestamps ("2026-10-23 08:11:46") get a "T" first, since Safari can't parse the space.
+export const formatMonthYear = (dateString?: string): string => {
+	if (!dateString) return "";
+	const date = parseDate(dateString.replace(/^(\d{4}-\d{2}-\d{2}) /, "$1T"));
+	if (isNaN(date.getTime())) return dateString;
+	return date.toLocaleString("default", { month: "short", year: "numeric" });
+};
+
 export const formatDateTime = (dateString: string): string => {
 	return new Date(dateString).toLocaleString();
 };

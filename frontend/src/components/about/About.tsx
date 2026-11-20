@@ -1,12 +1,36 @@
+import { useRef, useState } from "preact/hooks";
 import { AboutMe } from "./AboutMe";
 import { SkillsList } from "./SkillsList";
 import { ExperienceList } from "./ExperienceList";
-import { TestimonialsList } from "./TestimonialsList";
 import { CertificationsList } from "./CertificationsList";
-import { useState } from "preact/hooks";
+import { Testimonials } from "./Testimonials";
+
+// focusablePanel: the panel itself takes a Tab stop when it doesn't open with something focusable.
+const TABS = [
+	{ id: "skills", label: "Skills", Panel: SkillsList, focusablePanel: false },
+	{ id: "experience", label: "Experience", Panel: ExperienceList, focusablePanel: true },
+	{ id: "certifications", label: "Certifications", Panel: CertificationsList, focusablePanel: true },
+];
 
 export const About = () => {
 	const [activeTab, setActiveTab] = useState("skills");
+	const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+	// Arrow keys, Home and End move between tabs, as in the WAI-ARIA tabs pattern.
+	const onTabKeyDown = (event: KeyboardEvent, index: number) => {
+		const last = TABS.length - 1;
+		const keyTargets: Record<string, number> = {
+			ArrowRight: index === last ? 0 : index + 1,
+			ArrowLeft: index === 0 ? last : index - 1,
+			Home: 0,
+			End: last,
+		};
+		const next = keyTargets[event.key];
+		if (next === undefined) return;
+		event.preventDefault();
+		setActiveTab(TABS[next].id);
+		tabRefs.current[next]?.focus();
+	};
 
 	return (
 		<section id="about" className="min-vh-100 d-flex align-items-center justify-content-center mt-4 mt-sm-0 mt-md-4 mt-xl-4 mt-xxl-0">
@@ -16,109 +40,48 @@ export const About = () => {
 						<AboutMe />
 					</div>
 					<div className="col-lg-7">
-						<div className="about-tabs-dropdown d-lg-none mb-3">
-							<select
-								className="form-select"
-								value={activeTab}
-								onChange={e => setActiveTab(e.currentTarget.value)}
-								aria-label="Select About Section"
-							>
-								<option value="skills">Skills</option>
-								<option value="experience">Experience</option>
-								<option value="certifications">Certifications</option>
-								<option value="testimonials">Testimonials</option>
-							</select>
+						<div className="about-tabs" role="tablist" aria-label="About">
+							{TABS.map((tab, index) => {
+								const selected = activeTab === tab.id;
+								return (
+									<button
+										key={tab.id}
+										ref={element => {
+											tabRefs.current[index] = element;
+										}}
+										type="button"
+										role="tab"
+										id={`about-tab-${tab.id}`}
+										aria-selected={selected}
+										aria-controls={`about-panel-${tab.id}`}
+										tabIndex={selected ? 0 : -1}
+										className={`about-tab${selected ? " active" : ""}`}
+										onClick={() => setActiveTab(tab.id)}
+										onKeyDown={event => onTabKeyDown(event, index)}
+									>
+										{tab.label}
+									</button>
+								);
+							})}
 						</div>
-						<ul className="nav nav-tabs mb-3 d-none d-lg-flex" role="tablist">
-							<li className="nav-item" role="presentation">
-								<button
-									className={`nav-link${activeTab === "skills" ? " active" : ""}`}
-									id="skills-tab"
-									data-bs-toggle="tab"
-									type="button"
-									role="tab"
-									aria-selected={activeTab === "skills"}
-									onClick={() => setActiveTab("skills")}
+						<div className="about-tab-panel">
+							{TABS.map(({ id, Panel, focusablePanel }) => (
+								<div
+									key={id}
+									id={`about-panel-${id}`}
+									role="tabpanel"
+									aria-labelledby={`about-tab-${id}`}
+									tabIndex={focusablePanel ? 0 : undefined}
+									hidden={activeTab !== id}
+									className="about-tab-pane"
 								>
-									Skills
-								</button>
-							</li>
-							<li className="nav-item" role="presentation">
-								<button
-									className={`nav-link${activeTab === "experience" ? " active" : ""}`}
-									id="experience-tab"
-									data-bs-toggle="tab"
-									type="button"
-									role="tab"
-									aria-selected={activeTab === "experience"}
-									onClick={() => setActiveTab("experience")}
-								>
-									Experience
-								</button>
-							</li>
-							<li className="nav-item" role="presentation">
-								<button
-									className={`nav-link${activeTab === "certifications" ? " active" : ""}`}
-									id="certifications-tab"
-									data-bs-toggle="tab"
-									type="button"
-									role="tab"
-									aria-selected={activeTab === "certifications"}
-									onClick={() => setActiveTab("certifications")}
-								>
-									Certifications
-								</button>
-							</li>
-							<li className="nav-item" role="presentation">
-								<button
-									className={`nav-link${activeTab === "testimonials" ? " active" : ""}`}
-									id="testimonials-tab"
-									data-bs-toggle="tab"
-									type="button"
-									role="tab"
-									aria-selected={activeTab === "testimonials"}
-									onClick={() => setActiveTab("testimonials")}
-								>
-									Testimonials
-								</button>
-							</li>
-						</ul>
-						<div className="tab-content p-3 border rounded bg-body">
-							<div
-								className={`tab-pane fade${activeTab === "skills" ? " show active" : ""}`}
-								id="skills"
-								role="tabpanel"
-								aria-labelledby="skills-tab"
-							>
-								<SkillsList />
-							</div>
-							<div
-								className={`tab-pane fade${activeTab === "experience" ? " show active" : ""}`}
-								id="experience"
-								role="tabpanel"
-								aria-labelledby="experience-tab"
-							>
-								<ExperienceList />
-							</div>
-							<div
-								className={`tab-pane fade${activeTab === "certifications" ? " show active" : ""}`}
-								id="certifications"
-								role="tabpanel"
-								aria-labelledby="certifications-tab"
-							>
-								<CertificationsList />
-							</div>
-							<div
-								className={`tab-pane fade${activeTab === "testimonials" ? " show active" : ""}`}
-								id="testimonials"
-								role="tabpanel"
-								aria-labelledby="testimonials-tab"
-							>
-								<TestimonialsList />
-							</div>
+									<Panel />
+								</div>
+							))}
 						</div>
 					</div>
 				</div>
+				<Testimonials />
 			</div>
 		</section>
 	);

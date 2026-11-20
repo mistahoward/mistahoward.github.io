@@ -1,19 +1,11 @@
 import { useLayoutEffect, useRef, useState } from "preact/hooks";
 import { FaChevronDown, FaExternalLinkAlt } from "react-icons/fa";
 import { Project } from "../../types/data-manager.types";
-import { renderIcon, iconNameToLabel } from "../../utils/iconMap";
+import { splitTechnologies } from "../../utils/technologies";
+import { TechChips } from "../shared/TechChips";
 import { ProjectBadges } from "./ProjectBadges";
 
 const PREVIEW_TECH_COUNT = 4;
-
-export const splitTechnologies = (technologies?: string) =>
-	(technologies ?? "")
-		.split(/,|;/)
-		.map(tech => tech.trim())
-		.filter(Boolean);
-
-const techIconName = (tech: string) => tech.replace(/ /g, "");
-export const techLabel = (tech: string) => iconNameToLabel[techIconName(tech)] || tech;
 
 // A blank line in the admin form's description starts a new paragraph.
 const splitParagraphs = (description?: string) =>
@@ -39,37 +31,6 @@ const useIsClamped = (ref: { current: HTMLElement | null }, active: boolean) => 
 	return clamped;
 };
 
-interface TechChipsProps {
-	techs: string[];
-	hiddenCount?: number;
-	label?: string;
-	labelledBy?: string;
-}
-
-const TechChips = ({ techs, hiddenCount = 0, label, labelledBy }: TechChipsProps) => (
-	<ul className="project-tech-list" aria-label={label} aria-labelledby={labelledBy}>
-		{techs.map(tech => {
-			const icon = renderIcon(techIconName(tech), 13, "");
-			return (
-				<li key={tech} className="project-tech-chip">
-					{icon && (
-						<span className="project-tech-icon" aria-hidden="true">
-							{icon}
-						</span>
-					)}
-					<span>{techLabel(tech)}</span>
-				</li>
-			);
-		})}
-		{hiddenCount > 0 && (
-			<li className="project-tech-more">
-				+{hiddenCount}
-				<span className="visually-hidden"> more</span>
-			</li>
-		)}
-	</ul>
-);
-
 const ExternalLink = ({ href, label, projectName }: { href: string; label: string; projectName: string }) => (
 	<a href={href} target="_blank" rel="noopener noreferrer" className="project-meta-link">
 		{label}
@@ -84,11 +45,12 @@ interface ProjectCardProps {
 	project: Project;
 	expanded: boolean;
 	onToggle: (id: number) => void;
+	className?: string;
 }
 
 // Closed: the first paragraph (clamped), a few tech chips and Read more. Open: every paragraph,
 // the image if there is one, and every chip.
-export const ProjectCard = ({ project, expanded, onToggle }: ProjectCardProps) => {
+export const ProjectCard = ({ project, expanded, onToggle, className = "" }: ProjectCardProps) => {
 	const summaryRef = useRef<HTMLParagraphElement>(null);
 	const clamped = useIsClamped(summaryRef, !expanded);
 
@@ -104,7 +66,7 @@ export const ProjectCard = ({ project, expanded, onToggle }: ProjectCardProps) =
 	const techHeadingId = `project-${project.id}-tech`;
 
 	return (
-		<article className="project-card" aria-labelledby={titleId}>
+		<article className={`project-card${className}`} aria-labelledby={titleId}>
 			<div className="project-card-header">
 				<h4 id={titleId} className="project-title">
 					{project.name}
