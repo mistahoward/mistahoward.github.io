@@ -33,7 +33,8 @@ export const About = () => {
 	};
 
 	return (
-		<section id="about" className="min-vh-100 d-flex align-items-center justify-content-center mt-4 mt-sm-0 mt-md-4 mt-xl-4 mt-xxl-0">
+		// Top padding only: the testimonials band at the bottom brings its own.
+		<section id="about" className="min-vh-100 d-flex align-items-center justify-content-center pt-5">
 			<div className="container">
 				<div className="row justify-content-center align-items-start">
 					<div className="col-lg-5 mb-4 mb-lg-0">
