@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GithubAuthProvider, signInWithPopup, signOut, onAuthStateChanged, type User } from "firebase/auth";
+import { getAuth, GithubAuthProvider, signInWithPopup, signOut, onAuthStateChanged, type Auth, type User } from "firebase/auth";
 
 // Firebase configuration - these will come from environment variables
 const firebaseConfig = {
@@ -11,9 +11,26 @@ const firebaseConfig = {
 	appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+// Firebase is only used for GitHub sign-in on blog comments. Start it only when its settings are present,
+// so a missing or malformed setting (a preview build, a typo) turns off comment sign-in instead of
+// crashing the whole site at load.
+const startAuth = (): Auth | null => {
+	const { apiKey, authDomain, projectId, appId } = firebaseConfig;
+	if (!apiKey || !authDomain || !projectId || !appId) return null;
+	try {
+		return getAuth(initializeApp(firebaseConfig));
+	} catch (error) {
+		console.warn("Comment sign-in is off: Firebase couldn't start.", error);
+		return null;
+	}
+};
+
+const auth = startAuth();
+
+/** Whether comment sign-in can work on this build. */
+export const isAuthAvailable = auth !== null;
+
+const SIGN_IN_UNAVAILABLE = "Comment sign-in isn't available on this copy of the site.";
 
 // GitHub auth provider
 const githubProvider = new GithubAuthProvider();
@@ -89,15 +106,9 @@ export const getGitHubUsername = async (user: User): Promise<string> => {
 
 // Authentication functions
 export const signInWithGitHub = async () => {
+	if (!auth) throw new Error(SIGN_IN_UNAVAILABLE);
 	try {
 		const result = await signInWithPopup(auth, githubProvider);
-		console.log("Firebase auth result:", result);
-		console.log("User object:", result.user);
-		console.log("Provider data:", result.user.providerData);
-
-		const githubUsername = extractGitHubUsername(result.user);
-		console.log("Extracted GitHub username:", githubUsername);
-
 		return result.user;
 	} catch (error) {
 		console.error("Error signing in with GitHub:", error);
@@ -106,6 +117,7 @@ export const signInWithGitHub = async () => {
 };
 
 export const signOutUser = async () => {
+	if (!auth) return;
 	try {
 		await signOut(auth);
 	} catch (error) {
@@ -115,16 +127,21 @@ export const signOutUser = async () => {
 };
 
 export const getCurrentUser = (): User | null => {
-	return auth.currentUser;
+	return auth?.currentUser ?? null;
 };
 
+/** Without Firebase, reports "signed out" once and never again. */
 export const onAuthStateChange = (callback: (user: User | null) => void) => {
+	if (!auth) {
+		callback(null);
+		return () => {};
+	}
 	return onAuthStateChanged(auth, callback);
 };
 
 // Get ID token for API requests
 export const getIdToken = async (): Promise<string | null> => {
-	const user = auth.currentUser;
+	const user = auth?.currentUser;
 	if (!user) return null;
 
 	try {
@@ -134,5 +151,3 @@ export const getIdToken = async (): Promise<string | null> => {
 		return null;
 	}
 };
-
-export { auth, app }; 

@@ -11,7 +11,7 @@ import { Comment } from "../../types/comment-list.types";
 import { CommentsSectionProps } from "../../types/comments-section.types";
 
 export const CommentsSection = ({ blogSlug }: CommentsSectionProps) => {
-	const { user, loading } = useAuth();
+	const { user, loading, available: signInAvailable } = useAuth();
 	const [comments, setComments] = useState<Comment[]>([]);
 	const [loadingComments, setLoadingComments] = useState(true);
 	const [loadingMore, setLoadingMore] = useState(false);
@@ -385,8 +385,14 @@ export const CommentsSection = ({ blogSlug }: CommentsSectionProps) => {
 
 			{!user ? (
 				<div className="login-prompt">
-					<p className="text-muted mb-3">Please log in to leave a comment</p>
-					<LoginButton />
+					{signInAvailable ? (
+						<>
+							<p className="text-muted mb-3">Please log in to leave a comment</p>
+							<LoginButton />
+						</>
+					) : (
+						<p className="text-muted mb-0">Sign-in isn&apos;t available on this copy of the site, so comments are read-only.</p>
+					)}
 				</div>
 			) : (
 				<div className="comment-form-wrapper">
