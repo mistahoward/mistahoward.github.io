@@ -9,6 +9,7 @@ export const PetForm = ({
 	editingItem,
 	imageFile,
 	imagePreview,
+	imageProcessing,
 	onImageChange,
 	onImageRemove,
 	iconFile,
@@ -174,6 +175,7 @@ export const PetForm = ({
 				<label className="form-label">Pet Image</label>
 				<div className="d-flex flex-column gap-2">
 					<input type="file" accept="image/*" onChange={onImageChange} className="form-control" id="pet-image-upload" />
+					{imageProcessing && <small className="text-muted">Shrinking photo…</small>}
 
 					{(imagePreview || formData.imageUrl) && (
 						<div className="position-relative d-inline-block">
@@ -198,6 +200,9 @@ export const PetForm = ({
 								</button>
 							)}
 						</div>
+					)}
+					{imageFile && !imageProcessing && (
+						<small className="text-muted">Upload size: {Math.max(1, Math.round(imageFile.size / 1024))} KB</small>
 					)}
 				</div>
 			</div>
@@ -282,7 +287,7 @@ export const PetForm = ({
 			</div>
 
 			<div className="d-flex gap-2">
-				<button onClick={onSubmit} className="btn btn-primary">
+				<button onClick={onSubmit} className="btn btn-primary" disabled={imageProcessing}>
 					{editingItem ? "Update" : "Create"}
 				</button>
 				<button onClick={onCancel} className="btn btn-secondary">

@@ -1,9 +1,10 @@
-import { useState, useEffect } from "preact/hooks";
+import { useState, useEffect, useRef } from "preact/hooks";
 import { Pet, PetFormState } from "../../../types/pet-manager.types";
 import { fetchItems, createItem, updateItem, deleteItem, confirmDelete } from "../../../utils/crud";
 import { ManagerLayout } from "../shared/ManagerLayout";
 import { PetForm } from "../forms/PetForm";
 import { apiRequestWithFormData } from "../../../utils/api";
+import { shrinkPhoto } from "../../../utils/image";
 
 export const PetManager = () => {
 	const [pets, setPets] = useState<Pet[]>([]);
@@ -36,6 +37,9 @@ export const PetManager = () => {
 
 	const [imageFile, setImageFile] = useState<File | null>(null);
 	const [imagePreview, setImagePreview] = useState<string>("");
+	const [imageProcessing, setImageProcessing] = useState(false);
+	// Bumped on every photo pick or reset, so a slow resize can't overwrite a newer choice.
+	const imageSelection = useRef(0);
 	const [iconFile, setIconFile] = useState<File | null>(null);
 	const [iconPreview, setIconPreview] = useState<string>("");
 
@@ -51,6 +55,13 @@ export const PetManager = () => {
 	useEffect(() => {
 		fetchPets();
 	}, []);
+
+	const resetImage = (preview = "") => {
+		imageSelection.current++;
+		setImageProcessing(false);
+		setImageFile(null);
+		setImagePreview(preview);
+	};
 
 	const handleCreate = () => {
 		setIsCreating(true);
@@ -76,8 +87,7 @@ export const PetManager = () => {
 			isActive: true,
 			isMemorial: false,
 		});
-		setImageFile(null);
-		setImagePreview("");
+		resetImage();
 		setIconFile(null);
 		setIconPreview("");
 	};
@@ -106,8 +116,7 @@ export const PetManager = () => {
 			isActive: pet.isActive,
 			isMemorial: pet.isMemorial || false,
 		});
-		setImageFile(null);
-		setImagePreview(pet.imageUrl || "");
+		resetImage(pet.imageUrl || "");
 		setIconFile(null);
 		setIconPreview(pet.iconUrl || "");
 	};
@@ -136,28 +145,31 @@ export const PetManager = () => {
 			isActive: true,
 			isMemorial: false,
 		});
-		setImageFile(null);
-		setImagePreview("");
+		resetImage();
 		setIconFile(null);
 		setIconPreview("");
 	};
 
-	const handleImageChange = (e: Event) => {
+	const handleImageChange = async (e: Event) => {
 		const target = e.target as HTMLInputElement;
 		const file = target.files?.[0];
+		if (!file) return;
 
-		if (file) {
-			setImageFile(file);
-			const reader = new FileReader();
-			reader.onload = e => setImagePreview(e.target?.result as string);
-			reader.readAsDataURL(file);
-		}
+		const selection = ++imageSelection.current;
+		setImageProcessing(true);
+		const photo = await shrinkPhoto(file);
+		if (selection !== imageSelection.current) return;
+
+		setImageFile(photo);
+		setImageProcessing(false);
+		const reader = new FileReader();
+		reader.onload = e => {
+			if (selection === imageSelection.current) setImagePreview(e.target?.result as string);
+		};
+		reader.readAsDataURL(photo);
 	};
 
-	const handleImageRemove = () => {
-		setImageFile(null);
-		setImagePreview("");
-	};
+	const handleImageRemove = () => resetImage();
 
 	const handleIconChange = (e: Event) => {
 		const target = e.target as HTMLInputElement;
@@ -195,6 +207,7 @@ export const PetManager = () => {
 	};
 
 	const handleSubmit = async () => {
+		if (imageProcessing) return;
 		let imageUrl = formData.imageUrl;
 		let iconUrl = formData.iconUrl;
 		if (imageFile) {
@@ -271,6 +284,7 @@ export const PetManager = () => {
 					editingItem={editingPet}
 					imageFile={imageFile}
 					imagePreview={imagePreview}
+					imageProcessing={imageProcessing}
 					onImageChange={handleImageChange}
 					onImageRemove={handleImageRemove}
 					iconFile={iconFile}
