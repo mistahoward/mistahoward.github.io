@@ -12,6 +12,7 @@ Jay's portfolio site: a Preact frontend and a Cloudflare Worker backend, with ev
 | --- | --- |
 | `frontend/` | Preact + Vite + TypeScript, Bootstrap 5, SCSS. `VITE_API_URL` points it at the backend (see `frontend/.env.example`). |
 | `frontend/src/components/about/ProjectList.tsx` | The Projects section: how each project card is drawn. |
+| `frontend/src/components/PetDex.tsx` | The Pet Dex, a handheld-style device: the screen, pages and grid are in `petdex/`, field parsing in `utils/petdex.ts`, the optional bleeps in `utils/usePetDexSound.ts`, and the styles in `styles/_petdex.scss` (classes prefixed `pd-`). |
 | `frontend/src/components/admin/` | The admin panel: `AdminPanel.tsx`, one form per content type in `forms/`, and the lists in `managers/`. |
 | `frontend/src/utils/iconMap.ts` | The technology icons and their labels, used by projects and experience. |
 | `frontend/public/` | Served as-is: `resume.pdf`, `portrait.jpg`, the hosted email signature in `email/`, and the favicons. Jay's resume-sync Apps Script commits `resume.pdf` to `main` by itself whenever his resume Google Doc changes, so never replace it by hand. |
@@ -28,6 +29,7 @@ Projects, experience, skills, certifications, testimonials, blog posts, the Pet 
 When content needs to change, write out the values for Jay to paste into the admin form, field by field. Never change content by editing the database or writing a migration. The one exception is the migration that first moves hard-coded copy into a new table, which seeds it with the text the code had (as `010_site_content.sql` did for About Me).
 
 - **About Me** is Markdown in the `SiteContent` table under the key `about`. The site reads it from `GET /api/content/about`, and the admin panel's "About Me" section saves it with `PUT /api/admin/content/about`, with a live preview that uses the site's own component (`AboutMeText` in `frontend/src/components/about/AboutMe.tsx`). A blank line starts a new paragraph. To make other copy editable the same way, add its key to `SITE_CONTENT_KEYS` in `backend/src/schema.ts`.
+- **New Pet Dex pets:** `/petdex-entry` (`.claude/skills/petdex-entry/`) writes every field for the admin form and the image prompt for the pet's pixel sprite. Jay's original Gemini gem is saved next to it. Personality Traits and Special Abilities are quoted, comma-separated lists (`"One","Two"`, and a JSON array also works), each ability reads `"Move Name: what it does"`, and Stats is a JSON object of `hp`, `attack`, `defense` and `speed`. Sprites are 61–64px transparent PNGs facing left.
 - **The admin lists use the same order as the site:** experience by start date and certifications by issue date, newest first.
 - **Dates** are stored as plain `YYYY-MM-DD` text. Show them through `parseDate` or `formatDate` in `frontend/src/utils/ui.ts`, never `new Date(text)`. That reads the date as midnight UTC, which is the day before in US time zones.
 

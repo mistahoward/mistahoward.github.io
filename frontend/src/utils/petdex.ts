@@ -37,10 +37,21 @@ export const petsInCategory = (pets: Pet[], category: DexCategory) =>
 // A named constant, so ESLint (double quotes) and Prettier (fewest escapes) agree on how to write it.
 const QUOTE = String.fromCharCode(34);
 
-/** Personality and abilities are stored as `"one","two","three"`. */
+/**
+ * Personality and abilities are stored as `"one","two","three"`. A JSON array with brackets
+ * (what the Petdex Creator prompt outputs) works too, so it can be pasted as is.
+ */
 export const parseQuotedList = (value?: string) => {
 	if (!value) return [];
 	let trimmed = value.trim();
+	if (trimmed.startsWith("[")) {
+		try {
+			const parsed = JSON.parse(trimmed);
+			if (Array.isArray(parsed)) return parsed.map(item => String(item).trim()).filter(Boolean);
+		} catch {
+			// Not valid JSON: fall through and read it as a quoted list.
+		}
+	}
 	if (trimmed.startsWith(QUOTE) && trimmed.endsWith(QUOTE)) trimmed = trimmed.slice(1, -1);
 	return trimmed
 		.split(/","/)
