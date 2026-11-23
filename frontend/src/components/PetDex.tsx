@@ -1,364 +1,302 @@
-import { useState, useMemo, useEffect, useRef } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { Pet } from "../types/pet-manager.types";
 import { fetchItems } from "../utils/crud";
+import { DEX_CATEGORIES, DEX_PAGES, DexCategory, DexPage, petsInCategory } from "../utils/petdex";
+import { DexSound, usePetDexSound } from "../utils/usePetDexSound";
 import { YakShaverSpinner } from "./shared/YakShaverSpinner";
-import { GiHealthNormal, GiAngelOutfit, GiHeartWings } from "react-icons/gi";
-import { LuSword } from "react-icons/lu";
-import { FaShieldDog, FaShieldCat } from "react-icons/fa6";
-import { HiLightningBolt } from "react-icons/hi";
-import { ShutterOverlay } from "./shared/ShutterOverlay";
-import { getNavbarHeight, scrollToElement } from "../utils/ui";
+import { DexScreen } from "./petdex/DexScreen";
+import { DexPages } from "./petdex/DexPages";
+import { DexGrid } from "./petdex/DexGrid";
 
-const GBA_CATEGORIES = [
-	{ key: "canine", label: "Canine" },
-	{ key: "feline", label: "Feline" },
-	{ key: "memorial", label: "Rainbow Bridge" },
-];
+const HINT_KEY = "petdex-sound-hint";
 
-// Matches the breakpoint where the list and info panels stack (see _petdex.scss)
-const STACKED_LAYOUT_QUERY = "(max-width: 991.98px)";
+const readHintSeen = () => {
+	try {
+		return localStorage.getItem(HINT_KEY) === "seen";
+	} catch {
+		return false;
+	}
+};
 
+const SpeakerIcon = ({ on, nudging }: { on: boolean; nudging: boolean }) => (
+	<svg className={`pd-speaker${nudging ? " is-nudging" : ""}`} viewBox="0 0 16 16" aria-hidden="true" fill="currentColor">
+		<rect x="1" y="6" width="3" height="4" />
+		<rect x="4" y="5" width="1" height="6" />
+		<rect x="5" y="4" width="1" height="8" />
+		<rect x="6" y="3" width="1" height="10" />
+		{on ? (
+			<g>
+				<rect x="9" y="6" width="1" height="4" />
+				<rect x="10" y="5" width="1" height="1" />
+				<rect x="10" y="10" width="1" height="1" />
+				<rect x="11" y="4" width="1" height="8" />
+				<rect x="12" y="2" width="1" height="2" />
+				<rect x="12" y="12" width="1" height="2" />
+				<rect x="13" y="3" width="1" height="10" />
+			</g>
+		) : (
+			<g className="pd-speaker-mute">
+				<rect x="9" y="5" width="2" height="2" />
+				<rect x="13" y="5" width="2" height="2" />
+				<rect x="11" y="7" width="2" height="2" />
+				<rect x="9" y="9" width="2" height="2" />
+				<rect x="13" y="9" width="2" height="2" />
+			</g>
+		)}
+	</svg>
+);
+
+/**
+ * The Pet Dex: a handheld-style device. The left half shows the selected pet's sprite (the lens flips it
+ * to their photo); the right half has the Info, Story and Stats pages, the categories and the pet grid.
+ * Under 860px of width it folds into one column.
+ */
 export const PetDex = () => {
 	const [pets, setPets] = useState<Pet[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
-	const [category, setCategory] = useState<"canine" | "feline" | "memorial">("canine");
-	const [selectedPetId, setSelectedPetId] = useState<number | null>(null);
-	const [shutterActive, setShutterActive] = useState(false);
-	const [pendingCategory, setPendingCategory] = useState<"canine" | "feline" | "memorial" | null>(null);
-	const shutterCategoryTimeout = useRef<number | null>(null);
-	const shutterEndTimeout = useRef<number | null>(null);
-	const infoPanelRef = useRef<HTMLDivElement>(null);
+	const [category, setCategory] = useState<DexCategory>("canine");
+	const [selectedId, setSelectedId] = useState<number | null>(null);
+	const [page, setPage] = useState<DexPage>("info");
+	const [showPhoto, setShowPhoto] = useState(false);
+	const [wipeKey, setWipeKey] = useState(0);
+	const [snapKey, setSnapKey] = useState(0);
+	const [flashKey, setFlashKey] = useState(0);
+	const [nudgeKey, setNudgeKey] = useState(0);
+	const [showHint, setShowHint] = useState(false);
+	const hintSeen = useRef(readHintSeen());
+	const hintTimer = useRef<number | undefined>(undefined);
+	const { soundOn, playSound, toggleSound } = usePetDexSound();
 
 	useEffect(() => {
 		fetchItems<Pet>({
 			endpoint: "/api/pets",
-			onSuccess: data => {
-				console.log("[PetDex] Fetched pets:", data);
-				setPets(data);
-			},
+			onSuccess: setPets,
 			setLoading,
-			setError: err => {
-				if (err) {
-					console.error("[PetDex] Error fetching pets:", err);
-					setError(err);
-				} else {
-					setError("");
-				}
-			},
+			setError: err => setError(err || ""),
 		});
+		return () => window.clearTimeout(hintTimer.current);
 	}, []);
 
-	const speciesMap = { canine: "dog", feline: "cat" };
-	const filteredPets = useMemo(() => {
-		let filtered: Pet[] = [];
-		
-		if (category === "memorial") {
-			filtered = pets.filter(pet => pet.isMemorial === true);
-		} else {
-			filtered = pets.filter(pet => pet.species === speciesMap[category] && !pet.isMemorial);
-		}
-		
-		return filtered.slice().sort((a, b) => {
-			const aNum = parseInt((a.dexId || "").replace("#", ""), 10);
-			const bNum = parseInt((b.dexId || "").replace("#", ""), 10);
-			return aNum - bNum;
-		});
-	}, [pets, category]);
-	const selectedPet = useMemo(() => filteredPets.find(p => p.id === selectedPetId) || null, [filteredPets, selectedPetId]);
-	
-	useEffect(() => {
-		if (selectedPetId && !filteredPets.find(p => p.id === selectedPetId)) {
-			setSelectedPetId(null);
-		}
-	}, [category, filteredPets, selectedPetId]);
+	const list = useMemo(() => petsInCategory(pets, category), [pets, category]);
+	const counts = useMemo(
+		() => Object.fromEntries(DEX_CATEGORIES.map(c => [c.key, petsInCategory(pets, c.key).length])) as Record<DexCategory, number>,
+		[pets]
+	);
+	const current = list.find(pet => pet.id === selectedId) ?? list[0] ?? null;
+	const isMemorial = category === "memorial";
 
-	// On stacked layouts the details sit below the pet strip; bring them into view if they're off-screen
-	useEffect(() => {
-		const panel = infoPanelRef.current;
-		if (!selectedPetId || !panel || !window.matchMedia(STACKED_LAYOUT_QUERY).matches) return;
-		const { top } = panel.getBoundingClientRect();
-		if (top > window.innerHeight * 0.6 || top < getNavbarHeight()) scrollToElement(panel);
-	}, [selectedPetId]);
+	const play = (sound: DexSound, soft = isMemorial) => playSound(sound, soft);
 
-	const parseQuotedList = (val?: string) => {
-		if (!val) return [];
-		let trimmed = val.trim();
-		// eslint-disable-next-line quotes
-		if (trimmed.startsWith('"') && trimmed.endsWith('"')) {
-			trimmed = trimmed.slice(1, -1);
-		}
-		return trimmed
-			.split(/","/)
-			.map(s => s.replace(/^"+|"+$/g, "").trim())
-			.filter(Boolean);
-	};
-
-	const parseStats = (val?: string) => {
-		if (!val) return {};
+	const markHintSeen = () => {
+		hintSeen.current = true;
 		try {
-			const obj = JSON.parse(val);
-			if (typeof obj === "object" && obj !== null) return obj;
-		} catch (e) {
-			/* ignore error */
+			localStorage.setItem(HINT_KEY, "seen");
+		} catch {
+			// Storage can be blocked; the hint then shows once per visit.
 		}
-		return {};
 	};
 
-	const handleCategoryChange = (cat: "canine" | "feline" | "memorial") => {
-		if (cat === category) return;
-		setPendingCategory(cat);
-		setShutterActive(true);
+	// The first time someone uses the dex with sound off, point at the switch once: that's when they'd
+	// have heard a bleep. It never shows again after that.
+	const nudgeSound = () => {
+		if (soundOn || hintSeen.current) return;
+		markHintSeen();
+		setShowHint(true);
+		setNudgeKey(key => key + 1);
+		hintTimer.current = window.setTimeout(() => setShowHint(false), 5000);
 	};
 
-	const handleShutterEnd = () => {
-		setShutterActive(false);
-		setPendingCategory(null);
+	const selectPet = (id: number, sound: DexSound) => {
+		if (id === current?.id) return;
+		play(sound);
+		setSelectedId(id);
+		setFlashKey(key => key + 1);
+		nudgeSound();
 	};
 
-	useEffect(() => {
-		if (!shutterActive || !pendingCategory) return;
-		// Update category at midpoint (0.4s)
-		shutterCategoryTimeout.current = window.setTimeout(() => {
-			setCategory(pendingCategory);
-		}, 400);
-		// End shutter after full animation (0.9s)
-		shutterEndTimeout.current = window.setTimeout(() => {
-			handleShutterEnd();
-		}, 900);
-		return () => {
-			if (shutterCategoryTimeout.current) clearTimeout(shutterCategoryTimeout.current);
-			if (shutterEndTimeout.current) clearTimeout(shutterEndTimeout.current);
-		};
-	}, [shutterActive, pendingCategory]);
-
-	if (loading)
-		return (
-			<section id="pet-dex" className="gba-pokedex-section min-vh-100 d-flex align-items-center justify-content-center">
-				<div
-					className="gba-pokedex-container container d-flex align-items-center justify-content-center"
-					style={{ minHeight: "400px" }}
-				>
-					<YakShaverSpinner />
-				</div>
-			</section>
+	const step = (direction: number) => {
+		if (!list.length) return;
+		const index = Math.max(
+			0,
+			list.findIndex(pet => pet.id === current?.id)
 		);
+		selectPet(list[(index + direction + list.length) % list.length].id, "move");
+	};
 
-	if (error)
-		return (
-			<section id="pet-dex" className="gba-pokedex-section min-vh-100 d-flex align-items-center justify-content-center">
-				<div
-					className="gba-pokedex-container container d-flex align-items-center justify-content-center text-danger"
-					style={{ minHeight: "400px" }}
-				>
-					{error}
-				</div>
-			</section>
-		);
+	const changePage = (next: DexPage, focusTab = false) => {
+		if (next !== page) play("page");
+		setPage(next);
+		nudgeSound();
+		if (focusTab) requestAnimationFrame(() => document.getElementById(`pd-tab-${next}`)?.focus());
+	};
 
-	const isMemorialMode = category === "memorial";
+	const turnPage = (direction: number, focusTab: boolean) => {
+		const index = DEX_PAGES.findIndex(p => p.key === page);
+		changePage(DEX_PAGES[(index + direction + DEX_PAGES.length) % DEX_PAGES.length].key, focusTab);
+	};
+
+	const changeCategory = (next: DexCategory) => {
+		if (next === category) return;
+		play("category", next === "memorial");
+		setCategory(next);
+		setSelectedId(petsInCategory(pets, next)[0]?.id ?? null);
+		setWipeKey(key => key + 1);
+		nudgeSound();
+	};
+
+	// Turning the photo off always works, even on a pet without one.
+	const togglePhoto = () => {
+		if (!showPhoto && !current?.imageUrl) return;
+		const next = !showPhoto;
+		play(next ? "photo" : "back");
+		setShowPhoto(next);
+		setFlashKey(key => key + 1);
+		if (next) setSnapKey(key => key + 1);
+		nudgeSound();
+	};
+
+	const onSoundClick = () => {
+		markHintSeen();
+		window.clearTimeout(hintTimer.current);
+		setShowHint(false);
+		toggleSound();
+	};
+
+	const onKeyDown = (event: KeyboardEvent) => {
+		if (event.altKey || event.ctrlKey || event.metaKey) return;
+		const target = event.target as HTMLElement;
+		if (event.key === "ArrowUp") step(-1);
+		else if (event.key === "ArrowDown") step(1);
+		else if (event.key === "ArrowLeft") turnPage(-1, !!target.closest(".pd-tabs"));
+		else if (event.key === "ArrowRight") turnPage(1, !!target.closest(".pd-tabs"));
+		else if (event.key === "p" || event.key === "P") togglePhoto();
+		else return;
+		event.preventDefault();
+	};
 
 	return (
-		<section id="pet-dex" className={`gba-pokedex-section min-vh-100 d-flex align-items-center justify-content-center${isMemorialMode ? " memorial-bg" : ""}`}>
-			<div className={`gba-pokedex-container container${isMemorialMode ? " memorial-mode" : ""}`} style={{ position: "relative" }}>
-				<ShutterOverlay show={shutterActive} onAnimationEnd={handleShutterEnd} />
-				<div className="row gba-pokedex-row justify-content-center">
-					<div className="col-lg-6 col-md-7 col-12 gba-pokedex-info-panel order-2 order-lg-1" ref={infoPanelRef}>
-						<div className="gba-pokedex-info card">
-							<div className="petdex-info-scroll">
-								{selectedPet ? (
-									<div className="gba-pet-info-content animate-fade-in">
-										<div className="d-flex align-items-center mb-3">
-											<div className="position-relative me-3">
-												<img src={selectedPet.imageUrl} alt={selectedPet.name} className="gba-pet-image" />
-												{isMemorialMode && (
-													<div className="memorial-halo" title="Rest in Peace">
-														<GiAngelOutfit />
-													</div>
-												)}
-											</div>
-											<div>
-												<h3 className="gba-pet-name mb-1">{selectedPet.name}</h3>
-												{selectedPet.nickname && (
-													<div className="gba-pet-nickname fst-italic small">({selectedPet.nickname})</div>
-												)}
-												<div className="gba-pet-dexid text-muted">{selectedPet.dexId}</div>
-												{selectedPet.age && (
-													<div
-														className="gba-pet-level text-secondary"
-														style={{ fontWeight: 600, fontSize: "1.1rem" }}
-													>
-														{isMemorialMode ? "Max Lv." : "Lv."} {selectedPet.age}
-													</div>
-												)}
-											</div>
-										</div>
-										<div className="mb-3">
-											<div className="gba-pet-description">
-												<strong>Description:</strong> {selectedPet.description}
-											</div>
-											<div className="gba-pet-origin">
-												<strong>Origin Story:</strong> {selectedPet.originStory}
-											</div>
-										</div>
-										<div className="gba-pet-details">
-											<div className="row mb-2">
-												<div className="col-6">
-													<strong>Breed:</strong> {selectedPet.breed || "Unknown"}
-												</div>
-												<div className="col-6">
-													<strong>Color:</strong> {selectedPet.color || "?"}
-												</div>
-											</div>
-											<div className="mb-2">
-												<strong>Personality:</strong>
-												{parseQuotedList(selectedPet.personality).length > 0 && (
-													<div className="gba-pet-personality-list mb-1">
-														{parseQuotedList(selectedPet.personality).map((trait, i) => (
-															<div key={i} className="gba-pet-personality-item">
-																{trait}
-															</div>
-														))}
-													</div>
-												)}
-											</div>
-											<div className="mb-2">
-												<strong>Abilities:</strong>
-												{parseQuotedList(selectedPet.specialAbilities).length > 0 &&
-													parseQuotedList(selectedPet.specialAbilities).map((ability, i) => (
-														<div key={i} className="gba-pet-ability-item">
-															{ability}
-														</div>
-													))}
-											</div>
-											<div className="mb-2">
-												<strong>Favorite Food:</strong> {selectedPet.favoriteFood}
-											</div>
-											<div className="mb-2">
-												<strong>Favorite Toy:</strong> {selectedPet.favoriteToy}
-											</div>
-											<div className="mb-2">
-												<strong>Stats:</strong>
-												{Object.keys(parseStats(selectedPet.stats)).length > 0 ? (
-													<table className="gba-pet-stats-table mt-1">
-														<tbody>
-															{Object.entries(parseStats(selectedPet.stats)).map(([stat, value]) => {
-																let icon = null;
-																const statKey = stat.toLowerCase();
-																if (statKey === "hp" || statKey === "health")
-																	icon = (
-																		<span className="gba-pet-stat-icon me-1">
-																			<GiHealthNormal />
-																		</span>
-																	);
-																else if (statKey === "attack")
-																	icon = (
-																		<span className="gba-pet-stat-icon me-1">
-																			<LuSword />
-																		</span>
-																	);
-																else if (statKey === "defense")
-																	icon =
-																		selectedPet.species === "dog" ? (
-																			<span className="gba-pet-stat-icon me-1">
-																				<FaShieldDog />
-																			</span>
-																		) : (
-																			<span className="gba-pet-stat-icon me-1">
-																				<FaShieldCat />
-																			</span>
-																		);
-																else if (statKey === "speed")
-																	icon = (
-																		<span className="gba-pet-stat-icon me-1">
-																			<HiLightningBolt />
-																		</span>
-																	);
-																return (
-																	<tr key={stat}>
-																		<td className={`gba-pet-stat-label gba-pet-stat-${statKey}`}>
-																			{icon}
-																			{stat.charAt(0).toUpperCase() + stat.slice(1)}
-																		</td>
-																		<td className="gba-pet-stat-value">{value as string | number}</td>
-																	</tr>
-																);
-															})}
-														</tbody>
-													</table>
-												) : null}
-											</div>
-										</div>
-									</div>
-								) : (
-									<div className="gba-pet-info-placeholder text-center p-5 animate-fade-in">
-										<div className="gba-pet-placeholder-emoji mb-3" style={{ fontSize: "2.5rem" }}>
-											{isMemorialMode ? "🌈" : "🐾"}
-										</div>
-										<div className="gba-pet-placeholder-text fs-4">
-											{isMemorialMode ? "Remembering our friends." : "Pick a pet to get started!"}
-										</div>
-									</div>
-								)}
-							</div>
-						</div>
+		<section id="pet-dex" className="min-vh-100 d-flex align-items-center justify-content-center">
+			<div className="container">
+				<h2 className="display-4 fw-bold mb-4 text-center">Pet Dex</h2>
+				{loading ? (
+					<div className="d-flex justify-content-center py-5">
+						<YakShaverSpinner />
 					</div>
-					<div className="col-lg-5 col-md-5 col-12 gba-pokedex-list-panel order-1 order-lg-2" style={{ position: "relative" }}>
-						<div className="d-flex justify-content-between align-items-center mb-2">
-							<h4 className="gba-pokedex-list-title mt-2 mb-0">{isMemorialMode ? "Memorial" : "Pet Dex"}</h4>
-							<div className="gba-pokedex-toggle btn-group">
-								{GBA_CATEGORIES.map(cat => (
+				) : error ? (
+					<p className="text-danger text-center">{error}</p>
+				) : (
+					<div className="pd-stage">
+						<div className={`pd-device${isMemorial ? " is-memorial" : ""}`} onKeyDown={onKeyDown}>
+							<div className="pd-half pd-left">
+								<div className="pd-topstrip">
 									<button
-										key={cat.key}
-										className={`btn btn-sm gba-toggle-btn${category === cat.key ? " active" : ""}`}
-										onClick={() => handleCategoryChange(cat.key as "canine" | "feline" | "memorial")}
+										type="button"
+										className="pd-lens"
+										aria-pressed={showPhoto}
+										aria-label={showPhoto ? "Show sprite" : "Show photo"}
+										title={showPhoto ? "Show sprite" : "Show photo"}
+										onClick={togglePhoto}
+										disabled={!showPhoto && !current?.imageUrl}
 									>
-										{cat.label}
+										{flashKey > 0 && <span key={flashKey} className="pd-lens-glow" aria-hidden="true" />}
 									</button>
-								))}
+									<span className="pd-led pd-led--red" aria-hidden="true" />
+									<span className="pd-led pd-led--yellow" aria-hidden="true" />
+									<span className="pd-led pd-led--green" aria-hidden="true" />
+									<span className="pd-brand" aria-hidden="true">
+										PET DEX
+									</span>
+									<span className="pd-sound">
+										{showHint && (
+											<span className="pd-sound-hint" role="status">
+												<b>Sound is off</b>
+												<br />
+												Tap for bleeps
+											</span>
+										)}
+										<button type="button" className="pd-sound-btn" aria-pressed={soundOn} onClick={onSoundClick}>
+											<SpeakerIcon key={nudgeKey} on={soundOn} nudging={nudgeKey > 0} />
+											<span>{soundOn ? "Sound on" : "Sound off"}</span>
+										</button>
+									</span>
+								</div>
+								<DexScreen
+									pet={current}
+									isMemorial={isMemorial}
+									showPhoto={showPhoto}
+									onTogglePhoto={togglePhoto}
+									wipeKey={wipeKey}
+									snapKey={snapKey}
+								/>
+								<div className="pd-controls">
+									<div className="pd-dpad">
+										<button type="button" className="pd-dpad-up" aria-label="Previous pet" onClick={() => step(-1)}>
+											▲
+										</button>
+										<button
+											type="button"
+											className="pd-dpad-left"
+											aria-label="Previous page"
+											onClick={() => turnPage(-1, false)}
+										>
+											◀
+										</button>
+										<span className="pd-dpad-center" aria-hidden="true" />
+										<button
+											type="button"
+											className="pd-dpad-right"
+											aria-label="Next page"
+											onClick={() => turnPage(1, false)}
+										>
+											▶
+										</button>
+										<button type="button" className="pd-dpad-down" aria-label="Next pet" onClick={() => step(1)}>
+											▼
+										</button>
+									</div>
+									<p className="pd-hint">
+										▲▼ pet · ◀▶ page
+										<br />
+										Lens or P: photo
+									</p>
+									<div className="pd-grille" aria-hidden="true">
+										<i />
+										<i />
+										<i />
+										<i />
+									</div>
+								</div>
+							</div>
+
+							<div className="pd-hinge" aria-hidden="true" />
+
+							<div className="pd-half pd-right">
+								<DexPages pets={pets} activeId={current?.id ?? null} page={page} onPageChange={next => changePage(next)} />
+								<div className="pd-cats" role="group" aria-label="Category">
+									{DEX_CATEGORIES.map(c => (
+										<button
+											key={c.key}
+											type="button"
+											className="pd-cat"
+											aria-pressed={c.key === category}
+											onClick={() => changeCategory(c.key)}
+										>
+											{c.label}
+											<span className="pd-cat-count">{counts[c.key]}</span>
+										</button>
+									))}
+								</div>
+								<DexGrid
+									pets={list}
+									category={category}
+									selectedId={current?.id ?? null}
+									onSelect={id => selectPet(id, "select")}
+								/>
 							</div>
 						</div>
-						<div className="gba-pokedex-list scroll-area">
-							{filteredPets.length === 0 ? (
-								<div className="gba-pokedex-empty text-center text-muted py-4">
-									{isMemorialMode ? "No pets on the Rainbow Bridge yet." : "No pets found in this category."}
-								</div>
-							) : (
-								<ul className="list-unstyled gba-pet-list">
-									{filteredPets.map(pet => {
-										const itemClass = [
-											"gba-pet-list-item",
-											"d-flex",
-											"align-items-center",
-											selectedPetId === pet.id ? "selected animate-pulse" : "",
-										].join(" ");
-										return (
-											<li
-												key={pet.id}
-												className={itemClass}
-												onClick={() => setSelectedPetId(pet.id)}
-												tabIndex={0}
-												role="button"
-												aria-pressed={selectedPetId === pet.id}
-											>
-												<div className="position-relative">
-													<img src={pet.iconUrl} alt={pet.name + " icon"} className="gba-pet-list-icon" />
-													{isMemorialMode && (
-														<div className="mini-halo">
-															<GiHeartWings size={18} />
-														</div>
-													)}
-												</div>
-												<span className="gba-pet-list-name flex-grow-1">{pet.name}</span>
-												<span className="gba-pet-list-dexid text-muted">{pet.dexId}</span>
-											</li>
-										);
-									})}
-								</ul>
-							)}
-						</div>
 					</div>
-				</div>
+				)}
 			</div>
 		</section>
 	);
