@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "preact/compat";
 import { User } from "firebase/auth";
-import { onAuthStateChange, signInWithGitHub, signOutUser } from "../utils/firebase";
+import { isAuthAvailable, onAuthStateChange, signInWithGitHub, signOutUser } from "../utils/firebase";
 import { AuthContextType } from "../types/auth-context.types";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -51,6 +51,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 	const value: AuthContextType = {
 		user,
 		loading,
+		available: isAuthAvailable,
 		signIn,
 		signOut,
 	};
