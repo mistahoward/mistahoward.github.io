@@ -57,6 +57,8 @@ export type PetFormProps = {
 	editingItem: Pet | null;
 	imageFile: File | null;
 	imagePreview: string;
+	/** True while a newly picked photo is being shrunk; blocks submitting. */
+	imageProcessing: boolean;
 	onImageChange: (e: Event) => void;
 	onImageRemove: () => void;
 	iconFile: File | null;
