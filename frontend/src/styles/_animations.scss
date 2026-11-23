@@ -67,22 +67,3 @@
 	animation: pulse 0.7s;
 }
 
-@keyframes shutter-in-left {
-	0% { width: 0; }
-	100% { width: 50vw; }
-}
-
-@keyframes shutter-in-right {
-	0% { width: 0; }
-	100% { width: 50vw; }
-}
-
-@keyframes shutter-out-left {
-	0% { width: 50vw; }
-	100% { width: 0; }
-}
-
-@keyframes shutter-out-right {
-	0% { width: 50vw; }
-	100% { width: 0; }
-} 

@@ -1,607 +1,1175 @@
-@import "./variables";
+// Pet Dex: a handheld-style device. The left half shows the selected pet's sprite (or photo); the right half
+// has the Info / Story / Stats pages, the categories and the pet grid. Under 860px of width it folds into one
+// column: screen, categories, pet strip, pages. The device keeps its own colors in light and dark mode.
+// Every class is prefixed `pd-` so nothing leaks into the rest of the site.
 
-.gba-pokedex-section {
-	background: linear-gradient(135deg, $gba-light 0%, #fff 100%);
-	min-height: 100vh;
-	padding: 2rem 0;
-	font-family: Inter, 'Segoe UI', Arial, sans-serif;
-	transition: background 0.5s ease;
-	
-	&.memorial-bg {
-		background: linear-gradient(135deg, $memorial-bg-color 0%, #fff 100%);
-	}
-}
-
-.gba-pokedex-container {
-	background: $gba-red;
-	border-radius: 1.5rem;
-	box-shadow: $gba-shadow;
-	border: 4px solid $gba-border;
-	padding: 2rem 1rem;
-	max-width: 87.5rem;
-	transition: all 0.5s ease;
-	
-	&.memorial-mode {
-		background: $memorial-container;
-		border-color: #5e35b1;
-		
-		.gba-pokedex-list-title {
-			color: $memorial-accent;
-			text-shadow: 0 1px 2px rgb(0 0 0 / 20%);
-		}
-		
-		.gba-toggle-btn.active {
-			background: $memorial-accent;
-			color: $memorial-text-dark;
-			border-color: #b39ddb;
-		}
-		
-		.gba-pet-image {
-			border-color: $memorial-accent;
-			box-shadow: 0 0 0.9375rem rgb(255 215 0 / 40%);
-		}
-		
-		.gba-pet-list-item.selected {
-			background: #ede7f6;
-			border-color: $memorial-accent;
-		}
-		
-		.gba-pet-name {
-			color: $memorial-text-dark;
-		}
-		
-		.gba-pet-dexid {
-			color: $memorial-container;
-		}
-	}
-}
-
-.gba-pokedex-row {
-	min-height: 37.5rem;
-}
-
-.gba-pokedex-info-panel {
-	background: $gba-light;
-	border-radius: 1rem;
-	border: 3px solid $gba-border;
-	box-shadow: $gba-shadow;
-	margin-bottom: 1.5rem;
-	min-height: 31.25rem;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-}
-
-.gba-pokedex-info {
-	background: $gba-light;
-	border-radius: 1rem;
-	border: 0;
-	padding: 2rem 1.5rem;
-	min-height: 28.125rem;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-}
-
-.gba-pet-info-content {
-	animation: fadeIn 0.5s;
-}
-
-.gba-pet-image {
-	width: 7.5rem;
-	height: 7.5rem;
-	object-fit: cover;
-	border-radius: 1rem;
-	border: 3px solid $gba-accent;
-	background: #fff;
-	box-shadow: 0 0.125rem 0.5rem rgb(0 0 0 / 10%);
-}
-
-.gba-pet-name {
-	color: $gba-red;
-	font-weight: 700;
-	font-size: 2rem;
-	letter-spacing: 0.0625rem;
-}
-
-.gba-pet-nickname {
-	color: $gba-gray;
-}
-
-.gba-pet-dexid {
-	font-size: 1.1rem;
-	color: $gba-accent;
-	font-weight: 600;
-}
-
-.gba-pet-details {
-	font-size: 1rem;
-	color: $gba-dark;
-}
-
-.gba-pet-description-box {
-	background: #fffbe6;
-	border: 1.5px solid $gba-accent;
-	border-radius: 0.75rem;
-	padding: 1rem;
-	margin-top: 1rem;
-}
-
-.gba-pet-description,
-.gba-pet-origin {
-	font-size: 1rem;
-	margin-bottom: 0.5rem;
-}
-
-.gba-pet-info-placeholder {
-	color: $gba-gray;
-	font-size: 1.2rem;
-	min-height: 21.875rem;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-}
-
-.gba-pokedex-list-panel {
-	background: $gba-light;
-	border-radius: 1rem;
-	border: 3px solid $gba-border;
-	box-shadow: $gba-shadow;
-	min-height: 31.25rem;
-	margin-bottom: 1.5rem;
-	display: flex;
-	flex-direction: column;
-}
-
-.gba-pokedex-list-title {
-	color: $gba-red;
-	font-weight: 700;
-	letter-spacing: 0.0625rem;
-}
-
-.gba-pokedex-toggle .gba-toggle-btn {
-	background: $gba-accent;
-	color: $gba-dark;
-	border: 2px solid $gba-border;
-	border-radius: 0.5rem 0.5rem 0 0;
-	font-weight: 600;
-	margin-left: 0.25rem;
-	margin-right: 0.25rem;
-	transition: background 0.2s, color 0.2s;
-
-	&.active,
-	&:focus {
-		background: $gba-red;
-		color: #fff;
-		border-color: $gba-accent;
-	}
-}
-
-.gba-pokedex-list {
-	max-height: 31.25rem;
-	overflow-y: auto;
-	background: #fff;
-	border-radius: 0.75rem;
-	border: 1.5px solid $gba-gray;
-	padding: 0.5rem 0.25rem;
-	margin-top: 0.5rem;
-}
-
-.gba-pet-list-item {
-	cursor: pointer;
-	padding: 0.5rem 0.75rem;
-	border-radius: 0.5rem;
-	margin-bottom: 0.25rem;
-	border: 2px solid transparent;
-	transition: background 0.2s, border 0.2s, box-shadow 0.2s;
-	background: #f4f4f4;
-	font-size: 1.1rem;
-	align-items: center;
-	min-height: 3.5rem;
-
-	&.selected {
-		background: $gba-accent;
-		border-color: $gba-red;
-		color: $gba-dark;
-		font-weight: 700;
-		box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
-	}
-
-	&:hover:not(.selected) {
-		background: #ffe5e0;
-		border-color: $gba-accent;
-	}
-}
-
-.gba-pet-list-icon {
-	width: 2.5rem;
-	height: 2.5rem;
-	object-fit: cover;
-	border-radius: 0.5rem;
-	border: 2px solid $gba-border;
-	background: #fff;
-	margin-right: 0.5rem;
-}
-
-.gba-pet-list-name {
-	font-weight: 600;
-	color: $gba-dark;
-}
-
-.gba-pet-list-dexid {
-	font-size: 1rem;
-	color: $gba-gray;
-	margin-left: 0.5rem;
-}
-
-.gba-pokedex-empty {
-	color: $gba-gray;
-	font-size: 1.1rem;
-	padding: 2rem 0;
-}
-
-.gba-pet-stats-table {
+.pd-stage {
+	container-type: inline-size;
 	width: 100%;
-	border-collapse: separate;
-	border-spacing: 0;
-	background: #f4f8ff;
-	border-radius: 0.5rem;
-	box-shadow: 0 1px 4px rgb(0 0 0 / 4%);
-	margin-top: 0.5rem;
-	margin-bottom: 0.5rem;
-	font-size: 1.05rem;
-
-	& td {
-		padding: 0.35rem 0.75rem;
-		border-bottom: 1px solid #e0e0e0;
-	}
-
-	& tr:last-child td {
-		border-bottom: none;
-	}
+	max-width: 74rem;
+	margin-inline: auto;
 }
 
-.gba-pet-stat-label {
-	font-weight: 600;
-	color: $gba-blue;
-	letter-spacing: 0.0313rem;
-	min-width: 5rem;
-	&.gba-pet-stat-hp { color: $gba-green; }
-	&.gba-pet-stat-attack { color: $gba-orange; }
-	&.gba-pet-stat-defense { color: $gba-yellow; }
-	&.gba-pet-stat-speed { color: $gba-red; }
-}
+.pd-device {
+	--pd-shell: #c8312a;
+	--pd-shell-edge: #771b16;
+	--pd-shell-hi: #de4a40;
+	--pd-hinge: #93211b;
+	--pd-on-shell: #ffe4e0;
+	--pd-bezel: #ece7dc;
+	--pd-lcd: #cbdcb2;
+	--pd-lcd-ink: #21331a;
+	--pd-lcd-ink-2: #4b6441;
+	--pd-screen: #1b262b;
+	--pd-screen-2: #27363d;
+	--pd-screen-ink: #e5ede0;
+	--pd-screen-ink-2: #a2b6ab;
+	--pd-btn: #f2c230;
+	--pd-btn-ink: #4a3500;
+	--pd-btn-down: #2a1a12;
+	--pd-lens: #3b8fd9;
+	--pd-halo: #f2c94c;
+	--pd-font-px: "Silkscreen", "Courier New", ui-monospace, monospace;
 
-.gba-pet-stat-value {
-	font-family: monospace;
-	font-size: 1.1em;
-	color: $gba-dark;
-}
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) 22px minmax(0, 1.12fr);
+	padding: 20px;
+	background: var(--pd-shell);
+	border: 4px solid var(--pd-shell-edge);
+	border-radius: 24px;
+	box-shadow:
+		inset 0 3px 0 var(--pd-shell-hi),
+		0 22px 44px -22px rgb(0 0 0 / 50%);
+	color: var(--pd-lcd-ink);
+	font-family: var(--bs-font-sans-serif);
+	text-align: left;
+	transition:
+		background-color 0.45s ease,
+		border-color 0.45s ease;
 
-.gba-pet-personality-list,
-.gba-pet-abilities-list {
-	list-style: disc inside;
-	background: #f8f8f8;
-	border-radius: 0.5rem;
-	margin: 0.25rem 0 0.5rem;
-}
-
-.gba-pet-personality-item,
-.gba-pet-ability-item {
-	margin-bottom: 0.25rem;
-	padding: 0.15rem 0.25rem;
-	border-radius: 0.25rem;
-	background: #fff;
-	border-left: 3px solid $gba-blue;
-	font-size: 1em;
-}
-.gba-pet-ability-item { border-left: 3px solid $gba-orange; }
-
-// Memorial indicators
-.memorial-halo {
-	position: absolute;
-	top: -0.5rem;
-	right: -0.9375rem;
-	font-size: 2.5rem;
-	color: $memorial-accent;
-	filter: drop-shadow(0 0 0.25rem rgb(255 215 0 / 60%));
-	animation: float 3s ease-in-out infinite;
-	z-index: 10;
-}
-
-.mini-halo {
-	position: absolute;
-	top: -0.3125rem;
-	right: -0.3125rem;
-	color: $memorial-accent;
-	background: rgb(255 255 255 / 80%);
-	border-radius: 50%;
-	width: 1.2rem;
-	height: 1.2rem;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	z-index: 5;
-	box-shadow: 0 0.0625rem 0.1875rem rgb(0 0 0 / 10%);
-}
-
-@keyframes float {
-	0% {
-		transform: translateY(0);
-	}
-	50% {
-		transform: translateY(-0.3125rem);
-	}
-	100% {
-		transform: translateY(0);
-	}
-}
-
-// Responsive tweaks
-@media (width <= 991px) {
-	.gba-pokedex-row {
-		flex-direction: column;
-		min-height: 0;
+	&.is-memorial {
+		--pd-shell: #6a43b8;
+		--pd-shell-edge: #35206a;
+		--pd-shell-hi: #8462d0;
+		--pd-hinge: #4e2f92;
+		--pd-on-shell: #efe6ff;
+		--pd-lcd: #ddd3ee;
+		--pd-lcd-ink: #2d1c54;
+		--pd-lcd-ink-2: #5e4b88;
+		--pd-screen: #1f1930;
+		--pd-screen-2: #2e2646;
+		--pd-screen-ink: #ece6f7;
+		--pd-screen-ink-2: #b4a8cc;
+		--pd-btn: #f5d35a;
+		--pd-btn-ink: #3f2c00;
 	}
 
-	.gba-pokedex-container {
-		max-width: 98vw;
-	}
-
-	.gba-pokedex-info-panel,
-	.gba-pokedex-list-panel {
-		max-width: 100%;
-		flex: 0 0 100%;
-		min-height: 0;
-		margin-bottom: 1rem;
-	}
-
-	.gba-pokedex-info {
-		min-height: 0;
-	}
-
-	.gba-pet-info-placeholder {
-		min-height: 10rem;
-	}
-
-	// Pet list becomes a sideways strip so vertical swipes always scroll the page
-	.gba-pokedex-list {
-		max-height: none;
-		overflow: auto hidden;
-		scroll-snap-type: x proximity;
-		overscroll-behavior-x: contain;
-		margin-bottom: 0.75rem;
-	}
-
-	.gba-pet-list {
-		display: flex;
-		gap: 0.5rem;
+	p,
+	dl,
+	dd,
+	ul,
+	h3 {
 		margin: 0;
 	}
 
-	.gba-pet-list-item {
-		flex: 0 0 5.5rem;
-		flex-direction: column;
-		justify-content: center;
-		text-align: center;
-		scroll-snap-align: start;
-		margin-bottom: 0;
+	// The site sets Inter on every element (`* { font-family }`), which stops the pixel font from
+	// inheriting. Inside the device, everything inherits; classes below that set the pixel font come
+	// later at the same specificity, so they still win.
+	* {
+		font-family: inherit;
+	}
+
+	:focus-visible {
+		outline: 3px solid #fff;
+		outline-offset: 2px;
+	}
+}
+
+.pd-half {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+	min-width: 0;
+}
+
+.pd-hinge {
+	margin-inline: 6px;
+	background: var(--pd-hinge);
+	border-radius: 6px;
+	box-shadow:
+		inset 2px 0 0 rgb(0 0 0 / 20%),
+		inset -2px 0 0 rgb(255 255 255 / 8%);
+}
+
+// ---------- Top strip: lens, lights, sound switch ----------
+
+.pd-topstrip {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	min-height: 58px;
+}
+
+.pd-lens {
+	position: relative;
+	flex: none;
+	width: 54px;
+	height: 54px;
+	padding: 0;
+	border-radius: 50%;
+	background: radial-gradient(circle at 34% 32%, #d4ecff 0 11%, #7fbff0 12% 24%, var(--pd-lens) 25% 100%);
+	border: 5px solid #f6f3ee;
+	box-shadow: 0 0 0 3px var(--pd-shell-edge);
+	cursor: pointer;
+
+	&:hover:not(:disabled) {
+		filter: brightness(1.08);
+	}
+
+	&[aria-pressed="true"] {
+		box-shadow:
+			0 0 0 3px var(--pd-shell-edge),
+			0 0 14px 3px rgb(140 205 255 / 60%);
+	}
+
+	&:disabled {
+		cursor: default;
+	}
+}
+
+.pd-lens-glow {
+	position: absolute;
+	inset: -5px;
+	border-radius: 50%;
+	pointer-events: none;
+	opacity: 0;
+	box-shadow: 0 0 22px 8px rgb(140 205 255 / 75%);
+	animation: pd-glow 0.55s ease-out;
+}
+
+@keyframes pd-glow {
+	40% {
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 0;
+	}
+}
+
+.pd-led {
+	flex: none;
+	width: 14px;
+	height: 14px;
+	border-radius: 50%;
+	border: 2px solid var(--pd-shell-edge);
+
+	&--red {
+		background: #ff6b6b;
+	}
+
+	&--yellow {
+		background: #f7d154;
+	}
+
+	&--green {
+		background: #73d17b;
+	}
+}
+
+.pd-brand {
+	margin-left: auto;
+	font-family: var(--pd-font-px);
+	font-weight: 700;
+	font-size: 15px;
+	letter-spacing: 2px;
+	color: var(--pd-shell-edge);
+	text-shadow: 0 1px 0 var(--pd-shell-hi);
+	white-space: nowrap;
+}
+
+.pd-sound {
+	position: relative;
+	flex: none;
+	display: inline-flex;
+}
+
+.pd-sound-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 5px 10px 5px 8px;
+	font-family: var(--pd-font-px);
+	font-size: 11px;
+	line-height: 1;
+	background: #f6f3ee;
+	color: #2a1a12;
+	border: 2px solid var(--pd-shell-edge);
+	border-radius: 999px;
+	box-shadow: 0 2px 0 var(--pd-shell-edge);
+	cursor: pointer;
+
+	&:hover {
+		background: #fff;
+	}
+
+	&:active {
+		transform: translateY(2px);
+		box-shadow: none;
+	}
+
+	&[aria-pressed="true"] {
+		background: var(--pd-btn);
+		color: var(--pd-btn-ink);
+	}
+}
+
+.pd-speaker {
+	flex: none;
+	width: 14px;
+	height: 14px;
+	shape-rendering: crispEdges;
+
+	&.is-nudging {
+		animation: pd-nudge 0.5s ease-in-out 2;
+	}
+}
+
+.pd-speaker-mute {
+	fill: #c8312a;
+}
+
+@keyframes pd-nudge {
+	25% {
+		transform: rotate(-12deg);
+	}
+
+	75% {
+		transform: rotate(12deg);
+	}
+}
+
+.pd-sound-hint {
+	position: absolute;
+	z-index: 10;
+	top: 50%;
+	right: calc(100% + 13px);
+	translate: 0 -50%;
+	padding: 5px 9px;
+	font-family: var(--pd-font-px);
+	font-size: 11px;
+	line-height: 1.35;
+	text-align: right;
+	white-space: nowrap;
+	background: var(--pd-btn);
+	color: var(--pd-btn-ink);
+	border: 2px solid var(--pd-shell-edge);
+	border-radius: 8px;
+	box-shadow: 0 3px 0 var(--pd-shell-edge);
+	pointer-events: none;
+	animation: pd-pop 0.25s ease-out;
+
+	&::after {
+		content: "";
+		position: absolute;
+		top: 50%;
+		right: -11px;
+		translate: 0 -50%;
+		border-style: solid;
+		border-width: 6px 0 6px 9px;
+		border-color: transparent transparent transparent var(--pd-shell-edge);
+	}
+
+	b {
+		font-weight: 700;
+	}
+}
+
+@keyframes pd-pop {
+	from {
+		opacity: 0;
+		transform: translateX(8px);
+	}
+
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+// ---------- Left screen ----------
+
+.pd-bezel {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	padding: 12px 18px 26px;
+	background: var(--pd-bezel);
+	border: 3px solid var(--pd-shell-edge);
+	border-radius: 10px 10px 10px 38px;
+}
+
+.pd-bezel-top {
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.pd-bezel-dots {
+	grid-column: 2;
+	display: flex;
+	gap: 8px;
+
+	i {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: #d64b44;
+	}
+}
+
+.pd-snap {
+	grid-column: 3;
+	justify-self: end;
+	padding: 5px 10px;
+	font-family: var(--pd-font-px);
+	font-size: 11px;
+	line-height: 1;
+	background: #2f2a26;
+	color: #ece7dc;
+	border: 0;
+	border-radius: 999px;
+	cursor: pointer;
+
+	&:hover:not(:disabled) {
+		background: #46403a;
+	}
+
+	&[aria-pressed="true"] {
+		background: var(--pd-lens);
+		color: #fff;
+	}
+
+	&:disabled {
+		opacity: 0.45;
+		cursor: default;
+	}
+
+	.pd-device &:focus-visible {
+		outline-color: var(--pd-lens);
+	}
+}
+
+.pd-lcd {
+	flex: 1;
+	position: relative;
+	overflow: hidden;
+	display: grid;
+	grid-template-areas: "top" "sprite" "plate" "bottom";
+	grid-template-rows: auto 1fr auto auto;
+	gap: 6px;
+	min-height: 330px;
+	padding: 12px 14px;
+	border: 3px solid #34322f;
+	border-radius: 6px;
+	background-color: var(--pd-lcd);
+	background-image: repeating-linear-gradient(0deg, rgb(0 0 0 / 3.5%) 0 1px, transparent 1px 3px);
+	color: var(--pd-lcd-ink);
+	transition: background-color 0.45s ease;
+}
+
+// Category wipe and camera flash. Their resting state is hidden, so nothing sticks if animations are off.
+.pd-wipe,
+.pd-flash {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.pd-wipe {
+	z-index: 5;
+	background: var(--pd-lcd-ink);
+	clip-path: inset(0 0 100% 0);
+	animation: pd-wipe 0.38s steps(6);
+}
+
+@keyframes pd-wipe {
+	from {
+		clip-path: inset(0);
+	}
+
+	to {
+		clip-path: inset(0 0 100% 0);
+	}
+}
+
+.pd-flash {
+	z-index: 6;
+	background: #fff;
+	opacity: 0;
+	animation: pd-flash 0.5s ease-out;
+}
+
+@keyframes pd-flash {
+	from {
+		opacity: 0.95;
+	}
+
+	to {
+		opacity: 0;
+	}
+}
+
+.pd-lcd-top {
+	grid-area: top;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 8px;
+	font-family: var(--pd-font-px);
+	font-size: 13px;
+}
+
+.pd-tag {
+	padding: 2px 8px;
+	border-radius: 3px;
+	background: var(--pd-lcd-ink);
+	color: var(--pd-lcd);
+	white-space: nowrap;
+}
+
+.pd-sprite-wrap {
+	grid-area: sprite;
+	display: grid;
+	place-items: center;
+}
+
+.pd-sprite-box {
+	--pd-halo-h: 14px;
+
+	position: relative;
+	width: 183px;
+	height: 183px;
+
+	&::after {
+		content: "";
+		position: absolute;
+		left: 50%;
+		bottom: 4px;
+		translate: -50% 0;
+		width: 70%;
+		height: 18px;
+		border-radius: 50%;
+		background: color-mix(in srgb, var(--pd-lcd-ink) 16%, transparent);
+	}
+}
+
+.pd-sprite {
+	position: relative;
+	z-index: 1;
+	display: block;
+	width: 100%;
+	height: 100%;
+	image-rendering: pixelated;
+}
+
+.pd-sprite-missing {
+	position: relative;
+	z-index: 1;
+	width: 50%;
+	height: 50%;
+	margin: 25%;
+	color: var(--pd-lcd-ink-2);
+}
+
+// Sits over the head. The sprites face left in the classic front pose, so across all 24 the head's center
+// is at about 35% of the width and its top at about 10% of the height. --pd-hx / --pd-hy can override that
+// per sprite (exact spots need the sprite's pixels, which the image host's CORS settings don't allow yet).
+.pd-halo {
+	position: absolute;
+	z-index: 2;
+	left: calc(var(--pd-hx, 0.35) * 100%);
+	top: calc(var(--pd-hy, 0.1) * 100% - var(--pd-halo-h) - 5px);
+	translate: -50% 0;
+	width: 54px;
+	height: var(--pd-halo-h);
+	border: 4px solid var(--pd-halo);
+	border-radius: 50%;
+	animation: pd-bob 3s ease-in-out infinite;
+}
+
+@keyframes pd-bob {
+	50% {
+		transform: translateY(-4px);
+	}
+}
+
+.pd-photo {
+	grid-area: sprite;
+	position: relative;
+	min-height: 0;
+	border-radius: 4px;
+	background: color-mix(in srgb, var(--pd-lcd-ink) 12%, transparent);
+
+	img {
+		position: absolute;
+		inset: 6px;
+		width: calc(100% - 12px);
+		height: calc(100% - 12px);
+		object-fit: contain;
+		transition: opacity 0.2s ease;
+	}
+
+	&.is-loading img,
+	&.is-missing img {
+		opacity: 0;
+	}
+}
+
+.pd-lcd.is-photo .pd-sprite-wrap {
+	display: none;
+}
+
+.pd-photo-msg {
+	position: absolute;
+	inset: 0;
+	display: grid;
+	place-items: center;
+	font-family: var(--pd-font-px);
+	font-size: 12px;
+	color: var(--pd-lcd-ink-2);
+}
+
+// The name shrinks to fit one line, so a long name never changes the screen's height.
+.pd-plate {
+	grid-area: plate;
+	container-type: inline-size;
+	min-width: 0;
+	text-align: center;
+}
+
+.pd-name {
+	--pd-name-max: 30px;
+
+	font-family: var(--pd-font-px);
+	font-weight: 700;
+	font-size: min(var(--pd-name-max), calc(100cqi / (var(--pd-len, 8) * 0.78)));
+	line-height: 1.15;
+	color: inherit;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.pd-nick {
+	min-height: 1.5em;
+	margin-top: 2px;
+	font-style: italic;
+	font-size: 14px;
+	color: var(--pd-lcd-ink-2);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.pd-lcd-bottom {
+	grid-area: bottom;
+	display: flex;
+	justify-content: space-between;
+	gap: 12px;
+	padding-top: 8px;
+	border-top: 2px dashed color-mix(in srgb, var(--pd-lcd-ink) 28%, transparent);
+	font-family: var(--pd-font-px);
+	font-size: 12px;
+
+	span:first-child {
+		flex: none;
+	}
+
+	span:last-child {
+		text-align: right;
+	}
+}
+
+.pd-lcd-empty {
+	grid-row: 1 / -1;
+	align-self: center;
+	text-align: center;
+	font-family: var(--pd-font-px);
+	font-size: 13px;
+}
+
+// ---------- Controls under the left screen ----------
+
+.pd-controls {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 2px 4px 0;
+}
+
+.pd-dpad {
+	display: grid;
+	grid-template-columns: repeat(3, 30px);
+	grid-template-rows: repeat(3, 30px);
+
+	button,
+	span {
+		padding: 0;
+		border: 0;
+		background: var(--pd-btn-down);
+		color: #9c8b80;
+		font-size: 11px;
+		line-height: 1;
+	}
+
+	button {
+		cursor: pointer;
+
+		&:active {
+			transform: translateY(1px);
+			color: #fff;
+		}
+	}
+}
+
+.pd-dpad-up {
+	grid-area: 1 / 2;
+	border-radius: 5px 5px 0 0;
+}
+
+.pd-dpad-left {
+	grid-area: 2 / 1;
+	border-radius: 5px 0 0 5px;
+}
+
+.pd-dpad-center {
+	grid-area: 2 / 2;
+}
+
+.pd-dpad-right {
+	grid-area: 2 / 3;
+	border-radius: 0 5px 5px 0;
+}
+
+.pd-dpad-down {
+	grid-area: 3 / 2;
+	border-radius: 0 0 5px 5px;
+}
+
+.pd-hint {
+	font-family: var(--pd-font-px);
+	font-size: 11px;
+	line-height: 1.6;
+	color: var(--pd-on-shell);
+	text-align: center;
+}
+
+.pd-grille {
+	display: flex;
+	gap: 6px;
+
+	i {
+		width: 6px;
+		height: 36px;
+		border-radius: 3px;
+		background: var(--pd-shell-edge);
+	}
+}
+
+// ---------- Right half: pages, categories, grid ----------
+
+.pd-screen {
+	background: var(--pd-screen);
+	color: var(--pd-screen-ink);
+	border: 3px solid #0f1416;
+	border-radius: 10px;
+	box-shadow: inset 0 0 0 2px var(--pd-screen-2);
+	transition: background-color 0.45s ease;
+}
+
+.pd-data {
+	display: flex;
+	flex-direction: column;
+	padding: 12px 16px 16px;
+}
+
+.pd-tabs {
+	display: flex;
+	gap: 6px;
+	padding-bottom: 10px;
+	margin-bottom: 12px;
+	border-bottom: 2px solid var(--pd-screen-2);
+}
+
+.pd-tab {
+	padding: 4px 10px;
+	font-family: var(--pd-font-px);
+	font-size: 13px;
+	background: transparent;
+	color: var(--pd-screen-ink-2);
+	border: 2px solid transparent;
+	border-radius: 4px;
+	cursor: pointer;
+
+	&:hover:not([aria-selected="true"]) {
+		border-color: var(--pd-screen-2);
+		color: var(--pd-screen-ink);
+	}
+
+	&[aria-selected="true"] {
+		background: var(--pd-btn);
+		color: var(--pd-btn-ink);
+	}
+}
+
+.pd-page-no {
+	margin-left: auto;
+	align-self: center;
+	font-family: var(--pd-font-px);
+	font-size: 11px;
+	color: var(--pd-screen-ink-2);
+}
+
+// Every pet's pages share one grid cell, so the screen is always as tall as the tallest page and never
+// resizes as you move between pets, pages or categories. Only the active page is visible.
+.pd-pages {
+	display: grid;
+	min-width: 0;
+}
+
+.pd-page {
+	grid-area: 1 / 1;
+	min-width: 0;
+	visibility: hidden;
+	font-size: 0.906rem;
+	line-height: 1.62;
+	user-select: text;
+
+	&.is-active {
+		visibility: visible;
+	}
+
+	p {
+		max-width: 64ch;
+		margin-bottom: 12px;
+		white-space: pre-line;
+	}
+}
+
+.pd-label {
+	display: block;
+	margin-bottom: 4px;
+	font-family: var(--pd-font-px);
+	font-size: 11px;
+	letter-spacing: 0.5px;
+	color: var(--pd-screen-ink-2);
+}
+
+.pd-facts {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 10px 18px;
+	margin: 4px 0 14px;
+}
+
+.pd-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.pd-chip {
+	padding: 2px 10px;
+	font-size: 0.78rem;
+	border: 1.5px solid color-mix(in srgb, var(--pd-screen-ink-2) 55%, transparent);
+	border-radius: 999px;
+}
+
+.pd-bars {
+	display: grid;
+	gap: 9px;
+	margin-bottom: 14px;
+}
+
+.pd-bar {
+	display: grid;
+	grid-template-columns: 78px minmax(0, 1fr) 30px;
+	align-items: center;
+	gap: 10px;
+
+	b {
+		font-family: var(--pd-font-px);
+		font-weight: 400;
+		font-size: 12px;
+	}
+}
+
+.pd-bar-value {
+	font-family: var(--pd-font-px);
+	font-size: 12px;
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+}
+
+.pd-track {
+	height: 12px;
+	overflow: hidden;
+	background: var(--pd-screen-2);
+	border-radius: 2px;
+}
+
+.pd-fill {
+	--pd-tone: #5aa8e8;
+
+	height: 100%;
+	background: repeating-linear-gradient(90deg, var(--pd-tone) 0 9px, transparent 9px 11px);
+	transform-origin: left;
+
+	&--hp {
+		--pd-tone: #6cc06c;
+	}
+
+	&--attack {
+		--pd-tone: #f0a040;
+	}
+
+	&--defense {
+		--pd-tone: #5aa8e8;
+	}
+
+	&--speed {
+		--pd-tone: #ef7090;
+	}
+
+	.pd-page.is-active & {
+		animation: pd-grow 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+	}
+}
+
+@keyframes pd-grow {
+	from {
+		transform: scaleX(0);
+	}
+}
+
+.pd-total {
+	display: flex;
+	justify-content: space-between;
+	padding-top: 8px;
+	margin-bottom: 14px;
+	border-top: 2px solid var(--pd-screen-2);
+	font-family: var(--pd-font-px);
+	font-size: 12px;
+	color: var(--pd-screen-ink-2);
+}
+
+.pd-moves {
+	display: grid;
+	gap: 10px;
+	padding: 0;
+	list-style: none;
+
+	strong {
+		display: block;
+		font-family: var(--pd-font-px);
+		font-weight: 400;
+		font-size: 13px;
+		color: var(--pd-btn);
+	}
+
+	span {
+		font-size: 0.84rem;
+		color: var(--pd-screen-ink-2);
+	}
+}
+
+.pd-cats {
+	display: flex;
+	gap: 8px;
+}
+
+.pd-cat {
+	flex: 1 1 0;
+	min-width: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	padding: 8px 6px;
+	font-family: var(--pd-font-px);
+	font-size: 12px;
+	line-height: 1.2;
+	text-align: center;
+	background: var(--pd-btn);
+	color: var(--pd-btn-ink);
+	border: 3px solid var(--pd-shell-edge);
+	border-radius: 8px;
+	box-shadow: 0 3px 0 var(--pd-shell-edge);
+	cursor: pointer;
+
+	&[aria-pressed="true"] {
+		background: var(--pd-btn-down);
+		color: var(--pd-btn);
+		transform: translateY(3px);
+		box-shadow: none;
+	}
+}
+
+.pd-cat-count {
+	padding: 0 5px;
+	font-size: 11px;
+	border-radius: 3px;
+	background: color-mix(in srgb, currentcolor 16%, transparent);
+}
+
+.pd-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(82px, 1fr));
+	align-content: start;
+	gap: 6px;
+	height: 318px;
+	padding: 10px;
+	overflow-y: auto;
+	scrollbar-color: var(--pd-screen-ink-2) transparent;
+
+	&:focus-visible {
+		outline-color: var(--pd-btn);
+	}
+}
+
+.pd-grid-empty {
+	grid-column: 1 / -1;
+	margin: 8px;
+	color: var(--pd-screen-ink-2);
+}
+
+.pd-tile {
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1px;
+	padding: 5px 4px 6px;
+	background: var(--pd-screen-2);
+	color: var(--pd-screen-ink);
+	border: 2px solid transparent;
+	border-radius: 6px;
+	cursor: pointer;
+
+	img {
+		width: 61px;
+		height: 61px;
+		image-rendering: pixelated;
+	}
+
+	&:hover:not([aria-pressed="true"]) {
+		border-color: var(--pd-screen-ink-2);
+	}
+
+	&[aria-pressed="true"] {
+		background: var(--pd-btn);
+		color: var(--pd-btn-ink);
+
+		.pd-tile-no {
+			color: var(--pd-btn-ink);
+		}
+	}
+
+	.pd-device &:focus-visible {
+		outline-color: var(--pd-btn);
+		outline-offset: 1px;
+	}
+}
+
+.pd-tile-missing {
+	width: 40px;
+	height: 61px;
+	color: var(--pd-screen-ink-2);
+}
+
+.pd-tile-no {
+	font-family: var(--pd-font-px);
+	font-size: 11px;
+	color: var(--pd-screen-ink-2);
+}
+
+.pd-tile-name {
+	max-width: 100%;
+	overflow: hidden;
+	font-size: 0.78rem;
+	font-weight: 600;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.pd-tab:focus-visible,
+.pd-grid:focus-visible {
+	outline-color: var(--pd-btn);
+}
+
+// ---------- One column (phones, narrow windows) ----------
+
+@container (max-width: 859px) {
+	.pd-device {
+		grid-template-columns: minmax(0, 1fr);
+		padding: 12px;
+		border-radius: 18px;
+	}
+
+	.pd-hinge {
+		height: 12px;
+		margin: 12px 0;
+	}
+
+	.pd-topstrip {
+		min-height: 40px;
+		gap: 8px;
+	}
+
+	.pd-lens {
+		width: 36px;
+		height: 36px;
+		border-width: 4px;
+	}
+
+	.pd-led {
+		width: 10px;
+		height: 10px;
+	}
+
+	.pd-brand {
+		font-size: 12px;
+	}
+
+	.pd-bezel {
+		padding: 8px 10px 16px;
+		border-radius: 8px 8px 8px 26px;
+	}
+
+	.pd-bezel-top {
+		margin-bottom: 6px;
+	}
+
+	.pd-lcd {
 		min-height: 0;
-		padding: 0.5rem 0.25rem;
-		font-size: 0.9rem;
+		grid-template-areas: "top top" "sprite plate" "bottom bottom";
+		grid-template-columns: auto minmax(0, 1fr);
+		grid-template-rows: auto auto auto;
+		align-items: center;
+		column-gap: 12px;
+		padding: 10px;
+
+		&.is-photo {
+			grid-template-areas: "top top" "sprite sprite" "plate plate" "bottom bottom";
+		}
 	}
 
-	.gba-pet-list-icon {
-		margin: 0 0 0.25rem;
+	.pd-photo {
+		aspect-ratio: 4 / 5;
 	}
 
-	.gba-pet-list-name {
-		max-width: 100%;
+	// Headroom above the sprite for the memorial halo, kept in every category so the size never changes.
+	.pd-sprite-wrap {
+		padding-top: 14px;
+	}
+
+	.pd-sprite-box {
+		--pd-halo-h: 11px;
+
+		width: 112px;
+		height: 112px;
+	}
+
+	.pd-halo {
+		width: 40px;
+		border-width: 3px;
+	}
+
+	.pd-plate {
+		text-align: left;
+	}
+
+	.pd-name {
+		--pd-name-max: 22px;
+	}
+
+	.pd-lcd-bottom span:last-child {
+		min-width: 0;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
 
-	.gba-pet-list-dexid {
-		margin-left: 0;
-		font-size: 0.8rem;
+	.pd-controls {
+		display: none;
+	}
+
+	.pd-right .pd-cats {
+		order: 1;
+	}
+
+	.pd-right .pd-grid {
+		order: 2;
+	}
+
+	.pd-right .pd-data {
+		order: 3;
+	}
+
+	.pd-cat {
+		flex-direction: column;
+		gap: 2px;
+		padding: 7px 4px;
+		font-size: 11px;
+	}
+
+	.pd-grid {
+		display: flex;
+		height: auto;
+		padding: 8px;
+		overflow: auto hidden;
+		scroll-snap-type: x proximity;
+		overscroll-behavior-x: contain;
+	}
+
+	.pd-tile {
+		flex: 0 0 78px;
+		scroll-snap-align: start;
 	}
 }
 
-@media (width <= 767px) {
-	.gba-pokedex-container {
-		padding: 0.5rem 0.25rem;
+@container (max-width: 360px) {
+	.pd-brand {
+		display: none;
 	}
 
-	.gba-pokedex-info {
-		padding: 1rem 0.5rem;
+	.pd-sound {
+		margin-left: auto;
 	}
 
-	.gba-pet-image {
-		width: 5rem;
-		height: 5rem;
+	.pd-sprite-box {
+		width: 96px;
+		height: 96px;
+	}
+
+	.pd-facts {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.pd-bar {
+		grid-template-columns: 64px minmax(0, 1fr) 28px;
+		gap: 8px;
 	}
 }
 
-[data-bs-theme="dark"] {
-	.gba-pokedex-section {
-		background: linear-gradient(135deg, #23272e 0%, #181a20 100%);
-		
-		&.memorial-bg {
-			background: linear-gradient(135deg, #2d1b3d 0%, #181a20 100%);
-		}
-	}
-
-	.gba-pokedex-container {
-		background: $gba-red-dark;
-		border-color: $gba-border-dark;
-		
-		&.memorial-mode {
-			background: #5e35b1;
-			border-color: #7e57c2;
-			
-			.gba-pokedex-list-title {
-				color: $memorial-accent;
-			}
-			
-			.gba-toggle-btn.active {
-				background: $memorial-accent;
-				color: $memorial-text-dark;
-			}
-			
-			.gba-pet-image {
-				border-color: $memorial-accent;
-				box-shadow: 0 0 0.9375rem rgb(255 215 0 / 60%);
-			}
-			
-			.gba-pet-list-item.selected {
-				background: #7e57c2;
-				border-color: $memorial-accent;
-				color: #fff;
-				
-				.gba-pet-list-dexid {
-					color: $memorial-accent;
-				}
-			}
-			
-			.gba-pet-name {
-				color: $memorial-accent;
-			}
-			
-			.gba-pet-dexid {
-				color: #b39ddb;
-			}
-		}
-	}
-
-	.gba-pokedex-info-panel,
-	.gba-pokedex-list-panel {
-		background: $gba-bg-dark;
-		border-color: $gba-border-dark;
-	}
-
-	.gba-pokedex-info {
-		background: $gba-bg-dark;
-		color: $gba-text-dark;
-	}
-
-	.gba-pet-details,
-	.gba-pet-stat-value {
-		color: $gba-text-dark;
-	}
-
-	.gba-pet-name {
-		color: $gba-yellow-dark;
-	}
-
-	.gba-pet-nickname {
-		color: $gba-gray-dark;
-	}
-
-	.gba-pet-dexid {
-		color: $gba-accent-dark;
-	}
-
-	.gba-pet-image {
-		background: $gba-bg-dark;
-		border-color: $gba-accent-dark;
-	}
-
-	.gba-pet-personality-list,
-	.gba-pet-abilities-list {
-		background: $gba-bg-dark;
-		border-color: $gba-border-dark;
-	}
-
-	.gba-pet-personality-item {
-		background: $gba-bg-dark;
-		color: $gba-text-dark;
-		border-left: 3px solid $gba-blue-dark;
-	}
-
-	.gba-pet-ability-item {
-		background: $gba-bg-dark;
-		color: $gba-text-dark;
-		border-left: 3px solid $gba-orange-dark;
-	}
-
-	.gba-pet-stats-table {
-		background: $gba-bg-dark;
-		color: $gba-text-dark;
-
-		& td {
-			border-bottom: 1px solid $gba-border-dark;
-		}
-
-		& tr:last-child td {
-			border-bottom: none;
-		}
-	}
-
-	.gba-pet-stat-label {
-		color: $gba-blue-dark;
-		&.gba-pet-stat-hp { color: $gba-green-dark; }
-		&.gba-pet-stat-attack { color: $gba-orange-dark; }
-		&.gba-pet-stat-defense { color: $gba-yellow-dark; }
-		&.gba-pet-stat-speed { color: $gba-red-dark; }
-	}
-
-	.gba-pet-list-item {
-		background: $gba-bg-dark;
-		color: $gba-text-dark;
-
-		&.selected {
-			background: $gba-yellow-dark;
-			color: $gba-bg-dark;
-		}
-
-		&:hover:not(.selected) {
-			background: $gba-bg-dark;
-			border-color: $gba-accent-dark;
-		}
-	}
-
-	.gba-pet-list-icon {
-		background: $gba-bg-dark;
-		border-color: $gba-border-dark;
-	}
-
-	.gba-pet-list-name {
-		color: $gba-text-dark;
-	}
-
-	.gba-pet-list-dexid {
-		color: $gba-gray-dark
-	}
-
-	.gba-pokedex-list {
-		background: $gba-bg-dark;
-		border-color: $gba-border-dark;
-	}
-
-	.gba-pokedex-empty {
-		color: $gba-gray-dark;
-	}
-
-	.gba-pet-list-item.selected .gba-pet-list-dexid {
-		color: $gba-bg-dark;
-		font-weight: 700;
-	}
-	
-	.mini-halo {
-		background: rgb(94 53 177 / 80%);
-		color: $memorial-accent;
-	}
-} 
-
-.petdex-info-scroll {
-	max-height: 32rem;
-	overflow: hidden auto;
-
-	// Stacked layout: details flow with the page instead of scrolling inside the card
-	@media (width <= 991.98px) {
-		max-height: none;
-		overflow: visible;
+@media (prefers-reduced-motion: reduce) {
+	.pd-device,
+	.pd-device *,
+	.pd-device *::before,
+	.pd-device *::after {
+		animation: none !important;
+		transition: none !important;
 	}
 }
